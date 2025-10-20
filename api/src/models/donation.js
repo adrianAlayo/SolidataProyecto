@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.js');
+const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
 const Donation = sequelize.define('Donations', {
@@ -13,9 +13,9 @@ const Donation = sequelize.define('Donations', {
     expiration_date: DataTypes.DATE,
     donor: DataTypes.STRING (120),
     note: DataTypes.TEXT,
-    is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
+    status: {
+        type: DataTypes.ENUM ('Programado','Entregado','No Entregado'),
+        defaultValue: 'Programado',
     },
 },{
     timestamps: true,

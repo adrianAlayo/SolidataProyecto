@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.js');
+const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
 const User = sequelize.define('Users',{
@@ -26,9 +26,9 @@ const User = sequelize.define('Users',{
         allowNull: false,
     },
     is_active: {
-        type:DataTypes.BOOLEAN,
-        defaultValue: true,
-    }
+        type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
+        defaultValue: 'Pendiente',
+    },
 },{
     timestamps: true
 });

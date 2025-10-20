@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.js');
+const sequelize = require('../db/conexion.js');
 const {DataType, DataTypes} = require('sequelize');
 
 const Assignment = sequelize.define('Assignments', {
@@ -6,10 +6,6 @@ const Assignment = sequelize.define('Assignments', {
     assignment_date: {
         type: DataTypes.DATE,
         allowNull: false,
-    },
-    status: {
-        type: DataTypes.ENUM('Pendiente','Entregado','Cancelado'),
-        defaultValue: 'Pendiente',
     },
     status: {
         type: DataTypes.ENUM('Programado','En camino', 'Entregado','No entregado'),

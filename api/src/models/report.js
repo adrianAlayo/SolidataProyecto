@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.js');
+const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
 const Report = sequelize.define('Reports',{

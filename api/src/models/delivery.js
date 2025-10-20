@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.js');
+const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
 const Delivery = sequelize.define('Deliveries', {
@@ -6,7 +6,7 @@ const Delivery = sequelize.define('Deliveries', {
     actual_date: DataTypes.DATE,
     confirmed_by: DataTypes.STRING (100),
     status: {
-        type: DataTypes.ENUM ('Programado','En camino','Entregado','No recibido'),
+        type: DataTypes.ENUM ('Programado','En camino','Entregado','No Entregado'),
         defaultValue: 'Programado',
     },
 }, {

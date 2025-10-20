@@ -1,4 +1,4 @@
-const sequelize = require('../db/db.js');
+const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
 const Institution = sequelize.define('Institutions', {
@@ -21,16 +21,6 @@ const Institution = sequelize.define('Institutions', {
         allowNull: false,
     },
     type: DataTypes.ENUM ('Comedor','Merendero','Hogar de ancianos y niños'),
-    status: {
-        type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
-        defaultValue: 'Pendiente',
-    },
-    is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-    },
-}, {
-    timestamps: true,
 });
 
 module.exports = Institution
