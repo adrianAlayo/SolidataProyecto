@@ -12,6 +12,10 @@ const Institution = sequelize.define('Institutions', {
         allowNull: false,
         unique: true,
     },
+    password: {
+        type: DataTypes.STRING (32),
+        allowNull: false,
+    },
     location: {
         type: DataTypes.STRING (254),
         allowNull: false,
@@ -21,6 +25,10 @@ const Institution = sequelize.define('Institutions', {
         allowNull: false,
     },
     type: DataTypes.ENUM ('Comedor','Merendero','Hogar de ancianos y niños'),
+    status: {
+        type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
+        defaultValue: 'Pendiente',
+    },
 });
 
 module.exports = Institution

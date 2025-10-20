@@ -26,8 +26,8 @@ const User = sequelize.define('Users',{
         allowNull: false,
     },
     is_active: {
-        type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
-        defaultValue: 'Pendiente',
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
     },
 },{
     timestamps: true

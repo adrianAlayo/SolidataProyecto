@@ -1,8 +1,6 @@
-/**
- const jwt= require('jsonwebtoken');
-const PRIMARY_KEY = require('../config/keys');
+const jwt= require('jsonwebtoken');
 
-const authoMiddleware = (req, res, next ) =>{
+const verifyToken = (req, res, next ) =>{
     const authHeader = req.headers.authorization;
 
     if(!authHeader) return res.status(401).json({message: 'No introdujo un TOKEN'})
@@ -10,11 +8,11 @@ const authoMiddleware = (req, res, next ) =>{
     const token = authHeader.split(" ")[1];
 
     try{
-        const CODE_DECRIPTATION = jwt.verify(token,PRIMARY_KEY);
+        const CODE_DECRIPTATION = jwt.verify(token,process.env.JWT_SECRET);
         console.log(req.user_find)
-        // Guardamos los datos desencriptados en req.user para que otros ENDPOINTS puedan usarlo
+        
+        //* Guardamos los datos desencriptados en req.user para que otros ENDPOINTS puedan usarlo
         req.user_find = CODE_DECRIPTATION;
-        console.log()
 
         next();
     }catch(error){
@@ -23,7 +21,4 @@ const authoMiddleware = (req, res, next ) =>{
     } 
 }
 
-module.exports = {
-    authoMiddleware
-}
- */
+module.exports = verifyToken;
