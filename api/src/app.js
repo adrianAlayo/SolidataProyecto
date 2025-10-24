@@ -6,7 +6,6 @@ const institutionRouter = require('./router/institution.router.js');
 const employeeRouter = require('./router/employee.router.js');
 const adminRouter = require('./router/admin.router.js');
 const login = require('./router/login.router.js');
-const { syncModels } = require('./models/index.js');
 
 app.use(cors({
     origin: 'http://localhost:5173', // quién puede acceder
@@ -25,7 +24,6 @@ app.use('/admin', adminRouter);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
-    syncModels()
     res.send('LA API FUNCIONA LOCO GOOOOOOOD');
 });
 
