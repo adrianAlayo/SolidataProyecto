@@ -1,7 +1,7 @@
-const app = require('./app');
+const app = require('./app.js');
 const sequelize = require('./db/conexion.js');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 sequelize.sync({ alter: true })
   .then(() => {

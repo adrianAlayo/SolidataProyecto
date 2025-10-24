@@ -39,8 +39,6 @@ function ValidateRegistration(req, res, next) {
     if(type_inst !== "Comedor" || type_inst !== "Merendero" || type_inst !== "Hogar de ancianos y niños"){
         return res.status(400).json({ message: "Tiene que selecionar una tipo valido: 'Comedor', 'Merendero' o 'Hogar de ancianos y niños' " });
     }
-
-
     
     // FUNCIONES
     function VerificationPass(pass) {
