@@ -1,14 +1,16 @@
 const app = require('./app.js');
 const sequelize = require('./db/conexion.js');
+const syncModels = require('./models/index.js');
 
-const startServer = async () => {
-  try {
-    await sequelize.sync({ alter: true });
-    console.log('Tablas sincronizadas');
-    app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${process.env.PORT}`));
-  } catch (err) {
-    console.error('No se pud sincronzar la base de datos:', err);
-  }
-};
 
-startServer();
+// Primero definimos las relaciones
+syncModels();
+
+// Luego sincronizamos la base de datos
+sequelize.sync({ alter: true })
+  .then(() => {
+    console.log('Tablas y relaciones sincronizadas');
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
+  })
+  .catch(err => console.error('❌ Error al sincronizar DB:', err)); 

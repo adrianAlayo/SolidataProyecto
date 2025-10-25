@@ -1,19 +1,7 @@
 function ValidateRegistration(req, res, next) {  
-    const {first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password,name_inst,email_inst,location_inst,phone_inst,type_inst} = req.body;
+    const {first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst} = req.body;
 
-    const requiredFields = [
-    first_name_inCharge,
-    last_name_inCharge,
-    email_inCharge,
-    phone_inCharge,
-    password,
-    //  Info Institution
-    name_inst,
-    email_inst,
-    location_inst,
-    phone_inst,
-    type_inst
-    ];
+    const requiredFields = [first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst];
 
     //Verificacion de campos completos
     if( requiredFields.some(field => field == null)){
@@ -21,8 +9,8 @@ function ValidateRegistration(req, res, next) {
     }
 
     //Verificar que la contraseña tenga May,Min,Num y mas de 8 caracteres
-    if (!VerificationPass(password)) {
-        return res.status(400).json({ message: "Contraseña inválida" });
+    if (!VerificationPass(password_inCharge) || !VerificationPass(password_inst)) {
+        return res.status(400).json({ message: "Contraseña/s inválida/s" });
     }
 
     //Verificar que sea un email
@@ -39,8 +27,6 @@ function ValidateRegistration(req, res, next) {
     if(type_inst !== "Comedor" && type_inst !== "Merendero" && type_inst !== "Hogar de ancianos y niños"){
         return res.status(400).json({ message: "Tiene que selecionar una tipo valido: 'Comedor', 'Merendero' o 'Hogar de ancianos y niños' " });
     }
-
-
     
     // FUNCIONES
     function VerificationPass(pass) {

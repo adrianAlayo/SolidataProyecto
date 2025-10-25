@@ -1,4 +1,4 @@
-module.exports = (roleRequired) => {
+function verifiRole(roleRequired) {
   return (req, res, next) => {
     if (!req.user_find)
       return res.status(401).json({ message: 'No autorizado (falta autenticación)' });
@@ -8,4 +8,6 @@ module.exports = (roleRequired) => {
 
     next();
   };
-};
+}
+
+module.exports = verifiRole;
