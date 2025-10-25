@@ -10,6 +10,6 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 
 
 //* Llamada de los Endpoints del ROLE institution
-router.post('/',AuthorizationEmployee);
+router.post('/',Authentication,AuthorizeRole);
 
 module.exports = router;

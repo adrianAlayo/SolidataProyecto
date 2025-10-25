@@ -8,16 +8,16 @@ const adminRouter = require('./router/admin.router.js');
 const login = require('./router/login.router.js')
 
 app.use(cors({
-    origin: 'http://localhost:5173', // quién puede acceder
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // headers permitidos
-    credentials: true, // permite cookies o tokens
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+    credentials: true, 
 }));
 
 app.use(express.json());
 
 //Montar los Routers
-app.unsubscribe('/',login);
+app.use('/',login);
 app.use('/employee', employeeRouter);
 app.use('/institutions', institutionRouter);
 app.use('/admin', adminRouter);

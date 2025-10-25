@@ -1,11 +1,14 @@
-const app = require('./app');
+const app = require('./app.js');
 const sequelize = require('./db/conexion.js');
 
-const PORT = process.env.PORT || 3000;
-
-sequelize.sync({ alter: true })
-  .then(() => {
+const startServer = async () => {
+  try {
+    await sequelize.sync({ alter: true });
     console.log('Tablas sincronizadas');
-    app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
-  })
-  .catch(err => console.error('❌ Error al sincronizar DB:', err));
+    app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${process.env.PORT}`));
+  } catch (err) {
+    console.error('No se pud sincronzar la base de datos:', err);
+  }
+};
+
+startServer();
