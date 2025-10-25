@@ -3,11 +3,11 @@ const {DataTypes} = require('sequelize');
 
 const User = sequelize.define('Users',{
     first_name: {
-        type: DataTypes.STRING (50),
-        allowNul: false,
+        type: DataTypes.STRING(50),
+        allowNull: false,
     },
     last_name: {
-        type: DataTypes.STRING (50),
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     email: {
@@ -18,11 +18,11 @@ const User = sequelize.define('Users',{
         },
     },
     password: {
-        type: DataTypes.STRING (32),
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     phone: {
-        type: DataTypes.STRING (20),
+        type: DataTypes.STRING(20),
         allowNull: false,
     },
     is_active: {

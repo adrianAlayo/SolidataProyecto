@@ -11,7 +11,7 @@ const Donation = sequelize.define('Donations', {
         allowNull: false,
     },
     expiration_date: DataTypes.DATE,
-    donor: DataTypes.STRING (120),
+    donor: DataTypes.STRING(120),
     note: DataTypes.TEXT,
     status: {
         type: DataTypes.ENUM ('Programado','Entregado','No Entregado'),

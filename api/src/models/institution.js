@@ -3,28 +3,31 @@ const {DataTypes} = require('sequelize');
 
 const Institution = sequelize.define('Institutions', {
     name: {
-        type: DataTypes.STRING (120),
+        type: DataTypes.STRING(120),
         allowNull: false,
         unique: true,
     },
     email: {
-        type: DataTypes.STRING (120),
+        type: DataTypes.STRING(120),
         allowNull: false,
         unique: true,
     },
     password: {
-        type: DataTypes.STRING (32),
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     location: {
-        type: DataTypes.STRING (254),
+        type: DataTypes.STRING(254),
         allowNull: false,
     },
     phone: {
-        type: DataTypes.STRING (20),
+        type: DataTypes.STRING(20),
         allowNull: false,
     },
-    type: DataTypes.ENUM ('Comedor','Merendero','Hogar de ancianos y niños'),
+    type: {
+        type: DataTypes.ENUM('Comedor','Merendero','Hogar de ancianos y niños'),
+        allowNull: false,
+    },
     status: {
         type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
         defaultValue: 'Pendiente',

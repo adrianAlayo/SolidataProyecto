@@ -11,6 +11,7 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 
 
 //* Llamada de los Endpoints del ROLE institution
+router.get('/', institutionController.HelloURL);
 router.post('/register',ValidateRegistration, institutionController.RegisterInstitution);
 
 module.exports = router;

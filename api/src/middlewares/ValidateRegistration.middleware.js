@@ -50,7 +50,7 @@ function ValidateRegistration(req, res, next) {
         const phoneStr = String(phone);
         return /^\d{10,11}$/.test(phoneStr);
     }
-
+    console.log("paso el validate")
     // seguimos al controller
     next();
 }
