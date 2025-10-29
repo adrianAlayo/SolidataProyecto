@@ -10,6 +10,16 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 
 
 
-router.post('/register', AuthorizeRole('admin'), ValidateRegistration, adminController.RegisterEmployee);
+router.post('/registerEmployee', AuthorizeRole('Admin'), ValidateRegistration, adminController.RegisterEmployee);
+
+router.patch('/aceptarInstitucion',Authentication,AuthorizeRole('Admin'), adminController.AcceptInstitution);
+router.patch('/bajarInstitucion',Authentication,AuthorizeRole('Admin'), adminController.DisableInstitution);
+router.patch('/bajarUsuario',Authentication,AuthorizeRole('Admin'), adminController.DisableUser);
+
+router.get('/listInstitutiones', Authentication,AuthorizeRole('Admin'), adminController.ListInstitutions);
+router.get('/listUsuarios', Authentication,AuthorizeRole('Admin'), adminController.ListUsers);
+
+router.delete('/deleteInstitucion',Authentication,AuthorizeRole('Admin'), adminController.DeleteUsers);
+router.delete('/deleteUsuario',Authentication,AuthorizeRole('Admin'), adminController.DeleteUsers);
 
 module.exports = router;

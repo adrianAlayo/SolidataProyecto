@@ -11,6 +11,9 @@ const Institution = sequelize.define('Institutions', {
         type: DataTypes.STRING(120),
         allowNull: false,
         unique: true,
+        validate: {
+            isEmail: true,
+        },
     },
     password: {
         type: DataTypes.STRING(100),

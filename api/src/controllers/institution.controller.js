@@ -22,10 +22,9 @@
                 phone: phone_inCharge, //
                 role_id: 3 // rol por defecto para instituciones 
             });
-            console.log(user_create);
             //CREAR INSTITUCION
             const institution_create = await INSTITUTION.create({
-                user_id: user_create.id, // clave foránea
+                contact_user_id: user_create.id, // clave foránea
                 name: name_inst, //
                 email: email_inst, //
                 phone: phone_inst, //
@@ -34,12 +33,9 @@
                 type: type_inst, //
             });
 
-            console.log(institution_create)
             //*Modificar para luego testear y solo dejar el Message
             res.status(201).json({
-                user: user_create,
-                institution: institution_create,
-                message: "Registro exitoso, pendiente aprobación del admin"
+                message: "Registro exitoso, pendiente aprobación del admin \n "
             });
         }catch(e){
             res.status(500).send({message: "Ocurrio un error al intentar guardar los datos en la base de datos" + e})

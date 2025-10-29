@@ -1,41 +1,53 @@
 const jwt = require('jsonwebtoken');
 
 const Login = async (req, res) => {
-  const { user_search, role } = req.userData;
+    try {
+        const {userInfo,userType} = req.userData
+        
+        let token;
+        // Determinar rol seguro
+        if (userType === "institution") {
+            token = CreateTokenInsti(userInfo);
+        } else if(userType === "user")  {
+            token = CreateTokenUser(userInfo);
+        }
+        else {
+            return res.status(700).send({message: "Ocurrio un ERROR inesperado No sabe mos que ocurrio"})
+        }
 
-  let token;
-  if (role === "Institution") {
-    token = CreateTokenInsti(user_search);
-  } else{
-    token = CreateTokenUser(user_search);
-  }
-
-  res.status(200).json({
-    message: "Login exitoso",
-    role,
-    token,
-  });
+        res.status(200).json({
+            message: "Login exitoso",
+            token,
+        });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: "Error!!! a la hora de Autenticar: -> " + e});
+    }
 };
 
+// Token para institución
 function CreateTokenInsti(user) {
-  const payload = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-  };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    const payload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        type: user.type,
+        userRelation: user.contact_user_id,
+        roleName: user.User && user.User.Role ? user.User.Role.name : null, // nombre del rol del contacto
+    };
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
 
+// Token para usuario normal
 function CreateTokenUser(user) {
-  const payload = {
-    id: user.id,
-    name: user.name,
-    username: user.username,
-    surname: user.surname,
-    email: user.email,
-    role_id: user.role_id,
-  };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    const payload = {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        roleName: user.Role ? user.Role.name : null, // nombre del rol del usuario,
+    };
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
 
 module.exports = { Login };
