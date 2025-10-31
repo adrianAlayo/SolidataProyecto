@@ -41,7 +41,8 @@ const RegisterInstitution = async(req,res) =>{
             message: "Registro exitoso, pendiente aprobación del admin \n "
         });
     }catch(e){
-        res.status(500).send({message: "Ocurrio un error al intentar guardar los datos en la base de datos" + e})
+        res.status(500).send({
+            message: "Ocurrio un error al intentar guardar los datos en la base de datos" + e})
     }
     
 }

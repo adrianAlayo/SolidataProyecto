@@ -7,7 +7,7 @@ const loginController = require('../controllers/login.controller.js'); //Endpoin
 const ValidateLogin = require('../middlewares/ValidateLogin.middleware.js'); //Verifica los campos del login
 
 
-router.post('/login',ValidateLogin, loginController.Login);
+router.post('/',ValidateLogin, loginController.Login);
 
 router.get('/', loginController.HelloURL);
 
