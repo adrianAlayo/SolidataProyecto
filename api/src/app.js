@@ -3,7 +3,8 @@ const cors = require('cors');
 const app = express();
 
 const institutionRouter = require('./router/institution.router.js');
-const employeeRouter = require('./router/employee.router.js');
+const employeeCoordinatorRouter = require('./router/employeeCoordinator.router.js');
+const employeeOperatorRouter = require('./router/employeeOperator.router.js');
 const adminRouter = require('./router/admin.router.js');
 const login = require('./router/login.router.js');
 
@@ -17,8 +18,9 @@ app.use(cors({
 app.use(express.json());
 
 //Montar los Routers
-app.use('/l',login);
-app.use('/employee', employeeRouter);
+app.use('/log',login);
+app.use('/employeeOperator', employeeOperatorRouter);
+app.use('/employeeCoodinator', employeeCoordinatorRouter);
 app.use('/institution', institutionRouter);
 app.use('/admin', adminRouter);
 

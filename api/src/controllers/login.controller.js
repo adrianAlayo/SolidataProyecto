@@ -1,5 +1,16 @@
 const jwt = require('jsonwebtoken');
 
+
+const HelloURL = (req,res) =>{
+    res.status(200).send("La URL /log funciona todo GOOOOOTI");
+}
+
+
+// Endpoints de  .... PATCH
+// Endpoints de  .... GET
+// Endpoints de  .... DELETE
+
+// Endpoints de login .... POST
 const Login = async (req, res) => {
     try {
         const {userInfo,userType} = req.userData
@@ -25,7 +36,8 @@ const Login = async (req, res) => {
     }
 };
 
-// Token para institución
+
+// Funciones para la logica de creacion de TOKEN
 function CreateTokenInsti(user) {
     const payload = {
         id: user.id,
@@ -37,8 +49,6 @@ function CreateTokenInsti(user) {
     };
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
-
-// Token para usuario normal
 function CreateTokenUser(user) {
     const payload = {
         id: user.id,
@@ -50,4 +60,7 @@ function CreateTokenUser(user) {
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
 
-module.exports = { Login };
+module.exports = { 
+    Login,
+    HelloURL,
+};

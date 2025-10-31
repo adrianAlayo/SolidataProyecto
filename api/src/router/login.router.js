@@ -9,4 +9,6 @@ const ValidateLogin = require('../middlewares/ValidateLogin.middleware.js'); //V
 
 router.post('/login',ValidateLogin, loginController.Login);
 
+router.get('/', loginController.HelloURL);
+
 module.exports = router;
