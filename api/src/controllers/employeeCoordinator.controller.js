@@ -8,86 +8,63 @@ const HelloURL = (req,res) =>{
 
 // Endpoint para Donaciones recibidas ....
 const RegisterDonationReceived = async (req,res) =>{
-
+    //Registrar las donaciones recibidas (En la tabla)
 }
 const ListDonationsReceived = async (req,res) =>{
-
+    //Hacer una lista de las donaciones recibidas
 }
 
 
 
 // Endpoint para Donaciones entregadas ....
-const RegisterDonationDeliver = async (req,res) =>{
-
+const RegisterDeliverRecived = async (req,res) =>{
+    //Registrar las donaciones que damos (En la tabla) 
 }
-const ListDonationsDelivered = async (req,res) =>{
-
+const ListDeliveryReceived = async (req,res) =>{
+    //Hacer una lista de las donaciones entregadas
 }
 
 
 
 // Endpoint para Stock y vencimientos ....
-const viewStock = async (req,res) =>{
-
+const ViewStock = async (req,res) =>{
+    // Generar un reporte del stock de un producto en particular
 }
 const UpdateStockItem = async (req,res) =>{
-
+    //Actualizar el Stock
 }
 const CheckExpirations = async (req,res) =>{
-
+    // Generar un reporte de cuanto le falta a los productos para vencer
 }
+const GenerateStockReport = async (req,res)  =>{
+    //Generar un reporte del stock de todos los producto
+}
+
 
 
 
 // Endpoint para Gestion de INSTITUCIONES ....
 const ViewInstitutionRequests = async (req,res) =>{
-    
+    // Ver en una lista las necesidades criticas si es que lo tiene una institucion
 }
 
 
-
-// Endpoint para Agenda y logistica ....
-const ViewCalendar = async (req,res) =>{
-
-}
-const AddCalendarEvent = async (req,res) =>{
-
-}
-
-
-
-// Endpoint para Mapas y zonas ....
-const ViewMap = async (req,res) =>{
-
-}
-
-
-
-// Endpoint para Reportes ....
-const GenerateReportByPeriod = async (req,res) =>{
-
-}
 
 
 module.exports = {
-    HelloURL,
+    HelloURL, // GET
 
-    RegisterDonationReceived,
-    ListDonationsReceived,
+    RegisterDonationReceived, // POST
+    ListDonationsReceived, // GET
 
-    RegisterDonationDeliver,
-    ListDonationsDelivered,
+    RegisterDeliverRecived, // POST
+    ListDeliveryReceived, // GET
 
-    viewStock,
-    UpdateStockItem,
-    CheckExpirations,
+    ViewStock, // GET
+    UpdateStockItem, // PATCH
+    CheckExpirations, // GET
+    GenerateStockReport, // GET
 
-    ViewInstitutionRequests,
+    ViewInstitutionRequests, // GET
 
-    ViewCalendar,
-    AddCalendarEvent,
-
-    ViewMap,
-
-    GenerateReportByPeriod,
 }

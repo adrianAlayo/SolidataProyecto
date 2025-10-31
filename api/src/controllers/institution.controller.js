@@ -59,13 +59,10 @@ const ViewApprovalStatus = async (req,res) =>{
 
 
 // Endpoint para Donaciones ....
-const ViewDonationsHistory = async (req,res) =>{
+const ViewDeliveriesHistory = async (req,res) =>{
 
 }
 const ConfirmDonationReception = async (req,res) =>{
-
-}
-const ViewUpcomingDeliverie = async (req,res) =>{
 
 }
 
@@ -75,22 +72,18 @@ const ViewUpcomingDeliverie = async (req,res) =>{
 const SendMessageToBAA = async (req,res) =>{
 
 }
-const ViewAnnouncements = async (req,res) =>{
 
-}
 
 module.exports = {
-    HelloURL,
+    HelloURL,  // GET
     
-    RegisterInstitution,
-    EditProfile,
-    UpdateNeeds,
-    ViewApprovalStatus,
+    RegisterInstitution, // POST
+    EditProfile, // POST
+    UpdateNeeds, // PATCH
+    ViewApprovalStatus, //
 
-    ViewDonationsHistory,
-    ConfirmDonationReception,
-    ViewUpcomingDeliverie,
+    ViewDeliveriesHistory, // GET
+    ConfirmDonationReception, // PATCH
 
-    SendMessageToBAA,
-    ViewAnnouncements,
+    SendMessageToBAA, // POST
 };

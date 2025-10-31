@@ -5,58 +5,47 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeOperator funciona todo GOOOOOTI");
 }
 
-// Endpoint para Donaciones ....
-const CreateDonationEntry = async (req,res) =>{
-
+// Endpoint para Donaciones .... 
+const ConfirmDelivery = async (req,res) =>{
+    //Cambiar el estado de la donacion que hace BAA
 }
-const ConfirmDonationDelivery = async (req,res) =>{
-
+const ConfirmDonation = async (req,res) =>{
+    //Cambiar el estado de la donacion que recibe BAA
 }
-
-
+const ListDonationsReceived = async (req,res) =>{
+    //Hacer una lista de las donaciones recibidas
+}
+const ListDeliveryReceived = async (req,res) =>{
+    //Hacer una lista de las donaciones entregadas
+}
 
 // Endpoint para Stock ....
 const AddStockItem = async (req,res) =>{
-
-}
-const EditStockItem = async (req,res) =>{
-
+    //Añadir un Stock a la tabla
 }
 
 
 
 // Endpoint para Agenda ....
-const MarkDeliveryDone = async (req,res) =>{
-
+const ViewCalendar = async (req,res) =>{
+    //Generar una tabla con assigment (tabla que dice damos donaciones) y donations
+}
+const AddCalendarEvent = async (req,res) =>{
+    //añadir un evento al calendario ya sea cuando se reciba o se haga una donacion
 }
 
-
-
-// Endpoint para Consultas ....
-const ViewInstitutionProfile = async (req,res) =>{
-
-}
-
-
-
-// Endpoint para Reportes Rapidos ....
-const QuickStats = async (req,res) =>{
-
-}
 
 
 module.exports = {
-    HelloURL,
+    HelloURL, // GET
     
-    CreateDonationEntry,
-    ConfirmDonationDelivery,
+    ConfirmDelivery, // PATCH
+    ConfirmDonation, // PATCH
+    ListDonationsReceived, // GET
+    ListDeliveryReceived, // GET
+    
+    AddStockItem, // POST
 
-    AddStockItem,
-    EditStockItem,
-
-    MarkDeliveryDone,
-
-    ViewInstitutionProfile,
-
-    QuickStats,
+    ViewCalendar, // GET
+    AddCalendarEvent, // POST
 }

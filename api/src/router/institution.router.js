@@ -13,6 +13,15 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 //* Llamada de los Endpoints del ROLE institution
 router.get('/', institutionController.HelloURL);
 
-router.post('/register',ValidateRegistration, institutionController.RegisterInstitution);
+
+router.get('/viewDeliveries',ValidateRegistration, AuthorizeRole('Institution'),institutionController.ViewDonationsHistory); //No creado el Codigo
+
+
+router.post('/register',ValidateRegistration, institutionController.RegisterInstitution); //Testeado
+router.post('/editProfile',ValidateRegistration, AuthorizeRole('Institution'),institutionController.RegisterInstitution); //No creado el Codigo
+router.post('/sendMessage',ValidateRegistration, AuthorizeRole('Institution'),institutionController.SendMessageToBAA); //No creado el Codigo
+
+router.patch('/updateNeeds',ValidateRegistration, AuthorizeRole('Institution'),institutionController.UpdateNeeds); //No creado el Codigo
+router.patch('/confirmDelivery',ValidateRegistration, AuthorizeRole('Institution'),institutionController.ConfirmDonationReception); //No creado el Codigo
 
 module.exports = router;
