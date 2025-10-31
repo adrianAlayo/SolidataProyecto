@@ -11,17 +11,25 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 
 
 
-router.post('/registerEmployee', AuthorizeRole('Admin'), ValidateRegistration, adminController.RegisterEmployee);
+router.post('/registerEmployee', AuthorizeRole('Admin'), ValidateRegistration, adminController.RegisterEmployee); //Testeado
+router.post('/CreateRole', Authentication, AuthorizeRole('Admin'), adminController.ManageRolesAndPermissions) // No creado el codigo
 
-router.patch('/aceptarInstitucion',Authentication,AuthorizeRole('Admin'), adminController.AcceptInstitution);
-router.patch('/bajarInstitucion',Authentication,AuthorizeRole('Admin'), adminController.DisableInstitution);
-router.patch('/bajarUsuario',Authentication,AuthorizeRole('Admin'), adminController.DisableUser);
+router.patch('/acceptInstitucion',Authentication,AuthorizeRole('Admin'), adminController.AcceptInstitution); //No testeado
+router.patch('/disableInstitution',Authentication,AuthorizeRole('Admin'), adminController.DisableInstitution); //Testeado
+router.patch('/disableUser',Authentication,AuthorizeRole('Admin'), adminController.DisableUser);//Testeado
+router('/AssignRole', Authentication, AuthorizeRole('Admin'), adminController.AssignRoles); // No creado el codigo
 
-router.get('/', adminController.HelloURL);
-router.get('/listInstitutiones', Authentication,AuthorizeRole('Admin'), adminController.ListInstitutions);
-router.get('/listUsuarios', Authentication,AuthorizeRole('Admin'), adminController.ListUsers);
+router.get('/', adminController.HelloURL); //Testeado
+router.get('/listInstitution', Authentication,AuthorizeRole('Admin'), adminController.ListInstitutionsActive); //Testeado
+router.get('/listUser', Authentication,AuthorizeRole('Admin'), adminController.ListUsers);
+router.get('/listInstitutionInactive',Authentication, AuthorizeRole('Admin'), adminController.ListInstitutionsInactive) // //No Testeado
+router.get('/GenerateReport',Authentication,AuthorizeRole('Admin'), adminController.GenerateReports); // No Creado el codigo
+router.get('/logUser', Authentication, AuthorizeRole('Admin'), adminController.ViewAuditLogs); // No Creado el Codigo
+router.get('/GenAlert') // No Creado el Codigo
 
-router.delete('/deleteInstitucion',Authentication,AuthorizeRole('Admin'), adminController.DeleteUsers);
-router.delete('/deleteUsuario',Authentication,AuthorizeRole('Admin'), adminController.DeleteUsers);
+router.delete('/deleteInstitution',Authentication,AuthorizeRole('Admin'), adminController.DeleteUsers);//Testeado
+router.delete('/deleteUser',Authentication,AuthorizeRole('Admin'), adminController.DeleteUsers);//Testeado
+
+
 
 module.exports = router;

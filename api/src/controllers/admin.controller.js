@@ -120,18 +120,66 @@ const DisableUser = async (req,res) =>{
 
 
 // Endpoint para Gestion de INSTITUCIONES .... 
-const AcceptInstitution = async (req,res) =>{
-    try {
-        const institution_inActive = await INSTITUTION.findAll({
-            where: {
-                status: 'Pendiente',
+const AcceptInstitution = async (req, res) => {
+  try {
+    const { id } = req.body; // o req.params si lo mandás por URL
+
+    if (!id) {
+      return res.status(400).send({ message: "Falta el ID de la institución" });
+    }
+
+    // Buscamos la institución con estado 'Pendiente' o 'Inactivo'
+    const institution = await INSTITUTION.findOne({
+      where: { id: id, status: ["Pendiente", "Inactivo"] }
+    });
+
+    if (!institution) {
+      return res.status(404).send({
+        message: "La institución no existe o ya está activa"
+      });
+    }
+
+    // Actualizamos su estado a 'Activo'
+    await INSTITUTION.update(
+      { status: "Activo" },
+      { where: { id: id } }
+    );
+
+    res.status(200).json({
+      message: "La institución fue aceptada correctamente",
+      id: id
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message: "Error al aceptar la institución: " + e.message
+    });
+  }
+};
+
+const ListInstitutionsInactive = async(req,res) =>{
+    try{
+        const institutions = await INSTITUTION.findAll({
+            where:{
+                status: "Inactivo",
             },
+            attributes:{
+                exclude: "password,createdAt,updatedAt"
+            }
         })
-    } catch (e) {
-        res.status(500).send({message: "Error!!! a la hora de Aceptar a la Institucion: -> " + e})
+        if(!institutions){
+            res.status(404).send({message: "No hay instituciones Inactivas por el momento"});
+        }
+
+        res.status(201).json({
+            message: "Liista de instituciones Inactiva exitosamente",
+            institutions
+        });
+    }catch(e){
+        res.status(500).send({message: "Error!!! a la hora de hacer el listado de las instituciones Inactivas: -> " + e});
     }
 }
-const ListInstitutions = async(req,res) =>{
+const ListInstitutionsActive = async(req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({
             where:{
@@ -216,23 +264,31 @@ const DeleteInstitution = async (req,res)=>{
 
 // Endpoint para Gestion GENERAL ....
 const GenerateReports = async (req,res) =>{
-    // Hara reportes de stock, entregas y actividad general.
+    // Genera reportes personalizados sobre donaciones recibidas, entregas realizadas, stock disponible, actividad de usuarios y uso del sistema. 
 }
 const AssignRoles = async (req,res) =>{
     // Hara cambios de rol de usuarios dentro del sistema (por ejemplo, operador a coordinador).
 }
+const ManageRolesAndPermissions = async (req,res) =>{
+    //Permite crear, editar o eliminar roles dentro del sistema.
+}
 
 
 // Endpoint para AUDITORIAS Y TRAZABILIDAD ....
-const ViewLogs = async (req,res) =>{
-
+const ViewAuditLogs = async (req,res) =>{
+    //Muestra los registros de actividad de todos los usuarios, detallando qué acción se realizó, cuándo y por quién.
 }
 
 
 
 // Endpoint para Configuracion del Sitema ....
-const UpdateSystemInfo = async(req,res) =>{
-    
+const ConfigureAlerts = async(req,res) =>{
+    /*
+    Permite establecer los parámetros de las alertas del sistema:
+    -Notificación de productos próximos a vencer.
+    -Niveles mínimos de stock.
+    -Alertas internas para responsables de área.
+    */
 }
 
 
@@ -259,16 +315,24 @@ function VerificationEmail(email) {
 module.exports = {
     HelloURL,
 
-    RegisterEmployee,
+    RegisterEmployee, // POST
+    ListUsers, // GET
+    DeleteUsers, // DELETE
+    DisableUser, // PATH
+
+    ListInstitutionsInactive, // GET
+    AcceptInstitution, // PATCH
+    ListInstitutionsActive, // GET
+    DeleteInstitution, // DELETE
+    DisableInstitution, // PATCH
+
+    GenerateReports, // GET
+    AssignRoles, // PATCH
+    ManageRolesAndPermissions, // POST
+
+
+    ViewAuditLogs, // GET
+
+    ConfigureAlerts, // GET Hay que crear lo como endpoint?
     
-    AcceptInstitution,
-    
-    ListInstitutions,
-    ListUsers,
-    
-    DeleteUsers,
-    DeleteInstitution,
-    
-    DisableInstitution,
-    DisableUser,
 };

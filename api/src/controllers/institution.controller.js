@@ -45,6 +45,7 @@ const RegisterInstitution = async(req,res) =>{
     }
     
 }
+
 const EditProfile = async (req,res) =>{
     
 }
