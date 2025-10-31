@@ -19,7 +19,7 @@ router.post('/CreateRole', Authentication, AuthorizeRole('Admin'), adminControll
 router.patch('/acceptInstitucion',Authentication,AuthorizeRole('Admin'), adminController.AcceptInstitution); //No testeado
 router.patch('/disableInstitution',Authentication,AuthorizeRole('Admin'), adminController.DisableInstitution); //Testeado
 router.patch('/disableUser',Authentication,AuthorizeRole('Admin'), adminController.DisableUser);//Testeado
-router('/AssignRole', Authentication, AuthorizeRole('Admin'), adminController.AssignRoles); // No creado el codigo
+router.patch('/AssignRole', Authentication, AuthorizeRole('Admin'), adminController.AssignRoles); // No creado el codigo
 
 
 
@@ -29,7 +29,7 @@ router.get('/listUser', Authentication,AuthorizeRole('Admin'), adminController.L
 router.get('/listInstitutionInactive',Authentication, AuthorizeRole('Admin'), adminController.ListInstitutionsInactive) // //No Testeado
 router.get('/GenerateReport',Authentication,AuthorizeRole('Admin'), adminController.GenerateReports); // No Creado el codigo
 router.get('/logUser', Authentication, AuthorizeRole('Admin'), adminController.ViewAuditLogs); // No Creado el Codigo
-router.get('/GenAlert') // No Creado el Codigo
+
 
 
 

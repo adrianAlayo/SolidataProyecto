@@ -14,7 +14,7 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 router.get('/', institutionController.HelloURL);
 
 
-router.get('/viewDeliveries',ValidateRegistration, AuthorizeRole('Institution'),institutionController.ViewDonationsHistory); //No creado el Codigo
+router.get('/viewDeliveries',ValidateRegistration, AuthorizeRole('Institution'),institutionController.ViewDeliveriesHistory); //No creado el Codigo
 
 
 router.post('/register',ValidateRegistration, institutionController.RegisterInstitution); //Testeado
