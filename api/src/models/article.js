@@ -7,8 +7,8 @@ const Article = sequelize.define('Articles',{
         allowNull: false,
     },
     category: DataTypes.STRING(50),
+    variant: DataTypes.STRING(80),
     unit: DataTypes.STRING(20),
-    description: DataTypes.TEXT,
 });
 
 module.exports = Article

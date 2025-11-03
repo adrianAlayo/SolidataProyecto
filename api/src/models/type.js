@@ -1,12 +1,11 @@
 const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
-const Variant = sequelize.define('Variants',{
+const Types = sequelize.define('Types',{
     name: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(120),
         allowNull: false,
     },
-    description: DataTypes.TEXT,
 });
 
-module.exports = Variant
+module.exports = Types;

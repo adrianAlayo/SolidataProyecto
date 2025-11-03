@@ -3,7 +3,6 @@ const INSTITUTION = require('../models/institution');
 const USER = require('../models/user');
 const bcrypt = require('bcrypt');
 
-
 const HelloURL = (req,res) =>{
     res.status(200).send("La URL /admin funciona todo GOOOOOTI");
 }
@@ -122,7 +121,7 @@ const DisableUser = async (req,res) =>{
 // Endpoint para Gestion de INSTITUCIONES .... 
 const AcceptInstitution = async (req, res) => {
   try {
-    const { id } = req.body; // o req.params si lo mandás por URL
+    const { id } = req.body; 
 
     if (!id) {
       return res.status(400).send({ message: "Falta el ID de la institución" });

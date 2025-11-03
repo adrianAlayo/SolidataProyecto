@@ -27,10 +27,6 @@ const Institution = sequelize.define('Institutions', {
         type: DataTypes.STRING(20),
         allowNull: false,
     },
-    type: {
-        type: DataTypes.ENUM('Comedor','Merendero','Hogar de ancianos y niños'),
-        allowNull: false,
-    },
     status: {
         type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
         defaultValue: 'Pendiente',
