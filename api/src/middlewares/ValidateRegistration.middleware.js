@@ -1,7 +1,9 @@
-function ValidateRegistration(req, res, next) {  
-    const {first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst} = req.body;
+const TYPE = require("../models/type");
 
-    const requiredFields = [first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst];
+async function ValidateRegistration (req, res, next) {  
+    let {first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst} = req.body;
+
+    let requiredFields = [first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst];
 
     //Verificacion de campos completos
     if( requiredFields.some(field => field == null)){
@@ -24,9 +26,31 @@ function ValidateRegistration(req, res, next) {
     }
 
     //Verificar que exista el Tipo de Institution
-    if(type_inst !== "Comedor" && type_inst !== "Merendero" && type_inst !== "Hogar de ancianos y niños"){
-        return res.status(400).json({ message: "Tiene que selecionar una tipo valido: 'Comedor', 'Merendero' o 'Hogar de ancianos y niños' " });
+    const exist_TypeInst = await TYPE.findOne({
+        where:{
+            name: type_inst,
+        }
+    })
+
+    if(!exist_TypeInst){
+        return res.status(400).json({ message: "Tiene que selecionar una tipo valido: 'Comedor', 'Merendero', 'Hogar de ancianos y niños' o 'Orfanato' " });
     }
+    type_inst = exist_TypeInst.id;
+    
+    // Reescribimos req.body con todos los datos validados y actualizados
+     req.body = {
+        first_name_inCharge,
+        last_name_inCharge,
+        email_inCharge,
+        phone_inCharge,
+        password_inCharge,
+        name_inst,
+        email_inst,
+        location_inst,
+        phone_inst,
+        password_inst,
+        type_inst,
+    };
     
     // FUNCIONES
     function VerificationPass(pass) {
