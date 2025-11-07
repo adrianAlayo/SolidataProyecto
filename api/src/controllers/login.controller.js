@@ -1,14 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-
 const HelloURL = (req,res) =>{
     res.status(200).send("La URL /log funciona todo GOOOOOTI");
 }
-
-
-// Endpoints de  .... PATCH
-// Endpoints de  .... GET
-// Endpoints de  .... DELETE
 
 // Endpoints de login .... POST
 const Login = async (req, res) => {

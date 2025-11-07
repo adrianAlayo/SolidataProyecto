@@ -18,7 +18,7 @@ app.use(cors({
 app.use(express.json());
 
 //Montar los Routers
-app.use('/log',login);
+app.use('/auth',login);
 app.use('/employeeOperator', employeeOperatorRouter);
 app.use('/employeeCoodinator', employeeCoordinatorRouter);
 app.use('/institution', institutionRouter);
