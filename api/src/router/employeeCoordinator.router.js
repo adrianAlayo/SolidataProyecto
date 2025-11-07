@@ -11,20 +11,22 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 router.get('/',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.HelloURL); //Testeado
 
 
-router.get('/listDonationRecived',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.ListDonationsReceived); //No Creado el Codigo
-router.get('/listDeliRecived',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.ListDeliveryReceived); //No Creado el Codigo
-router.get('/viewStock',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.ViewStock); //No Creado el Codigo
-router.get('/checkExpiration',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.CheckExpirations); //No Creado el Codigo
-router.get('/ReportStock',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.GenerateStockReport); //No Creado el Codigo
-router.get('/viewNeedsInstitutions',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.ViewInstitutionRequests); //No Creado el Codigo
+router.get('/infoDonation',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoDonation); //No Creado el Codigo
+router.get('/infoInventory',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoInventory); //No Creado el Codigo
+router.get('/infoInstitutionNeed',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoNeedInstitution); //No Creado el Codigo
+router.get('/infoInstitutionNeeds',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoListInstitutionNeeds); //No Creado el Codigo
+router.get('/infoUser',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoUser); //No Creado el Codigo
 
 
 
 
-router.post('/RegisterDonation',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.RegisterDonationReceived); //No Creado el Codigo
-router.post('/RegisterDelivery',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.RegisterDeliverRecived); //No Creado el Codigo
+
+router.post('/infoReportDonationEntry',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoReportDonationEntry); //No Creado el Codigo
+router.post('/infoReportDonationExit',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoReportDonationExit); //No Creado el Codigo
+router.post('/infoReportStock',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.InfoReportStock); //No Creado el Codigo
 
 
-router.patch('/updateStock',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.UpdateStockItem); //No Creado el Codigo
+
+router.patch('/updateStatusDonation',Authentication,AuthorizeRole('Coordinador'), employeeCoordinatorController.UpdateDonation); //No Creado el Codigo
 
 module.exports = router;

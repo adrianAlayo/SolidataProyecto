@@ -46,7 +46,7 @@ const ListUsers = async (req,res) =>{
                 exclude: "password,createdAt,updatedAt"
             }
         })
-        if(!users){
+        if(!users || users.length === 0){
             res.status(404).send({message: "No hay usuarios activos por el momento"});
         }
 
@@ -89,7 +89,7 @@ const DisableUser = async (req,res) =>{
     try{
         const {email} = req.body;
         
-        if(email === undefined && typeof email === "string"){
+        if(!email || typeof email !== "string"){
             return res.status(404).send({message: "Todos los campos tienen que ser 'String' y estar Completos"})
         }
 
@@ -167,7 +167,7 @@ const ListInstitutionsInactive = async(req,res) =>{
                 exclude: "password,createdAt,updatedAt"
             }
         })
-        if(!institutions){
+        if(!institutions || institutions.length === 0){
             res.status(404).send({message: "No hay instituciones Inactivas por el momento"});
         }
 
@@ -189,7 +189,7 @@ const ListInstitutionsActive = async(req,res) =>{
                 exclude: "password,createdAt,updatedAt"
             }
         })
-        if(!institutions){
+        if(!institutions || institutions.length === 0){
             res.status(404).send({message: "No hay instituciones Activas por el momento"});
         }
 
@@ -263,6 +263,8 @@ const DeleteInstitution = async (req,res)=>{
 
 
 // Endpoint para Gestion GENERAL ....
+
+//!
 const GenerateReports = async (req,res) =>{
     //! Genera reportes personalizados sobre donaciones recibidas, entregas realizadas, stock disponible, actividad de usuarios y uso del sistema. 
 }
@@ -274,6 +276,9 @@ const AssignRoles = async (req,res) =>{
         if(id === undefined || isNaN(id) && newRole_id === undefined || isNaN(newRole_id)){
             return res.status(400).send({message: "Tiene que completar el campo y tienen que ser numeros"})
         }
+        
+        const role = await ROLE.findByPk(newRole_id);
+        if (!role) return res.status(400).send({ message: "El rol indicado no existe" });
         
         const user_found = await USER.update(
             { role_id: newRole_id }, // ← los cambios
@@ -403,7 +408,7 @@ const ViewAuditLogs = async (req,res) =>{
 
 
 
-// Endpoint para Configuracion del Sitema ....
+//! Endpoint para Configuracion del Sitema ....
 const ConfigureAlerts = async(req,res) =>{
     /*
     Permite establecer los parámetros de las alertas del sistema:

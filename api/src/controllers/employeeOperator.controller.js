@@ -5,47 +5,52 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeOperator funciona todo GOOOOOTI");
 }
 
-// Endpoint para Donaciones .... 
-const ConfirmDelivery = async (req,res) =>{
-    //Cambiar el estado de la donacion que hace BAA
-}
-const ConfirmDonation = async (req,res) =>{
-    //Cambiar el estado de la donacion que recibe BAA
-}
-const ListDonationsReceived = async (req,res) =>{
-    //Hacer una lista de las donaciones recibidas
-}
-const ListDeliveryReceived = async (req,res) =>{
-    //Hacer una lista de las donaciones entregadas
+// Puede Crear una donacion (entrada o salida)
+const CreateDonation = async(req,res) =>{
+
 }
 
-// Endpoint para Stock ....
-const AddStockItem = async (req,res) =>{
-    //Añadir un Stock a la tabla
+// Puede actualizar el estado de una donacion solo si esta en estado (pendiente)
+const UpdateDonation = async(req,res) =>{
+
 }
 
+// Solo puede ver la informacion de la donacion que sean de tipo (entrada)
+const InfoDonation = async(req,res) =>{
 
-
-// Endpoint para Agenda ....
-const ViewCalendar = async (req,res) =>{
-    //Generar una tabla con assigment (tabla que dice damos donaciones) y donations
-}
-const AddCalendarEvent = async (req,res) =>{
-    //añadir un evento al calendario ya sea cuando se reciba o se haga una donacion
 }
 
+// Ver los articulos que componen a una donacino
+const InfoArticleDonation = async(req,res) =>{
+
+}
+
+// Ver en una lista todos los articulos que hay
+const ListArticle = async(req,res) =>{
+
+}
+// Ver en una lista todos los 'donor' que hay
+const ListDonor = async(req,res) =>{
+
+}
+
+// Crear una carga del inventario 
+const CreateInventory = async(req,res) =>{
+
+}
 
 
 module.exports = {
     HelloURL, // GET
     
-    ConfirmDelivery, // PATCH
-    ConfirmDonation, // PATCH
-    ListDonationsReceived, // GET
-    ListDeliveryReceived, // GET
-    
-    AddStockItem, // POST
+    CreateDonation, // POST
+    CreateInventory, // POST
 
-    ViewCalendar, // GET
-    AddCalendarEvent, // POST
+    UpdateDonation, // PATCH
+
+    InfoDonation, // GET
+    InfoArticleDonation, // GET
+    ListArticle, // GET
+    ListDonor, // GET
+    
 }

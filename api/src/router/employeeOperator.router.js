@@ -11,19 +11,17 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 router.get('/', employeeOperatorController.HelloURL);
 
 
-router.get('/listDonationRecived',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ListDonationsReceived); //No Creado el Codigo
-router.get('/listDeliveryRecived',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ListDeliveryReceived); //No Creado el Codigo
-router.get('/viewCalendar',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ViewCalendar); //No Creado el Codigo
+router.get('/infoDonation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.InfoDonation); //No Creado el Codigo
+router.get('/infoArticleDonation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.InfoArticleDonation); //No Creado el Codigo
+router.get('/ListArticle',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ListArticle); //No Creado el Codigo
+router.get('/ListDonor',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ListDonor); //No Creado el Codigo
 
 
-
-router.patch('/confirmDelivery',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ConfirmDelivery); //No Creado el Codigo
-router.patch('/confirmDonation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.ConfirmDonation); //No Creado el Codigo
+router.patch('/updateDonation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.UpdateDonation); //No Creado el Codigo
 
 
-
-router.post('/addStock',Authentication,AuthorizeRole('Operador'), employeeOperatorController.AddStockItem); //No Creado el Codigo
-router.post('/addEvent',Authentication,AuthorizeRole('Operador'), employeeOperatorController.AddCalendarEvent); //No Creado el Codigo
+router.post('/createDonation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.CreateDonation); //No Creado el Codigo
+router.post('/CreateInventory',Authentication,AuthorizeRole('Operador'), employeeOperatorController.CreateInventory); //No Creado el Codigo
 
 
 module.exports = router;

@@ -5,66 +5,42 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeCoordinator funciona todo GOOOOOTI");
 }
 
+// Ver la informacion de la donacion del sistema ya sea entrada o salida
+const InfoDonation = async (req,res) =>{}
 
-// Endpoint para Donaciones recibidas ....
-const RegisterDonationReceived = async (req,res) =>{
-    //Registrar las donaciones recibidas (En la tabla)
-}
-const ListDonationsReceived = async (req,res) =>{
-    //Hacer una lista de las donaciones recibidas
-}
+// Solo poder ver la informacion del inventario
+const InfoInventory = async (req,res) =>{}
 
+// Ver la necesidad de una Institucion
+const InfoNeedInstitution = async (req,res) =>{}
 
+// Ver las necesidades de todas las instituciones en una lista
+const InfoListInstitutionNeeds = async (req,res) =>{}
 
-// Endpoint para Donaciones entregadas ....
-const RegisterDeliverRecived = async (req,res) =>{
-    //Registrar las donaciones que damos (En la tabla) 
-}
-const ListDeliveryReceived = async (req,res) =>{
-    //Hacer una lista de las donaciones entregadas
-}
+// Ver la informacion de un usuario
+const InfoUser = async (req,res) =>{}
 
+// El admin puede Generar un reporte(Ya que esa informacion no se guarda en la base de datos)
+// Y si el Coordinador quiere ver un reporte en realidad tendra que generarlo, entoces seria la misma
+// Logica que el endpoint del User
+const InfoReportDonationEntry = async (req,res) =>{}
+const InfoReportDonationExit = async (req,res) =>{}
+const InfoReportStock = async (req,res) =>{}
 
-
-// Endpoint para Stock y vencimientos ....
-const ViewStock = async (req,res) =>{
-    // Generar un reporte del stock de un producto en particular
-}
-const UpdateStockItem = async (req,res) =>{
-    //Actualizar el Stock
-}
-const CheckExpirations = async (req,res) =>{
-    // Generar un reporte de cuanto le falta a los productos para vencer
-}
-const GenerateStockReport = async (req,res)  =>{
-    //Generar un reporte del stock de todos los producto
-}
-
-
-
-
-// Endpoint para Gestion de INSTITUCIONES ....
-const ViewInstitutionRequests = async (req,res) =>{
-    // Ver en una lista las necesidades criticas si es que lo tiene una institucion
-}
-
-
-
+// Solo puede editar la nota o el estado de una donacion
+const UpdateDonation = async (req,res) =>{}
 
 module.exports = {
     HelloURL, // GET
+    InfoDonation, // GET
+    InfoInventory, // GET
+    InfoNeedInstitution, // GET
+    InfoListInstitutionNeeds, // GET
+    InfoUser, // GET
+    
+    InfoReportDonationEntry, // POST
+    InfoReportDonationExit, // POST
+    InfoReportStock, // POST
 
-    RegisterDonationReceived, // POST
-    ListDonationsReceived, // GET
-
-    RegisterDeliverRecived, // POST
-    ListDeliveryReceived, // GET
-
-    ViewStock, // GET
-    UpdateStockItem, // PATCH
-    CheckExpirations, // GET
-    GenerateStockReport, // GET
-
-    ViewInstitutionRequests, // GET
-
+    UpdateDonation, // PATCH
 }
