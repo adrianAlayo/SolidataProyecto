@@ -6,9 +6,18 @@ const Article = sequelize.define('Articles',{
         type: DataTypes.STRING(100),
         allowNull: false,
     },
-    category: DataTypes.STRING(50),
-    variant: DataTypes.STRING(80),
-    unit: DataTypes.STRING(20),
+    category: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+    },
+    variant: {
+        type: DataTypes.STRING(80),
+        allowNull:false,
+    },
+    unit: {
+        type: DataTypes.STRING(20),
+        allowNull:false,
+    },
 });
 
 module.exports = Article

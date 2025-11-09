@@ -1,10 +1,14 @@
 const sequelize = require('../db/conexion.js');
-const {DataTypes, ENUM} = require('sequelize');
+const {DataTypes, ENUM, INTEGER} = require('sequelize');
 
 const InstitutionsNeeds = sequelize.define('InstitutionsNeeds',{
+    available:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     status: {
-        type: ENUM("Pendiente", "Completa"),
-        defaultValue: "Pendiente",
+        type: ENUM("Pending", "Resolved"),
+        defaultValue: "Pending",
         allowNull: false
     },
 });

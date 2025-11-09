@@ -7,8 +7,8 @@ const Donation = sequelize.define('Donations', {
         allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM ('Programado','Entregado','No Entregado'),
-        defaultValue: 'Programado',
+        type: DataTypes.ENUM ('Scheduled','Delivered','Not Delivered'),
+        defaultValue: 'Scheduled',
     },
     note: DataTypes.TEXT,
 },{

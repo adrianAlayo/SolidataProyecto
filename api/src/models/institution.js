@@ -7,29 +7,18 @@ const Institution = sequelize.define('Institutions', {
         allowNull: false,
         unique: true,
     },
-    email: {
-        type: DataTypes.STRING(120),
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true,
-        },
-    },
-    password: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
     location: {
         type: DataTypes.STRING(254),
         allowNull: false,
     },
-    phone: {
-        type: DataTypes.STRING(20),
+    institutionType:{
+        type: DataTypes.ENUM("Donor","Recipient"),
+        defaultValue: "Recipient",
         allowNull: false,
     },
     status: {
-        type: DataTypes.ENUM ('Activo','Inactivo','Pendiente'),
-        defaultValue: 'Pendiente',
+        type: DataTypes.ENUM ('Active','Inactive','Pending'),
+        defaultValue: 'Pending',
     },
 });
 

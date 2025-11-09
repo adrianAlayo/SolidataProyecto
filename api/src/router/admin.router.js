@@ -11,7 +11,6 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 
 
 //!
-router.post('/registerEmployee', AuthorizeRole('Admin'), ValidateRegistration, adminController.RegisterEmployee); //Testeado
 router.post('/createRole', AuthorizeRole('Admin'), ValidateRegistration, adminController.CreateRole); // No Testado
 
 router.patch('/acceptInstitucion',Authentication,AuthorizeRole('Admin'), adminController.AcceptInstitution); //No testeado
@@ -26,7 +25,6 @@ router.get('/', adminController.HelloURL); //Testeado
 router.get('/listInstitution', Authentication,AuthorizeRole('Admin'), adminController.ListInstitutionsActive); //Testeado
 router.get('/listUser', Authentication,AuthorizeRole('Admin'), adminController.ListUsers);
 router.get('/listInstitutionInactive',Authentication, AuthorizeRole('Admin'), adminController.ListInstitutionsInactive) // No Testeado
-router.get('/generateReport',Authentication,AuthorizeRole('Admin'), adminController.GenerateReports); //! No Creado el codigo
 router.get('/logUser', Authentication, AuthorizeRole('Admin'), adminController.ViewAuditLogs); //! No Creado el Codigo
 
 
