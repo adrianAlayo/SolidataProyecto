@@ -7,7 +7,7 @@ const authController = require('../controllers/auth.controller.js'); //Endpoint
 const ValidateLogin = require('../middlewares/ValidateLogin.middleware.js'); //Verifica los campos del login
 const ValidateRegistration = require('../middlewares/ValidateRegistration.middleware'); //Valida los registros
 
-
+// HELLO
 router.get('/', authController.HelloURL);
 
 router.post('/login',ValidateLogin, authController.Login);

@@ -12,7 +12,7 @@ const Institution = sequelize.define('Institutions', {
         allowNull: false,
     },
     institutionType:{
-        type: DataTypes.ENUM("Donor","Recipient"),
+        type: DataTypes.ENUM("Donor","Recipient","Both"),
         defaultValue: "Recipient",
         allowNull: false,
     },

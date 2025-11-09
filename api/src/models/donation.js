@@ -2,7 +2,13 @@ const sequelize = require('../db/conexion.js');
 const {DataTypes} = require('sequelize');
 
 const Donation = sequelize.define('Donations', {
-    donation_date: {
+    donorType: {
+        type: DataTypes.ENUM ('Institution','User'),
+        allowNull: false
+    },
+    donor_id: DataTypes.INTEGER,
+    note: DataTypes.TEXT,
+        donation_date: {
         type: DataTypes.DATE,
         allowNull: false,
     },
@@ -10,7 +16,6 @@ const Donation = sequelize.define('Donations', {
         type: DataTypes.ENUM ('Scheduled','Delivered','Not Delivered'),
         defaultValue: 'Scheduled',
     },
-    note: DataTypes.TEXT,
 },{
     timestamps: true,
 });

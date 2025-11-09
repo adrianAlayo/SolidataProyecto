@@ -79,10 +79,26 @@ const ListInstitutionsActive = async(req,res) =>{
         res.status(500).send({message: "Error!!! a la hora de hacer el listado de las instituciones: -> " + e});
     }
 }
-const ViewAuditLogs = async (req,res) =>{
-    //Muestra los registros de actividad de todos los usuarios, detallando qué acción se realizó, cuándo y por quién.
-}
+const ListInstitutions = async(req,res) =>{
+    try{
+        const institutions = await INSTITUTION.findAll({
+            attributes:{
+                exclude: "password,createdAt,updatedAt"
+            }
+        })
+        if(!institutions || institutions.length === 0){
+            res.status(404).send({message: "No hay instituciones por el momento"});
+        }
 
+        res.status(201).json({
+            message: "Liista de instituciones exitosamente",
+            institutions
+        });
+        
+    }catch(e){
+        res.status(500).send({message: "Error!!! a la hora de hacer el listado de las instituciones: -> " + e});
+    }
+}
 
 
 // Solicitudes HTTP ... POST
@@ -397,9 +413,9 @@ module.exports = {
     HelloURL,
 
     ListUsers, // GET
+    ListInstitutions, // GET
     ListInstitutionsInactive, // GET
     ListInstitutionsActive, // GET
-    ViewAuditLogs, // GET
 
     DeleteUsers, // DELETE
     DeleteInstitution, // DELETE
