@@ -3,9 +3,15 @@ const USER = require('../models/user');
 const INSTITUTION = require('../models/institution');
 const bcrypt = require('bcrypt');
 
-const HelloURL = (req,res) =>{
+const CreateTokenInsti = require('../utils/createTokenInstitution.util');
+const CreateTokenUser = require('../utils/createTokenUser.util');
+
+
+const HelloURL = (_req,res) =>{
     res.status(200).send("La URL /auth funciona todo GOOOOOTI");
 }
+
+
 
 // Endpoints de login .... POST
 const Login = async (req, res) => {
@@ -34,33 +40,30 @@ const Login = async (req, res) => {
 };
 const RegisterInstitution = async(req,res) =>{
     try{
-        let {first_name_inCharge,last_name_inCharge,email_inCharge,phone_inCharge,password_inCharge,name_inst,email_inst,location_inst,phone_inst,password_inst,type_inst} = req.body;
-        
-        console.log("1 " + first_name_inCharge)
+        let {first_name,last_name,email,phone,password,name_inst,location_inst,type_inst} = req.body;
 
-        const password_hash_inCharge = await bcrypt.hash(password_inCharge, 7);
-        const password_hash_inst = await bcrypt.hash(password_inst, 7);
+        const existUser = await USER.findOne({ where: { email } });
+        if (existUser) {
+            return res.status(400).json({
+                message: "El email ya está registrado, por favor usa otro."
+            });
+        }
 
+        const password_hash_inCharge = await bcrypt.hash(password, 7);
         
         //Crear una Institucion
         const institution_create = await INSTITUTION.create({
             name: name_inst, 
-            email: email_inst, 
-            password: password_hash_inst, 
             location: location_inst, 
-            phone: phone_inst, 
             type_id: type_inst, 
         });
-        console.log("1")
-        console.log(institution_create);
         // CREAR USUARIO con is_active = Pendiente
         const user_create = await USER.create({
-            first_name: first_name_inCharge, //
-            last_name: last_name_inCharge, //
-            email: email_inCharge, //
-            password: password_hash_inCharge, //
-            phone: phone_inCharge, //
-            is_active: false,
+            first_name: first_name,
+            last_name: last_name, 
+            email: email,
+            password: password_hash_inCharge, 
+            phone: phone, 
             institution_id: institution_create.id,
             role_id: 4 // rol por defecto para instituciones 
         });
@@ -75,30 +78,6 @@ const RegisterInstitution = async(req,res) =>{
         res.status(500).send({
             message: "Ocurrio un error al intentar guardar los datos en la base de datosssss: ->" + e})
     }
-    
-}
-
-
-// Funciones para la logica de creacion de TOKEN
-function CreateTokenInsti(user) {
-    const payload = {
-        userRelation: user.id,
-        id: user.Institution.id,
-        name: user.Institution.name,
-        email: user.Institution.email,
-        typeID: user.Institution.type_id,
-    };
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-}
-function CreateTokenUser(user) {
-    const payload = {
-        id: user.id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        roleName: user.Role ? user.Role.name : null, // nombre del rol del usuario,
-    };
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 }
 
 module.exports = { 

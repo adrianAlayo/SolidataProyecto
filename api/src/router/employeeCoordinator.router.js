@@ -12,8 +12,7 @@ const Authentication = require('../middlewares/VerifyToken.middleware.js'); //Ve
 router.get('/', employeeCoordinatorController.HelloURL); //Testeado
 
 // info 
-router.get('/information/inventory',Authentication,AuthorizeRole('coordinador'), employeeCoordinatorController.InfoInventory); //No Creado el Codigo
-router.get('/information/institution/need',Authentication,AuthorizeRole('coordinador'), employeeCoordinatorController.InfoNeedInstitution); //No Creado el Codigo
+//router.get('/information/institution/need',Authentication,AuthorizeRole('coordinador'), employeeCoordinatorController.InfoNeedInstitution); //No Creado el Codigo
 router.get('/information/institution/needs',Authentication,AuthorizeRole('coordinador'), employeeCoordinatorController.InfoListInstitutionNeeds); //No Creado el Codigo
 router.get('/information/user',Authentication,AuthorizeRole('coordinador'), employeeCoordinatorController.InfoUser); //No Creado el Codigo
 
@@ -21,10 +20,7 @@ router.get('/information/user',Authentication,AuthorizeRole('coordinador'), empl
 
 // Reports
 router.get('/reports/stock/:article_id',Authentication,AuthorizeRole('coordinador'), reportsControlller.Stock); //No Testeado
-router.get('/reports/donations',Authentication,AuthorizeRole('coordinador'), reportsControlller.Donations); //No Testeado
 router.get('/reports/baa/donated',Authentication,AuthorizeRole('coordinador'), reportsControlller.BAADonated); //No Testeado
-router.get('/reports/baa/received',Authentication,AuthorizeRole('coordinador'), reportsControlller.BAAReceived); //No Testeado
-
 
 
 // Update

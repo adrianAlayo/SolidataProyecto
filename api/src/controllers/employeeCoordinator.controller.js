@@ -6,14 +6,17 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeCoordinator funciona todo GOOOOOTI");
 }
 
-// Ver la informacion de la donacion del sistema ya sea entrada o salida
-const InfoDonation = async (req,res) =>{}
-
-// Solo poder ver la informacion del inventario
-const InfoInventory = async (req,res) =>{}
 
 // Ver la necesidad de una Institucion
-const InfoNeedInstitution = async (req,res) =>{}
+const getInstitutionNeed = async (req,res) =>{
+    try {
+        const id = Number(req.params.id);
+
+    } catch (err) {
+        return res.status(500).send({message: "Ocurrio un error !!! interno"})
+    }
+
+}
 
 // Ver las necesidades de todas las instituciones en una lista
 const InfoListInstitutionNeeds = async (req,res) =>{}
@@ -33,9 +36,7 @@ const UpdateDonation = async (req,res) =>{}
 
 module.exports = {
     HelloURL, // GET
-    InfoDonation, // GET
-    InfoInventory, // GET
-    InfoNeedInstitution, // GET
+    getInstitutionNeed, // GET
     InfoListInstitutionNeeds, // GET
     InfoUser, // GET
     
