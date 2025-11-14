@@ -111,7 +111,7 @@ const acceptInstitution = async (req, res) => {
 
     // Buscamos la institución con estado 'Pendiente' o 'Inactivo'
     const institution = await INSTITUTION.findOne({
-      where: { id: id, status: ["Pendiente", "Inactivo"] }
+      where: { id: id, status: ["Pending", "Inactive"] }
     });
 
     if (!institution) {
@@ -122,7 +122,7 @@ const acceptInstitution = async (req, res) => {
 
     // Actualizamos su estado a 'Activo'
     await INSTITUTION.update(
-      { status: "Activo" },
+      { status: "Active" },
       { where: { id: id } }
     );
 

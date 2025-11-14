@@ -28,7 +28,7 @@ router.get('/reports/stock/activity', Authentication, AuthorizeRole('admin'), re
 router.get('/institutions', Authentication,AuthorizeRole('Admin'), adminController.getInstitutions); //No testeado
 router.get('/institution/active', Authentication,AuthorizeRole('Admin'), adminController.getInstitutionsActive); //Testeado
 router.get('/institution/inactive',Authentication, AuthorizeRole('Admin'), adminController.getInstitutionsInactive) // No Testeado
-router.patch('/institutions/accept',Authentication,AuthorizeRole('Admin'), adminController.acceptInstitution); //No testeado
+router.patch('/institution/accept',Authentication,AuthorizeRole('Admin'), adminController.acceptInstitution); //No testeado
 router.patch('/disable/institution',Authentication,AuthorizeRole('Admin'), adminController.disableInstitution); //Testeado
 router.delete('/institution',Authentication,AuthorizeRole('Admin'), adminController.deleteInstitution);//Testeado
 

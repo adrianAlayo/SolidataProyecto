@@ -12,6 +12,10 @@ const Donation = sequelize.define('Donations', {
         type: DataTypes.DATE,
         allowNull: false,
     },
+    donation_date:{
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
     status: {
         type: DataTypes.ENUM ('Scheduled','Delivered','Not Delivered'),
         defaultValue: 'Scheduled',

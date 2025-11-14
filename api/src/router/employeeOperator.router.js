@@ -29,7 +29,7 @@ router.patch('/update/donation',Authentication,AuthorizeRole('Operador'), employ
 
 
 // Create
-router.post('/create/donation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.CreateDonation); //No Creado el Codigo
+router.post('/donation',Authentication,AuthorizeRole('Operador'), employeeOperatorController.CreateDonation); //No Creado el Codigo
 router.post('/create/inventory',Authentication,AuthorizeRole('Operador'), employeeOperatorController.CreateInventory); //No Creado el Codigo
 
 

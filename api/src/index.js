@@ -7,7 +7,7 @@ const syncModels = require('./models/index.js');
 syncModels();
 
 // Luego sincronizamos la base de datos
-sequelize.sync({ force: false })
+sequelize.sync({ alter: true })
   .then(() => {
     console.log('Tablas y relaciones sincronizadas');
     const PORT = process.env.PORT || 3000;

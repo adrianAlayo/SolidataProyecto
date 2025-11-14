@@ -1,13 +1,35 @@
-const USER = require('../models/user');
+const DONATION = require('../models/donation');
 const bcrypt = require('bcrypt');
 
 const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeOperator funciona todo GOOOOOTI");
 }
 
-// Puede Crear una donacion (entrada o salida)
-const CreateDonation = async(req,res) =>{
 
+const CreateDonation = async (req, res) => {
+    try {
+        const {receiver_institution_id, donorType, donor_id, note, donation_date} = req.body;
+
+        const newDonation = await DONATION.create({
+            receiver_institution_id,
+            donorType,
+            donor_id,
+            note,
+            donation_date,
+            responsable_user_id: req.user_find.id
+        });
+
+        res.status(201).json({
+            message: "Donación registrada correctamente.",
+            data: newDonation
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: "Error al crear la donación.",
+            error: err.message
+        });
+    }
 }
 
 // Puede actualizar el estado de una donacion solo si esta en estado (pendiente)
