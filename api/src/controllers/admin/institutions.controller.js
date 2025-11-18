@@ -1,17 +1,15 @@
 const { where } = require('sequelize');
-const bcrypt = require('bcrypt');
 const INSTITUTION = require('../../models/institution');
-const USER = require('../../models/user');
-const ROLE = require('../../models/role');
+
 
 const getInstitutionsInactive = async(_req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({
             where:{
-                status: "Inactivo",
+                status: "Inactive",
             },
             attributes:{
-                exclude: "password,createdAt,updatedAt"
+                exclude: "password"
             }
         })
         if(!institutions || institutions.length === 0){
@@ -23,17 +21,17 @@ const getInstitutionsInactive = async(_req,res) =>{
             institutions
         });
     }catch(e){
-        res.status(500).send({message: "Error!!! a la hora de hacer el listado de las instituciones Inactivas: -> " + e});
+        return res.status(500).send({message: "Error!!! a la hora de hacer el listado de las instituciones Inactivas: -> " + e});
     }
 }
 const getInstitutionsActive = async(_req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({
             where:{
-                status: "Activo",
+                status: "Active",
             },
             attributes:{
-                exclude: "password,createdAt,updatedAt"
+                exclude: "password"
             }
         })
         if(!institutions || institutions.length === 0){
@@ -53,7 +51,7 @@ const getInstitutions = async(_req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({
             attributes:{
-                exclude: "password,createdAt,updatedAt"
+                exclude: "password"
             }
         })
         if(!institutions || institutions.length === 0){
@@ -82,12 +80,12 @@ const disableInstitution = async (req,res) =>{
         }
         
         const institution_found = await INSTITUTION.update(
-            { status: "Inactivo" }, // ← los cambios
+            { status: "Inactive" }, // ← los cambios
             {
                 where: {
                     name: name, 
                     email: email,
-                    status: "Activo",
+                    status: "Active",
                 }
             }
         )

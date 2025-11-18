@@ -19,15 +19,15 @@ const createArticle = async (req, res) => {
         }
 
         const newArticle = await ARTICLE.create({
-        name,
-        category,
-        variant,
-        unit
+            name,
+            category,
+            variant,
+            unit
         });
 
         return res.status(201).send({
-        message: "ARTICLE creado correctamente.",
-        data: newArticle,
+            message: "ARTICLE creado correctamente.",
+            data: newArticle,
         });
     } catch (err) {
         console.error("Error!!! a la hora de crear el ARTICLE: ->    ", err);

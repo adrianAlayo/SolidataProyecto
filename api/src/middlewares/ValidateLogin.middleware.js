@@ -40,7 +40,7 @@ async function ValidateLogin(req, res, next) {
             }
             req.userData = {
                 userInfo: user_search,
-                userType: "user",
+                userType: "User",
             };
             console.log(user_search.id)
             console.log(user_search.Role.name + "gigiga")

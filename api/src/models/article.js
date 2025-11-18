@@ -18,6 +18,8 @@ const Article = sequelize.define('Articles',{
         type: DataTypes.STRING(20),
         allowNull:false,
     },
+},{
+    timestamps: false,
 });
 
 module.exports = Article

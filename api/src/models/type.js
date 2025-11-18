@@ -6,6 +6,8 @@ const Types = sequelize.define('Types',{
         type: DataTypes.STRING(120),
         allowNull: false,
     },
+},{
+    timestamps: false,
 });
 
 module.exports = Types;

@@ -22,7 +22,7 @@ const Login = async (req, res) => {
         // Determinar rol seguro
         if (userType === "Institution") {
             token = CreateTokenInsti(userInfo);
-        } else if(userType === "user")  {
+        } else if(userType === "User")  {
             token = CreateTokenUser(userInfo);
         }
         else {

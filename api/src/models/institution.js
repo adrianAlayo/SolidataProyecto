@@ -20,6 +20,8 @@ const Institution = sequelize.define('Institutions', {
         type: DataTypes.ENUM ('Active','Inactive','Pending'),
         defaultValue: 'Pending',
     },
+},{
+    timestamps: false,
 });
 
 module.exports = Institution
