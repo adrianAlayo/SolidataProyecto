@@ -6,6 +6,14 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeCoordinator funciona todo GOOOOOTI");
 }
 
+/*
+ * Puede crear donaciones
+ * Puede ver todas
+ * Puede ver inventario
+ * Puede actualiar estado
+ * Puede gestionar instituticiones y needs
+*/
+
 
 // Ver la necesidad de una Institucion
 const getInstitutionNeed = async (req,res) =>{

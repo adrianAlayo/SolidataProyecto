@@ -5,6 +5,13 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /employeeOperator funciona todo GOOOOOTI");
 }
 
+/*
+ * Registrar donaciones estrada/salida
+ * Carga inventario
+ * Carga donationIntems
+ * lista donaciones
+ * No modifica usuarios / roles
+*/
 
 const CreateDonation = async (req, res) => {
     try {

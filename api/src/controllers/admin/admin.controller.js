@@ -10,6 +10,8 @@ const helloURL = (_req,res) =>{
     res.status(200).send("La URL /admin  funciona todo GOOOOOTI");
 }
 
+//* TIENE TOODOS LOS PERMISOS
+
 module.exports = {
     helloURL,
     ...ArticleController,

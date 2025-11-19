@@ -7,6 +7,12 @@ const HelloURL = (req,res) =>{
     res.status(200).send("La URL /institution funciona todo GOOOOOTI");
 }
 
+/*
+ * Puede leer sus propias necesidades
+ * Puede listar sus donaciones de entrada
+ * Puede ver inventario público
+ * No crea donaciones (solo las dos donor que dijiste, pero eso se controla aparte)
+*/
 
 // Endpoint para Cuenta y Perfil ....
 const EditProfile = async (req,res) =>{
