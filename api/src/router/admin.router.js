@@ -37,7 +37,7 @@ router.delete('/institution',Authentication,AuthorizeRole('Admin'), adminControl
 // ========== USERS ==========
 router.post('/user',Authentication,AuthorizeRole('Admin'), adminController.createUser); //Testeado
 router.delete('/user',Authentication,AuthorizeRole('Admin'), adminController.deleteUsers);//Testeado
-router.get('/user', Authentication,AuthorizeRole('Admin'), adminController.getUsers);
+router.get('/user', Authentication,AuthorizeRole('Admin'), adminController.getUser);
 router.patch('/user',Authentication,AuthorizeRole('Admin'), adminController.disableUser);//Testeado
 
 

@@ -2,7 +2,7 @@ const { where } = require('sequelize');
 const ARTICLE = require('../../models/article');
 const IsString = require('../../utils/isString.util');
 
-const postArticle = async (req, res) => {
+const createArticle = async (req, res) => {
     try {
         const { name,category,variant,unit } = req.body;
 
@@ -152,7 +152,7 @@ const getArticle = async (req, res) => {
 
 
 module.exports = {
-    postArticle, // body
+    createArticle, // body
     deleteArticle, // params
     putArticle, // params
     getArticles, //
