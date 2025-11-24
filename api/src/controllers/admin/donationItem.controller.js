@@ -1,5 +1,4 @@
 const DONATIONITEM = require('../../models/donationItem');
-const DONATION = require('../../models/donation');
 const ARTICLE = require('../../models/article');
 
 const { where } = require('sequelize');
@@ -58,11 +57,169 @@ const createItem = async (req,res) =>{
     }
 }
 const getItem = async (req,res) =>{
-    
+    try {
+        const { id } = req.params.id;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+        id = Number(id);
+
+        const item = await DONATIONITEM.findByPk(id);
+
+        if(!item){
+            return res.status(404).send({message: "No se encontro ninguna dionacion con ese item"})
+        }
+
+        return res.status(200).json({
+            message:"Se encontro una donacion Item",
+            data: item
+        })
+    } catch (err) {
+        console.error("Error al encontrar el item de la donacion:", err.message);
+        res.status(500).send({ message: "Error al intentar buscar una donacion que tenga ese item como ID." });
+    }
 }
 const updateItem = async (req,res) =>{
-    
+    try {
+        const {quantity,expiration_date,note,donation_id,article_id} = req.body;
+
+        const { id } = req.params.id;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+        id = Number(id);
+
+        const updateFields = {};
+
+        const item = await DONATIONITEM.findByPk(id)
+        if(!item){
+            return res.status(404).send({message: "No se encontro ningun item con ese ID"});
+        }
+
+        if(quantity !== undefined){
+            if(!isNaN(quantity)){
+                updateFields.quantity = quantity;
+            }
+            return res.status(404).send({message: "El campo Quantiti tiene que tener un valor valido 'number' "});
+        }
+        if(expiration_date !== undefined){
+            if(IsDate(expiration_date)){
+                updateFields.expiration_date = expiration_date;
+            }
+            return res.status(404).send({message: "donation_date debe ser fecha válida YYYY-MM-DD."});
+        }
+        if(note !== undefined){
+            if(isString(note)){
+                updateFields.note = note;
+            }
+            return res.status(404).send({message: "note tiene que tener un valor valido."})
+        }
+        if(donation_id !== undefined){
+            if(!isNaN(donation_id)){
+                updateFields.donation_id = donation_id;
+            }
+            return res.status(404).send({message: "El campo donation_id tiene que tener un valor valido 'number' "});
+        }
+        if(article_id !== undefined){
+            if(!isNaN(article_id)){
+                updateFields.article_id = article_id;
+            }
+            return res.status(404).send({message: "El campo article_id tiene que tener un valor valido 'number' "});
+        }
+
+        // Si no enviaron nada
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).send({
+                message: "Debe enviar al menos un campo para actualizar."
+            });
+        }
+        await item.update(updateFields);
+
+        return res.status(200).json({
+            message: "Item actualizada correctamente.",
+            data: item
+        });
+
+    } catch (err) {
+        console.error("Error:", err.message);
+        return res.status(500).send({ message: "Error al intentar actualizar el item." });
+    }
 }
 const deleteItem = async (req,res) =>{
+    const { id } = req.params.id;
+
+    if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ message: "ID inválido." });
+    }
+    id = Number(id);
+
+    const item = await DONATIONITEM.findByPk(id);
+
+    if(!item){
+        return res.status(404).send({message: "No se encontro ningun item con ese ID"})
+    }
+
+    await item.destroy();
+
+    return res.status(200).json({
+        message: "Se elimino el Item correctamente"
+    })
+}
+const getItems = async (_req,res) =>{
+    try {
+        const items = await DONATIONITEM.findAll();
+
+        if(!items){
+            return res.status(404).send({message: "No se entrarion items"});
+        }
+
+        return res.status(200).json({
+            message:"Se encontraron items",
+            data: items
+        })    
+    } catch (err) {
+        console.error("Error:", err.message);
+        return res.status(500).send({ message: "Error al intentar traer una lista de los items." });    
+    }
     
+}
+const getItemsByDonation = async (req,res) =>{
+    try {
+        let { donation_id } = req.params;
+
+        if (!donation_id || isNaN(Number(donation_id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        donation_id = Number(donation_id);
+
+        const itemByDonation = await DONATIONITEM.findAll({
+            where:{
+                donation_id: donation_id
+            }
+        })
+
+        if(!itemByDonation){
+            return res.status(404).send({message: "No se encotraron items que tengan ese ID como donation"})
+        }
+
+        return res.status(200).json({
+            message: "Se entraron item que tengan ese id como donacion",
+            data: itemByDonation
+        });
+    } catch (err) {
+        console.error("Error:", err.message);
+        return res.status(500).send({ message: "Error intentar buscar items que coincidan con un ID de donacion." });
+    }
+}
+
+module.exports = {
+    createItem, // body
+    getItem, // params
+    updateItem, // params y body
+    deleteItem, // params
+    getItems, //
+    getItemsByDonation, //params
 }

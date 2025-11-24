@@ -393,7 +393,7 @@ const updateDonation = async (req, res) => {
 
     } catch (err) {
         console.error("Error:", err.message);
-        res.status(500).send({ message: "Error al actualizar donación." });
+        return res.status(500).send({ message: "Error al actualizar donación." });
     }
 };
 const updateDonationStatus = async (req, res) => {
