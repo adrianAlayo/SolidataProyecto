@@ -7,8 +7,9 @@ const IsString = require('../../utils/isString.util');
 const VerificationPassword = require('../../utils/verificationPassword.util');
 const VerificationEmail = require('../../utils/verificationEmail.util');
 const VerificationPhone = require ('../../utils/isValidPhone.util');
+const IsString = require ('../../utils/isString.util');
 
-const getUsers = async (req,res) =>{
+const getUsersActive = async (_req,res) =>{
     try{
         const users = await USER.findAll({
             where:{
@@ -24,19 +25,70 @@ const getUsers = async (req,res) =>{
 
         res.status(201).json({
             message: "Liista de usuario exitosamente",
-            users
+            data:users
         })
         
     }catch(e){
-        res.status(500).send({message: "Error!!! a la hora de hacer el listado de los usuarios: -> " + e})
+        console.error("Error al obtener la lista de los usuarios Activos:", err);
+        return res.status(500).json({message: "Error al intentar obtener la lista de los usuarios Activos."});    
+    }
+}
+const getUsersInactive = async (_req,res) =>{
+    try{
+        const users = await USER.findAll({
+            where:{
+                is_active: false,
+            },
+            attributes:{
+                exclude: "password,createdAt,updatedAt"
+            }
+        })
+        if(!users || users.length === 0){
+            res.status(404).send({message: "No hay usuarios inactivos por el momento"});
+        }
+
+        res.status(201).json({
+            message: "Liista de usuario exitosamente",
+            data:users
+        })
+        
+    }catch(e){
+        console.error("Error al obtener la lista de los usuarios Inactivos:", err);
+        return res.status(500).json({message: "Error al intentar obtener la lista de los usuarios Inactivos."});    
+    }
+}
+const getUser = async (req,res) =>{
+    try {
+        const { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+        const user = await USER.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "No se encontro al usuario." });
+        }
+
+        return res.status(200).json({
+            message: "Usuario encontrado.",
+            data: user
+        });
+
+    } catch (err) {
+        console.error("Error al obtener la info del usuario:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener la informacion del usuario."});
     }
 }
 const disableUser = async (req,res) =>{
     try{
         const {email} = req.body;
         
-        if(!email || typeof email !== "string"){
-            return res.status(404).send({message: "Todos los campos tienen que ser 'String' y estar Completos"})
+        if(!IsString(email)){
+            return res.status(404).send({message:"Todos los campos son obligatorios y tiene que tener un valor valido"})
         }
 
         if(!VerificationEmail(email)){
@@ -58,34 +110,33 @@ const disableUser = async (req,res) =>{
         }
 
         res.status(201).json({message: "Se dios de baja (Parcial) exitosamente al usuario"})
-    }catch(e){
-        res.status(500).send({message: "Error!!! a la hora de dar de Baja al usuario: -> " + e})
+    }catch(err){
+        console.error("Error al desactivar al usuario:", err.message);
+        return res.status(500).json({message: "Error al intentar desactivar al usuario."});
     }
 }
 const deleteUsers = async (req, res) => {
     try {
-        let { id } = req.body;
+        const { id } = req.params;
 
-        // Convertir el ID a número
-        id = parseInt(id);
-
-        if (isNaN(id)) {
-            return res.status(400).send({ message: "El ID debe ser un número válido" });
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
         }
 
-        const user_found = await USER.destroy({
-            where: { id: id }
-        });
+        id = Number(id);
 
-        if (!user_found) {
-            return res.status(404).send({ message: "El Usuario no existe" });
+        const user = await USER.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ message: "El usuario no existe." });
         }
+
+        await user.destroy();
 
         res.status(200).send({ message: "Usuario eliminado correctamente" });
 
-    } catch (e) {
-        console.error(e);
-        res.status(500).send({ message: "Error al eliminar al Usuario -> " + e.message });
+    } catch (err) {
+        console.error("Error al eliminar el usuario:", err.message);
+        return res.status(500).json({ message: "Error al intentar eliminar al usario." });
     }
 };
 const createUser = async(req,res) =>{
@@ -111,7 +162,6 @@ const createUser = async(req,res) =>{
                 id: role_id
             }
         });
-
         if(!existRole){
             return res.status(404).send({message: "El nombe del rol que introdujo no existe"});
         }
@@ -126,20 +176,21 @@ const createUser = async(req,res) =>{
             role_id: role_id 
         });
 
-        //*Modificar para luego testear y solo dejar el Message
         res.status(201).json({
             message: "Registro exitoso, pendiente aprobación del admin \n ",
-            user_create,
+            data:user_create,
         });
-    }catch(e){
-        res.status(500).send({
-            message: "Ocurrio un error al intentar guardar los datos en la base de datosssss: ->" + e})
+    }catch(err){
+        console.error("Error al crear al usario:", err.message);
+        return res.status(500).json({ message: "Error al intentar crear un usuario." });
     }
     
 }
 module.exports = {
-    getUsers,
-    disableUser,
-    deleteUsers,
-    createUser,
+    getUsersActive, //
+    getUsersInactive, //
+    getUser, // params
+    disableUser, // body
+    deleteUsers, // params
+    createUser, //body
 }

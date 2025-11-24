@@ -21,7 +21,7 @@ async function ValidateLogin(req, res, next) {
         });
         
         if(!user_search){
-            return res.status(404).res({message: "No se enconttro el usuario"})
+            return res.status(404).send({message: "No se enconttro el usuario"})
         }
         if(user_search.institution_id){
             const comparePassword = await bcrypt.compare(password, user_search.password);

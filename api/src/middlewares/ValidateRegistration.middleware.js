@@ -5,10 +5,10 @@ const VerificationEmail = require('../utils/verificationEmail.util');
 const isValidPhone = require('../utils/isValidPhone.util');
 
 
-async function ValidateRegistration (req, res, next) {  
-    let {first_name,last_name,email,phone,password,name_inst,location_inst,type_inst} = req.body;
+async function ValidateRegistrationInstitution (req, res, next) {  
+    let {first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type} = req.body;
 
-    let requiredFields = [first_name,last_name,email,phone,password,name_inst,location_inst,type_inst];
+    let requiredFields = [first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type];
 
     //Verificacion de campos completos
     if( requiredFields.some(field => field == null)){
@@ -33,14 +33,17 @@ async function ValidateRegistration (req, res, next) {
     //Verificar que exista el Tipo de Institution
     const exist_TypeInst = await TYPE.findOne({
         where:{
-            name: type_inst,
+            name: type,
         }
     })
-    console.log(exist_TypeInst);
     if(!exist_TypeInst){
         return res.status(404).json({ message: "Tiene que selecionar una tipo valido." });
     }
     type_inst = exist_TypeInst.id;
+
+    if(type_inst !== "Both" && type_inst !== "Recipient" && type_inst !== "Donor"){
+        return res.status(404).send({message: "Tine que introducir un valor valido 'Both', 'Recipient' o 'Donor'. "})
+    }
     
     // Reescribimos req.body con todos los datos validados y actualizados
      req.body = {
@@ -56,4 +59,4 @@ async function ValidateRegistration (req, res, next) {
     next();
 }
 
-module.exports = ValidateRegistration;
+module.exports = ValidateRegistrationInstitution;

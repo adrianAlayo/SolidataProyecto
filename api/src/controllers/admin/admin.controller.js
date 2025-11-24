@@ -1,8 +1,8 @@
 // controllers/admin/admin.controller.js
 
-const UsersController = require('./users.controller');
-const InstitutionsController = require('./institutions.controller');
-const RolesController = require('./roles.controller');
+const UsersController = require('./user.controller');
+const InstitutionsController = require('./institution.controller');
+const RolesController = require('./role.controller');
 const TypeController = require('./type.controller');
 const ArticleController = require('./article.controller')
 
