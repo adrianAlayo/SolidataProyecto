@@ -1,10 +1,10 @@
 // controllers/admin/inventory.controller.js  (o donde lo quieras colocar)
 const { Op, fn, col } = require('sequelize');
 
-const INVENTORY = require('../../models/inventory');
-const DONATIONITEM = require('../../models/donationItem');
-const DONATION = require('../../models/donation');
-const ARTICLE = require('../../models/article');
+const INVENTORY = require('../models/inventory');
+const DONATIONITEM = require('../models/donationItem');
+const DONATION = require('../models/donation');
+const ARTICLE = require('../models/article');
 
 /*
   Endpoints implementados:

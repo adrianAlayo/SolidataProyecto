@@ -1,8 +1,8 @@
 const { where, Model } = require('sequelize');
-const USER = require('../../models/user');
-const ROLE = require('../../models/role');
-const IsString = require ('../../utils/isString.util');
-const isString = require('../../utils/isString.util');
+const USER = require('../models/user');
+const ROLE = require('../models/role');
+const IsString = require ('../utils/isString.util');
+const isString = require('../utils/isString.util');
 
 const createRole = async (req, res) => {
     try {

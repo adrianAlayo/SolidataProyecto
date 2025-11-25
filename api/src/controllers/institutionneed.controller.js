@@ -1,5 +1,5 @@
-const INSTITUTION = require('../../models/institution');
-const INSTITUTIONNEED = require('../../models/institutionneed');
+const INSTITUTION = require('../models/institution');
+const INSTITUTIONNEED = require('../models/institutionneed');
 
 const { where } = require('sequelize');
 

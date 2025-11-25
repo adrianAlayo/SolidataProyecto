@@ -1,9 +1,9 @@
-const DONATIONITEM = require('../../models/donationItem');
-const ARTICLE = require('../../models/article');
+const DONATIONITEM = require('../models/donationItem');
+const ARTICLE = require('../models/article');
 
 const { where } = require('sequelize');
-const isString = require('../../utils/isString.util');
-const IsDate = require('../../utils/isDate.util');
+const isString = require('../utils/isString.util');
+const IsDate = require('../utils/isDate.util');
 
 const createItem = async (req,res) =>{
     try {

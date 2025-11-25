@@ -1,12 +1,12 @@
 const { where } = require('sequelize');
 const bcrypt = require('bcrypt');
-const USER = require('../../models/user');
-const ROLE = require('../../models/role');
+const USER = require('../models/user');
+const ROLE = require('../models/role');
 
-const IsString = require('../../utils/isString.util');
-const VerificationPassword = require('../../utils/verificationPassword.util');
-const VerificationEmail = require('../../utils/verificationEmail.util');
-const VerificationPhone = require ('../../utils/isValidPhone.util');
+const IsString = require('../utils/isString.util');
+const VerificationPassword = require('../utils/verificationPassword.util');
+const VerificationEmail = require('../utils/verificationEmail.util');
+const VerificationPhone = require ('../utils/isValidPhone.util');
 
 
 const getUsersActive = async (_req,res) =>{

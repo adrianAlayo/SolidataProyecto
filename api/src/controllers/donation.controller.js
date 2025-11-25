@@ -1,8 +1,8 @@
-const USER = require('../../models/user');
-const DONATION = require('../../models/donation');
-const INSTITUTION = require('../../models/institution');
+const USER = require('../models/user');
+const DONATION = require('../models/donation');
+const INSTITUTION = require('../models/institution');
 
-const IsString = require('../../utils/isString.util');
+const IsString = require('../utils/isString.util');
 const { where } = require('sequelize');
 
 

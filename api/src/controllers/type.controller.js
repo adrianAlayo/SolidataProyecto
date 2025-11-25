@@ -1,4 +1,4 @@
-const TYPE = require('../../models/type');
+const TYPE = require('../models/type');
 
 const createType = async (req, res) => {
     try {

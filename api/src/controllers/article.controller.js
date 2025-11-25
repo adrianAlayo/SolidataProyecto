@@ -1,6 +1,6 @@
 const { where } = require('sequelize');
-const ARTICLE = require('../../models/article');
-const IsString = require('../../utils/isString.util');
+const ARTICLE = require('../models/article');
+const IsString = require('../utils/isString.util');
 
 const createArticle = async (req, res) => {
     try {
