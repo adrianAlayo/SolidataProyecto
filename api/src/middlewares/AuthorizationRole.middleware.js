@@ -1,6 +1,9 @@
 // middleware/authorize.js
+const ENTITY = require("../models/entity");
+const ACTION = require("../models/action");
+const PERMISSION = require("../models/permission");
+const ROLEPERMISSION = require("../models/rolepermission");
 
-const { ENTITY, ACTION, PERMISSION, ROLEPERMISSION } = require("../models");
 
 function authorize(entityName, actionName) {
     return async (req, res, next) => {

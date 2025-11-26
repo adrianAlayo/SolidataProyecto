@@ -1,8 +1,8 @@
-const { where } = require('sequelize');
+const { where, Op } = require('sequelize');
 const ARTICLE = require('../models/article');
 const IsString = require('../utils/isString.util');
 
-const createArticle = async (req, res) => {
+const createArticle = async (req, res) => { 
     try {
         const { name,category,variant,unit } = req.body;
 
@@ -29,8 +29,8 @@ const createArticle = async (req, res) => {
             data: newArticle,
         });
     } catch (err) {
-        console.error("Error a la hora de crear un Articulo:", err);
-        res.status(500).json({ message: "Error al crear un Articulo" });
+        console.error("Error:", err.message);
+        res.status(500).json({ message: "Error al intentar crear un Articulo" });
     }
 };
 const deleteArticle = async (req, res) => {
@@ -41,13 +41,12 @@ const deleteArticle = async (req, res) => {
             return res.status(400).json({ message: "ID inválido." });
         }
 
-        id = Number(id);
+        const ID = Number(id);
 
-        const article = await ARTICLE.findByPk(id);
+        const article = await ARTICLE.findByPk(ID);
         if (!article) {
             return res.status(404).json({ message: "El artículo no existe." });
         }
-
         
         await article.destroy();
 
@@ -57,14 +56,13 @@ const deleteArticle = async (req, res) => {
         });
 
     } catch (err) {
-        console.error("Error al eliminar el artículo:", err);
-        return res.status(500).json({ message: "Error del servidor." });
+        console.error("Error:", err.message);
+        return res.status(500).json({ message: "Error al intentar eliminar el articulo" });
     }
 };
 const putArticle = async (req, res) => {
     try {
         let { id } = req.params;
-
         const { name, category, variant, unit } = req.body;
 
         if (!id || isNaN(Number(id))) {
@@ -78,7 +76,7 @@ const putArticle = async (req, res) => {
             return res.status(404).json({ message: "El artículo no existe." });
         }
 
-        // Constu de objeto para ver que hay q actalizar
+        // Construimos solo los campos enviados
         const updateData = {};
 
         if (name) updateData.name = name;
@@ -86,9 +84,22 @@ const putArticle = async (req, res) => {
         if (variant) updateData.variant = variant;
         if (unit) updateData.unit = unit;
 
-        // Si no mandaron nada para actualizar
         if (Object.keys(updateData).length === 0) {
-            return res.status(400).json({message: "Debe enviar al menos un campo para actualizar."});
+            return res.status(400).json({ message: "Debe enviar al menos un campo para actualizar." });
+        }
+
+        // Validar si ya existe otro artículo con esos valores
+        const existArticle = await ARTICLE.findOne({
+            where: {
+                ...updateData,
+                id: { [Op.ne]: id }   // Excluir el artículo actual
+            }
+        });
+
+        if (existArticle) {
+            return res.status(400).json({
+                message: "Ya existe un artículo con estos datos."
+            });
         }
 
         await article.update(updateData);
@@ -99,8 +110,8 @@ const putArticle = async (req, res) => {
         });
 
     } catch (err) {
-        console.error("Error al actualizar el artículo:", err);
-        return res.status(500).json({message: "Error al intentar actualizar el artículo."});
+        console.error("Error:", err);
+        return res.status(500).json({ message: "Error al intentar actualizar el artículo." });
     }
 };
 const getArticles = async (_req, res) => {
@@ -117,7 +128,7 @@ const getArticles = async (_req, res) => {
         });
 
     } catch (err) {
-        console.error("Error al obtener los artículos:", err);
+        console.error("Error:", err);
         return res.status(500).json({message: "Error al intentar obtener los artículos."});
     }
 };
@@ -129,9 +140,9 @@ const getArticle = async (req, res) => {
             return res.status(400).json({ message: "ID inválido." });
         }
 
-        id = Number(id);
+        const ID = Number(id);
 
-        const article = await ARTICLE.findByPk(id);
+        const article = await ARTICLE.findByPk(ID);
 
         if (!article) {
             return res.status(404).json({ message: "No se encontró el artículo." });
@@ -143,7 +154,7 @@ const getArticle = async (req, res) => {
         });
 
     } catch (err) {
-        console.error("Error al obtener el artículo:", err);
+        console.error("Error:", err);
         return res.status(500).json({message: "Error al intentar obtener el artículo."});
     }
 };

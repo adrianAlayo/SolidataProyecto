@@ -1,24 +1,30 @@
-    const express = require('express');
-    const cors = require('cors');
-    const app = express();
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
+//Llamado de los routers
+const articleRouter = require('./router/article.routes');
+const authRouter = require('./router/auth.routes');
+const userRouter = require('./router/user.routes');
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+    credentials: true, 
+}));
 
-    app.use(cors({
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-        allowedHeaders: ['Content-Type', 'Authorization'], 
-        credentials: true, 
-    }));
+app.use(express.json());
 
-    app.use(express.json());
+//Montar los Routers
+app.use('/auth',authRouter);
 
-    //Montar los Routers
+app.use('/articles', articleRouter);
+app.use('/user', userRouter);
 
+// Ruta base de prueba
+app.get('/', (req, res) => {
+    res.send('LA API FUNCIONA LOCO GOOOOOOOD');
+});
 
-    // Ruta base de prueba
-    app.get('/', (req, res) => {
-        res.send('LA API FUNCIONA LOCO GOOOOOOOD');
-    });
-
-    module.exports = app;
+module.exports = app;
