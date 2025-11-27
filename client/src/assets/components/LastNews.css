@@ -1,0 +1,15 @@
+.divLastNews {
+    display: flex;
+    flex-direction: row;
+}
+
+.divLastNews h1 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 1000;
+    font-size: 45px;
+}
+
+.textSoli {
+    padding-left: 8px;
+    color: rgb(5, 188, 194);
+}

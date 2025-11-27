@@ -1,0 +1,36 @@
+.divFrecuentQuestions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.divFrecuentQuestions h1 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 1000;
+    font-size: 56px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.whatIsSolidataBox {
+    background-color: rgb(198, 199, 199);
+    padding: 10px;
+    border-radius: 15px;
+    margin: 20px;
+    width: 60%;
+}
+
+.whatIsSolidataBox h2{
+    font-family: "Poppins", sans-serif;
+    font-weight: 1000;
+    font-size: 35px;
+    margin: 10px;
+}
+
+.whatIsSolidataBox p {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    margin: 10px;
+}

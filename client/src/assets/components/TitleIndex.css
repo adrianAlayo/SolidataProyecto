@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+.titleindexDiv{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.titleSoli {
+    color: rgb(5, 188, 194);
+    font-family: "Poppins", sans-serif;
+    font-weight: 1000;
+    font-size: 58px;
+}
+
+.titleConec {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-weight: 1000;
+    font-size: 58px;
+}
+
+.subtitle {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-weight: 1000;
+    font-size: 20px;
+}
+
+.title {
+    background-image: url("../img/WhatsApp-Image-2022-01-04-at-15.38.03-1-e1641828063184-660x318.jpeg");
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 450px;
+    justify-content: center;
+    align-items: center;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
