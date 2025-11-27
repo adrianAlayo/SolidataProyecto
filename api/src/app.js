@@ -1,32 +1,30 @@
-    const express = require('express');
-    const cors = require('cors');
-    const app = express();
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
-    const institutionRouter = require('./router/institution.router.js');
-    const employeeCoordinatorRouter = require('./router/employeeCoordinator.router.js');
-    const employeeOperatorRouter = require('./router/employeeOperator.router.js');
-    const adminRouter = require('./router/admin.router.js');
-    const auth = require('./router/auth.router.js');
+//Llamado de los routers
+const articleRouter = require('./router/article.routes');
+const authRouter = require('./router/auth.routes');
+const userRouter = require('./router/user.routes');
 
-    app.use(cors({
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-        allowedHeaders: ['Content-Type', 'Authorization'], 
-        credentials: true, 
-    }));
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+    credentials: true, 
+}));
 
-    app.use(express.json());
+app.use(express.json());
 
-    //Montar los Routers
-    app.use('/auth',auth);
-    app.use('/employee/operator', employeeOperatorRouter);
-    app.use('/employee/coodinator', employeeCoordinatorRouter);
-    app.use('/institution', institutionRouter);
-    app.use('/admin', adminRouter);
+//Montar los Routers
+app.use('/auth',authRouter);
 
-    // Ruta base de prueba
-    app.get('/', (req, res) => {
-        res.send('LA API FUNCIONA LOCO GOOOOOOOD');
-    });
+app.use('/articles', articleRouter);
+app.use('/user', userRouter);
 
-    module.exports = app;
+// Ruta base de prueba
+app.get('/', (req, res) => {
+    res.send('LA API FUNCIONA LOCO GOOOOOOOD');
+});
+
+module.exports = app;

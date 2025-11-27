@@ -1,6 +1,5 @@
 const USER = require("../models/user");
 const INSTITUTION = require("../models/institution");
-const ROLE = require("../models/role");
 
 const IsString = require('../utils/isString.util');
 const IsDate = require('../utils/isDate.util');
@@ -8,116 +7,98 @@ const IsDate = require('../utils/isDate.util');
 async function DataValidateDonation(req, res, next) {
     try {
         const {
-            receiver_institution_id,
-            donorType,
-            donor_id,
             note,
-            donation_date
+            donation_date,
+            responsable_user_id,
+            donor_id,
+            receiver_institution_id
         } = req.body;
 
-        // VALIDACION DE CAMPOS
-        if (!IsString(donorType) || !IsString(note) || !IsString(donation_date)) {
+        // VALIDACIÓN DE CAMPOS
+        if (!IsString(note) || !IsString(donation_date)) {
             return res.status(400).send({
-                message: "Los campos donorType, note y donation_date deben ser textos válidos."
-            });
-        }
-
-        if (donorType !== "Institution" && donorType !== "User") {
-            return res.status(400).send({
-                message: "donorType debe ser 'Institution' o 'User'."
+                message: "note y donation_date deben ser textos válidos."
             });
         }
 
         if (!IsDate(donation_date)) {
             return res.status(400).send({
-                message: "donation_date debe ser una fecha válida (YYYY-MM-DD)."
+                message: "donation_date debe tener formato YYYY-MM-DD."
             });
         }
 
-        if (typeof receiver_institution_id !== "number" || typeof donor_id !== "number") {
+        if (typeof donor_id !== "number" || typeof responsable_user_id !== "number" || typeof receiver_institution_id !== "number"
+        ) {
             return res.status(400).send({
-                message: "institution_id y donor_id deben ser números."
+                message: "Los campos ID deben ser números."
             });
         }
 
+        // RESPONSABLE → debe ser operador o admin
+        const userFound = req.user_find;
 
-        // VALIDACION DEL RESPONSABLE
-        const userFound = req.user_find;   // viene del token
-        if (!userFound || !userFound.roleName) {
-            return res.status(403).send({ message: "No se pudo identificar el rol del usuario responsable." });
+        if (!userFound)
+            return res.status(401).send({ message: "Usuario no autenticado." });
+
+        if (userFound.role_id !== 1 && userFound.role_id !== 3) {
+            return res.status(403).send({
+                message: "No tiene permisos para registrar donaciones."
+            });
         }
 
-        const userRole = await ROLE.findOne({
-            where: { name: userFound.roleName }
+        // VALIDACIÓN DEL DONADOR
+        const donor = await USER.findByPk(donor_id, {
+            include: {
+                model: INSTITUTION,
+                attributes: ["id", "institutionType"]
+            }
         });
 
-        if (!userRole) {
-            return res.status(404).send({ message: "El rol del usuario no existe en la base de datos." });
-        }
+        if (!donor)
+            return res.status(404).send({ message: "El donante no existe." });
 
-        // Solo operadores pueden registrar donaciones (role_id = 3)
-        if (userRole.id !== 3 || userRole.id !== 1) {
-            return res.status(403).send({
-                message: "No tiene permisos para registrar donaciones. Se requiere rol 'Operador'."
-            });
-        }
-
-
-        //       VALIDACION DEL DONANTE
-        if (donorType === "Institution") {
-            const existInstitution = await INSTITUTION.findByPk(donor_id);
-
-            if (!existInstitution) {
-                return res.status(404).send({ message: "La institución donante no existe." });
+        // CASO 1: Institución (role_id = 4)
+        if (donor.role_id === 4) {
+            if (!donor.INSTITUTION){
+                return res.status(400).send({ message: "El usuario no tiene institución asociada." });
             }
+            const type = donor.INSTITUTION.institutionType;
 
-            if (existInstitution.institutionType !== "Donor" &&
-                existInstitution.institutionType !== "Both") {
+            if (type !== "Donor" && type !== "Both") {
                 return res.status(400).send({
-                    message: "Esta institución no puede donar. Solo las de tipo 'Donor' o 'Both'."
+                    message: "La institución no puede donar (solo Donor o Both)."
                 });
             }
         }
-        if (donorType === "User") {
-            const existUser = await USER.findByPk(donor_id, {
-                include: { model: ROLE }
-            });
-
-            if (!existUser) {
-                return res.status(404).send({ message: "El usuario donante no existe." });
-            }
-
-            if (existUser.Role.id !== 5) { // rol Donador
-                return res.status(400).send({
-                    message: "El usuario no puede donar porque no posee el rol de 'Donador'."
-                });
-            }
+        // CASO 2: Voluntario (role_id = 5)
+        else if (donor.role_id === 5) {
+            
         }
-
+        // CASO 3: Otro rol → no puede donar
+        else {
+            return res.status(400).send({
+                message: "Este usuario no tiene permisos para donar."
+            });
+        }
 
         // VALIDACIÓN DEL RECEPTOR
         const receiverInstitution = await INSTITUTION.findByPk(receiver_institution_id);
 
-        if (!receiverInstitution) {
+        if (!receiverInstitution)
             return res.status(404).send({ message: "La institución receptora no existe." });
-        }
 
         if (receiverInstitution.institutionType !== "Recipient" &&
             receiverInstitution.institutionType !== "Both") {
             return res.status(400).send({
-                message: "La institución no puede recibir donaciones. Debe ser tipo 'Recipient' o 'Both'."
+                message: "Esta institución no puede recibir donaciones."
             });
         }
 
-        // Si todo está OK → sigue el flujo
         next();
 
     } catch (err) {
-        console.error("Error en middleware DataValidateDonation:", err);
-        res.status(500).send({
-            message: "Error inesperado en validación de datos de la donación.",
-            error: err.message
-        });
+        console.error("Error en validar donación:", err.message);
+        res.status(500).send({ message: "Error interno en validar donación." });
     }
 }
 
