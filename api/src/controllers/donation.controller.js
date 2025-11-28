@@ -3,43 +3,59 @@ const DONATION = require('../models/donation');
 const INSTITUTION = require('../models/institution');
 
 const IsString = require('../utils/isString.util');
-const { where } = require('sequelize');
+const IsDate = require('../utils/isDate.util')
+const TransformDate = require('../utils/transformDate.util');
+const { where, Op } = require('sequelize');
 
 
 const createDonation = async (req, res) => {
     try {
-        const { note, donation_date, responsable_user_id, donor_id, receiver_institution_id } = req.body;
+        // responsables lo saco del token
+        const responsable_user = req.user_find;
+        if (!responsable_user || !responsable_user.id) {
+            return res.status(401).json({ message: "Usuario no autenticado." });
+        }
+
+        const {
+            note,
+            donation_date, // puede incluir hora o no
+            donor_id,
+            receiver_institution_id
+        } = req.body;
+
+        // Evitar duplicados: mismo donor_id + misma receiver + misma fecha (día)
+        const start = TransformDate.startOfDay(donation_date);
+        const end = TransformDate.endOfDay(donation_date);
 
         const existDonation = await DONATION.findOne({
             where: {
-                donation_date,
-                donor_id,
-                receiver_institution_id
+                donor_id:donor_id,
+                receiver_institution_id:receiver_institution_id,
+                donation_date: {
+                    [Op.between]: [start, end]
+                }
             }
         });
 
         if (existDonation) {
-            return res.status(400).send({
-                message: "Ya existe una donación con las mismas características."
-            });
+            return res.status(409).json({ message: "Ya existe una donación para ese donante y receptor en la misma fecha." });
         }
 
         const newDonation = await DONATION.create({
             note,
             donation_date,
-            responsable_user_id,
             donor_id,
-            receiver_institution_id
+            receiver_institution_id,
+            responsable_user_id: responsable_user.id
         });
 
-        return res.status(200).json({
+        return res.status(201).json({
             message: "Donación creada con éxito.",
             data: newDonation
         });
-
     } catch (err) {
-        console.error("Error al crear donación:", err);
-        res.status(500).send({ message: "Error interno al crear la donación." });
+        console.error("Error:", err.message);
+        return res.status(500).json({ message: "Error al intentar crear una donacion." });
     }
 };
 const getDonation = async (req, res) => {
@@ -54,9 +70,16 @@ const getDonation = async (req, res) => {
 
         const donation = await DONATION.findByPk(id, {
             include: [
-                { model: USER, as: "responsable", attributes: ["first_name", "last_name","email"] },
-                { model: USER, as: "donor", attributes: ["first_name", "last_name","email"] },
-                { model: INSTITUTION, as: "receiver_institution", attributes: [, "name"] }
+                { model: 
+                    USER, as: "responsable", 
+                    attributes: ["first_name", "last_name","email"] },
+                { 
+                    model: 
+                    USER, as: "donor", 
+                    attributes: ["first_name", "last_name","email"] },
+                { 
+                    model: 
+                    INSTITUTION, as: "receiver_institution", attributes: ["name"] }
             ]
         });
 
@@ -78,9 +101,17 @@ const getDonations = async (_req, res) => {
     try {
         const list = await DONATION.findAll({
             include: [
-                { model: USER, as: "responsable", attributes: ["id", "name"] },
-                { model: USER, as: "donor", attributes: ["id", "name"] },
-                { model: INSTITUTION, as: "receiverInstitution", attributes: ["id", "name"] }
+                { 
+                    model: 
+                    USER, as: "responsable", 
+                    attributes: ["id", "first_name","last_name"] },
+                { 
+                    model: 
+                    USER, as: "donor", 
+                    attributes: ["id", "first_name","last_name"] },
+                { 
+                    model: 
+                    INSTITUTION, as: "receiver_institution", attributes: ["id", "name"] }
             ],
             order: [["donation_date", "DESC"]]
         });
@@ -95,21 +126,24 @@ const getDonations = async (_req, res) => {
         });
 
     } catch (err) {
-        console.error("Error al obtener donaciones:", err);
+        console.error("Error al obtener donaciones:", err.message);
         res.status(500).send({ message: "Error al obtener donaciones." });
     }
 };
 const getDonationsByResponsable = async (req, res) => {
     try {
-        let { responsable_user_id } = req.params;
+        let { id } = req.params;
 
-        if (!responsable_user_id || isNaN(Number(responsable_user_id))) {
+        if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
-        responsable_user_id = Number(responsable_user_id);
+        id = Number(id);
 
         const list = await DONATION.findAll({
-            where: { responsable_user_id }
+            where: { 
+                responsable_user_id: id 
+            }
+
         });
 
         if(list.length === 0 && !list){
@@ -126,18 +160,20 @@ const getDonationsByResponsable = async (req, res) => {
 };
 const getDonationsByDonor = async (req, res) => {
     try {
-        let { donor_id } = req.params;
+        let { id } = req.params;
 
-        if (!donor_id || isNaN(Number(donor_id))) {
+        if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
-        donor_id = Number(donor_id);
+        id = Number(id);
 
         const list = await DONATION.findAll({
-            where: { donor_id }
+            where: { 
+                donor_id: id 
+            }
         });
 
-        if(list.length === 0 && !list){
+        if(list.length === 0 || !list){
             return res.status(404).send({message: "No se encontraron donaciones"})
         }
         return res.status(200).json({
@@ -152,21 +188,23 @@ const getDonationsByDonor = async (req, res) => {
 };
 const getDonationsByVolunteerDonor = async (req, res) => {
     try {
-        let { donor_id } = req.params;
+        let { id } = req.params;
 
-        if (!donor_id || isNaN(Number(donor_id))) {
+        if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
-        donor_id = Number(donor_id);
+        id = Number(id);
 
-        const user = await USER.findByPk(donor_id);
+        const user = await USER.findByPk(id);
 
         if (!user || user.role_id !== 5) {
             return res.status(400).send({ message: "El usuario no es un voluntario." });
         }
 
         const list = await DONATION.findAll({
-            where: { donor_id }
+            where: { 
+                donor_id: id 
+            }
         }); 
 
         if(list.length === 0 && !list){
@@ -185,14 +223,14 @@ const getDonationsByVolunteerDonor = async (req, res) => {
 };
 const getDonationsByInstitutionDonor = async (req, res) => {
     try {
-        let { donor_id } = req.params;
+        let { id } = req.params;
 
-        if (!donor_id || isNaN(Number(donor_id))) {
+        if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
-        donor_id = Number(donor_id);
+        id = Number(id);
 
-        const user = await USER.findByPk(donor_id, {
+        const user = await USER.findByPk(id, {
             include: INSTITUTION
         });
 
@@ -201,7 +239,9 @@ const getDonationsByInstitutionDonor = async (req, res) => {
         }
 
         const list = await DONATION.findAll({
-            where: { donor_id }
+            where: { 
+                donor_id: id 
+            }
         });
 
         if(list.length === 0 && !list){
@@ -220,19 +260,21 @@ const getDonationsByInstitutionDonor = async (req, res) => {
 };
 const getDonationsByReceiver = async (req, res) => {
     try {
-        let { receiver_institution_id } = req.params;
+        let { id } = req.params;
 
-        if (!receiver_institution_id || isNaN(Number(receiver_institution_id))) {
+        if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
-        receiver_institution_id = Number(receiver_institution_id);
+        id = Number(id);
 
         const list = await DONATION.findAll({
-            where: { receiver_institution_id }
+            where: { 
+                receiver_institution_id: id 
+            }
         });
 
 
-        if(list.length === 0 && !list){
+        if(list.length === 0 || !list){
             return res.status(404).send({message: "No se encontraron donaciones"})
         }
 
@@ -248,7 +290,7 @@ const getDonationsByReceiver = async (req, res) => {
 };
 const updateDonation = async (req, res) => {
     try {
-        const { donation_id } = req.params.id;
+        let { donation_id } = req.params;
 
         if (!donation_id || isNaN(Number(donation_id))) {
             return res.status(400).json({ message: "ID inválido." });
@@ -277,7 +319,7 @@ const updateDonation = async (req, res) => {
         if (!userFound)
             return res.status(401).send({ message: "Usuario no autenticado." });
 
-        if (userFound.role_id !== 1 && userFound.role_id !== 3) {
+        if (userFound.rol !== 1 && userFound.rol !== 3) {
             return res.status(403).send({
                 message: "No tiene permisos para actualizar donaciones."
             });
@@ -317,23 +359,18 @@ const updateDonation = async (req, res) => {
             if (typeof donor_id !== "number")
                 return res.status(400).send({ message: "donor_id debe ser número." });
 
-            const donor = await USER.findByPk(donor_id, {
-                include: {
-                    model: INSTITUTION,
-                    attributes: ["id", "institutionType"]
-                }
-            });
+            const donor = await USER.findByPk(donor_id);
 
             if (!donor)
                 return res.status(404).send({ message: "El donante no existe." });
 
             // Institución (role_id = 4)
             if (donor.role_id === 4) {
-                if (!donor.INSTITUTION) {
+                if (!donor.institution_id) {
                     return res.status(400).send({ message: "La institución del donante no existe." });
                 }
-
-                const type = donor.INSTITUTION.institutionType;
+                const institution = await INSTITUTION.findByPk(donor.institution_id)
+                const type = institution.institutionType;
 
                 if (type !== "Donor" && type !== "Both") {
                     return res.status(400).send({
@@ -401,15 +438,14 @@ const updateDonationStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        if(status !== "Scheduled" && status !== "Delivered" && status !== "Not Delivered"){
-            return res.status(404).send({message:"Tiene que elegir un estado valido 'Scheduled', 'Delivered' o 'Not Delivered'. "})
-        }
-
         const donation = await DONATION.findByPk(id);
-
         if (!donation) {
             return res.status(404).send({ message: "Donación no encontrada." });
         }
+
+        if(status !== "Scheduled" && status !== "Delivered" && status !== "Not Delivered"){
+            return res.status(404).send({message:"Tiene que elegir un estado valido 'Scheduled', 'Delivered' o 'Not Delivered'. "})
+        } 
 
         const updateDonation = await DONATION.update(
             {status: status},
@@ -424,8 +460,7 @@ const updateDonationStatus = async (req, res) => {
             return res.status(404).send({message: "No se pudo actualizar la donacion"})
         }
         return res.status(200).json({
-            message: "Estado actualizado.",
-            data: updateDonation
+            message: "Estado actualizado."
         });
 
     } catch (err) {

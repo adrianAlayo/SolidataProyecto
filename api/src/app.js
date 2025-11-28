@@ -6,6 +6,7 @@ const app = express();
 const articleRouter = require('./router/article.routes');
 const authRouter = require('./router/auth.routes');
 const userRouter = require('./router/user.routes');
+const donationRouter = require('./router/donation.routes');
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -21,6 +22,7 @@ app.use('/auth',authRouter);
 
 app.use('/articles', articleRouter);
 app.use('/user', userRouter);
+app.use('/donation', donationRouter);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
