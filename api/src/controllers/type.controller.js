@@ -28,5 +28,22 @@ const createType = async (req, res) => {
         return res.status(500).send({ message: "Error!!! a la hora de crear el ROL: -> "});
     }
 };
-
-module.exports = {createType};
+const getTypes = async (req,res) =>{
+    
+}
+const getType = async (req,res) =>{
+    
+}
+const UpdateType = async (req,res) =>{
+    
+}
+const deleteType = async (req,res) =>{
+    
+}
+module.exports = {
+    createType,
+    getTypes,
+    getType,
+    UpdateType,
+    deleteType
+};

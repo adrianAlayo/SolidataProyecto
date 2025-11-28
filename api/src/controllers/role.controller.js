@@ -35,7 +35,7 @@ const createRole = async (req, res) => {
 const assignRoles = async (req,res) =>{
     // Hara cambios de rol de usuarios dentro del sistema (por ejemplo, operador a coordinador).
     try{
-        const { id } = req.params;
+        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });

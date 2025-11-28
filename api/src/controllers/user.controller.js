@@ -9,6 +9,98 @@ const VerificationEmail = require('../utils/verificationEmail.util');
 const VerificationPhone = require ('../utils/isValidPhone.util');
 
 
+
+const createUser = async(req,res) =>{
+    try{
+        let {first_name,last_name,email,password,phone,role_id} = req.body;
+
+        if(!IsString(first_name) || !IsString(last_name) || !IsString(email) || !IsString(password)){
+            return res.status(404).send({message: "Todos los campos son obligatorio y tiene que tener un texto valido."})
+        }
+        if(!VerificationPhone(phone)){
+            return res.status(404).send({message: "Introduzca un numero valido."})
+        }
+        if(!VerificationEmail(email)){
+            return res.status(404).send({message: "Tiene que introducir un email valido."});
+        }
+        if(!VerificationPassword(password)){
+            return res.status(404).send({message: "NO cumple las condicoines para que sea una contraseña, tiene que tener al menos 1 mayuscula,minuscula y un numero, ademas de tener 8 mas caracteres."})
+        }
+        const password_hash = await bcrypt.hash(password, 7);
+        
+        const existRole = await ROLE.findOne({
+            where: {
+                id: role_id
+            }
+        });
+        if(!existRole){
+            return res.status(404).send({message: "El nombe del rol que introdujo no existe"});
+        }
+        
+        const user_create = await USER.create({
+            first_name: first_name, 
+            last_name: last_name, 
+            email: email, 
+            password: password_hash, 
+            phone: phone, 
+            is_active: true,
+            role_id: role_id 
+        });
+
+        res.status(201).json({
+            message: "Registro exitoso, pendiente aprobación del admin \n ",
+            data:user_create,
+        });
+    }catch(err){
+        console.error("Error al crear al usario:", err.message);
+        return res.status(500).json({ message: "Error al intentar crear un usuario." });
+    }
+    
+}
+const getUser = async (req,res) =>{
+    try {
+        const { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+        const user = await USER.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "No se encontro al usuario." });
+        }
+
+        return res.status(200).json({
+            message: "Usuario encontrado.",
+            data: user
+        });
+
+    } catch (err) {
+        console.error("Error al obtener la info del usuario:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener la informacion del usuario."});
+    }
+}
+const getUsers = async (req,res) =>{
+    try {
+        const user = await USER.findAll();
+
+        if (!user) {
+            return res.status(404).json({ message: "No se encontraron usuarios." });
+        }
+
+        return res.status(200).json({
+            message: "Usuario encontrado.",
+            data: user
+        });
+
+    } catch (err) {
+        console.error("Error al obtener la info del usuario:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener la informacion del usuario."});
+    }
+}
 const getUsersActive = async (_req,res) =>{
     try{
         const users = await USER.findAll({
@@ -55,32 +147,6 @@ const getUsersInactive = async (_req,res) =>{
     }catch(e){
         console.error("Error al obtener la lista de los usuarios Inactivos:", err);
         return res.status(500).json({message: "Error al intentar obtener la lista de los usuarios Inactivos."});    
-    }
-}
-const getUser = async (req,res) =>{
-    try {
-        const { id } = req.params;
-
-        if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "ID inválido." });
-        }
-
-        id = Number(id);
-
-        const user = await USER.findByPk(id);
-
-        if (!user) {
-            return res.status(404).json({ message: "No se encontro al usuario." });
-        }
-
-        return res.status(200).json({
-            message: "Usuario encontrado.",
-            data: user
-        });
-
-    } catch (err) {
-        console.error("Error al obtener la info del usuario:", err.message);
-        return res.status(500).json({message: "Error al intentar obtener la informacion del usuario."});
     }
 }
 const disableUser = async (req,res) =>{
@@ -139,58 +205,18 @@ const deleteUsers = async (req, res) => {
         return res.status(500).json({ message: "Error al intentar eliminar al usario." });
     }
 };
-const createUser = async(req,res) =>{
-    try{
-        let {first_name,last_name,email,password,phone,role_id} = req.body;
+const updateUser = async (req, res) =>{
 
-        if(!IsString(first_name) || !IsString(last_name) || !IsString(email) || !IsString(password)){
-            return res.status(404).send({message: "Todos los campos son obligatorio y tiene que tener un texto valido."})
-        }
-        if(!VerificationPhone(phone)){
-            return res.status(404).send({message: "Introduzca un numero valido."})
-        }
-        if(!VerificationEmail(email)){
-            return res.status(404).send({message: "Tiene que introducir un email valido."});
-        }
-        if(!VerificationPassword(password)){
-            return res.status(404).send({message: "NO cumple las condicoines para que sea una contraseña, tiene que tener al menos 1 mayuscula,minuscula y un numero, ademas de tener 8 mas caracteres."})
-        }
-        const password_hash = await bcrypt.hash(password, 7);
-        
-        const existRole = await ROLE.findOne({
-            where: {
-                id: role_id
-            }
-        });
-        if(!existRole){
-            return res.status(404).send({message: "El nombe del rol que introdujo no existe"});
-        }
-        
-        const user_create = await USER.create({
-            first_name: first_name, 
-            last_name: last_name, 
-            email: email, 
-            password: password_hash, 
-            phone: phone, 
-            is_active: true,
-            role_id: role_id 
-        });
-
-        res.status(201).json({
-            message: "Registro exitoso, pendiente aprobación del admin \n ",
-            data:user_create,
-        });
-    }catch(err){
-        console.error("Error al crear al usario:", err.message);
-        return res.status(500).json({ message: "Error al intentar crear un usuario." });
-    }
-    
 }
+
+
 module.exports = {
     getUsersActive, //
     getUsersInactive, //
     getUser, // params
+    getUsers,
     disableUser, // body
     deleteUsers, // params
     createUser, //body
+    updateUser,
 }

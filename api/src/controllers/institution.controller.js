@@ -36,7 +36,7 @@ const createInstitution = async(req,res) =>{
             institution_create,
         });
     }catch(err){
-        console.error("Error al crear una institucion:", err.message);
+        console.error("Error:", err.message);
         return res.status(500).json({message: "Error al intentar crear una institucion."});
     }
 }

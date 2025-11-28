@@ -2,7 +2,7 @@ const INSTITUTION = require('../models/institution');
 const INSTITUTIONNEED = require('../models/institutionneed');
 
 const { where } = require('sequelize');
-
+const IsString = require('../utils/isString.util');
 
 const createNeeds = async (req, res) => {
     try {
@@ -40,8 +40,8 @@ const createNeeds = async (req, res) => {
             data: need
         });
     } catch (err) {
-        console.error("Error al crear la necesidad:", err.message);
-        res.status(500).send({ message: "Error interno al crear la necesidad." });
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar crear una necesidad."});
     }
 };
 const getNeed = async (req, res) => {
@@ -63,7 +63,8 @@ const getNeed = async (req, res) => {
         return res.status(200).json({ data: need });
 
     } catch (err) {
-        res.status(500).json({ message: "Error al obtener la necesidad." });
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener una necesidad."});
     }
 };
 const getNeeds = async (_req, res) => {
@@ -73,7 +74,8 @@ const getNeeds = async (_req, res) => {
         return res.status(200).json({ data: needs });
 
     } catch (err) {
-        res.status(500).json({ message: "Error al obtener las necesidades." });
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener todas las necesidades."});
     }
 };
 const getNeedByInstitution = async (req, res) => {
@@ -132,34 +134,72 @@ const updateNeed = async (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).json({ message: "Error al actualizar la necesidad." });
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar actualizar una necesidad."});
     }
 };
-const deleteNeed = async (req, res) => {
+const updateStatusNeed = async (req,res) =>{
     try {
-        const { id } = req.params;
+        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
 
-        const deleted = await INSTITUTIONNEED.destroy({
-            where: { id }
-        });
+        id = Number(id);
 
-        if (!deleted) {
-            return res.status(404).json({ message: "La necesidad no existe o ya fue eliminada." });
+        const existInstitution = await INSTITUTIONNEED.findByPk(id);
+        if(!existInstitution){
+            return res.status(404).send({message: "El ID que puso no existe"})
         }
+
+        const {status} = req.body;
+
+        if(!IsString(status) || !status){
+            return res.status(404).send({message: "El campo es obligatorio y tiene que introducir un valor valido"})
+        }
+
+        if(status !== "Pending" || status !== "Resolved"){
+            return res.status(404).send({message: "Tiene que elegir un estado valido, ya sea 'Pending' o 'Resolved'. "})
+        }
+
+        existInstitution.update(
+            {status: status},
+            {
+                where:{
+                    institution_id: id
+                }
+            }
+        )
+    } catch (err) {
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar actualizar el estado de una necesidad."});
+    }
+}
+const deleteNeed = async (req, res) => {
+    try {
+        let { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+        const existNeed = await INSTITUTIONNEED.findByPk(id);
+        if(!existNeed){
+            return res.status(404).send({message: "El ID de la necesidad que introdujo no es existe o Ya fue eliminada"})
+        }
+        existNeed.destroy()
 
         return res.status(200).json({ message: "Necesidad eliminada correctamente." });
 
     } catch (err) {
-        res.status(500).json({ message: "Error al eliminar la necesidad." });
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar eleminar la necesidad."});
     }
 };
-const updateStatusNeed = async (req,res) =>{
 
-}
 
 module.exports = {
     createNeeds,          // POST (body)
@@ -167,5 +207,6 @@ module.exports = {
     getNeeds,             // GET /needs
     getNeedByInstitution, // GET /needs/institution/:institution_id
     updateNeed,           // PUT /needs/:id
-    deleteNeed            // DELETE /needs/:id
+    deleteNeed,            // DELETE /needs/:id
+    updateStatusNeed
 };

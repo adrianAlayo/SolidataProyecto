@@ -287,4 +287,5 @@ module.exports = {
     BAADonated, // GET
     Stock, // GET
     UserActivity, // GET
+    Inventory
 }
