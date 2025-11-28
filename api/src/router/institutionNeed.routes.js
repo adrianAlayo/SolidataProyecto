@@ -42,7 +42,7 @@ router.get(
 
 // Obtener todas las necesidades de una institucion (READ)
 router.get(
-    '/:id',
+    '/ByInstitution/:id',
     verifyToken,
     authorize("INSTITUTIONNEEDS", "READ"),
     getNeedByInstitution
@@ -50,7 +50,7 @@ router.get(
 
 // Actualizar las necesidades (UPDATE)
 router.put(
-    '/Active',
+    '/:id',
     verifyToken,
     authorize("INSTITUTIONS", "UPDATE"),
     updateNeed

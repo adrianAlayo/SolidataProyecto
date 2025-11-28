@@ -1,4 +1,5 @@
 const INSTITUTION = require('../models/institution');
+const ARTICLE = require('../models/article');
 const INSTITUTIONNEED = require('../models/institutionneed');
 
 const { where } = require('sequelize');
@@ -6,19 +7,71 @@ const IsString = require('../utils/isString.util');
 
 const createNeeds = async (req, res) => {
     try {
-        const { available, institution_id, article_id } = req.body;
+        const responsable_user = req.user_find;
 
-        // Campos obligatorios
-        if (available === undefined || institution_id === undefined || article_id === undefined) {
-            return res.status(400).json({ message: "Todos los campos son obligatorios." });
+        let available, institution_id, article_id;
+
+        // SI NO es rol 4 (admin) → debe enviar institution_id
+        if (responsable_user.rol !== 4) {
+            ({ available, institution_id, article_id } = req.body);
+
+            // Validación campos obligatorios para admin
+            if (
+                available === undefined ||
+                institution_id === undefined ||
+                article_id === undefined
+            ) {
+                return res.status(400).json({ message: "Todos los campos son obligatorios." });
+            }
+
+        } else {
+            // SI es rol 4 (institución) → NO envía institution_id
+            ({ available, article_id } = req.body);
+
+            if (available === undefined || article_id === undefined) {
+                return res.status(400).json({ message: "Debe enviar available y article_id." });
+            }
+
+            // El institution_id se toma del usuario logueado
+            institution_id = responsable_user.institution_id;
         }
 
-        // Deben ser numéricos
-        if (isNaN(Number(available)) || isNaN(Number(institution_id)) || isNaN(Number(article_id))) {
+        // VALIDAR tipos
+        if (
+            isNaN(Number(available)) ||
+            isNaN(Number(institution_id)) ||
+            isNaN(Number(article_id))
+        ) {
             return res.status(400).json({ message: "Todos los campos deben ser números." });
         }
 
-        // Evitar duplicados
+        // Validar existencia de institución
+        const existInstitution = await INSTITUTION.findByPk(institution_id);
+        if (existInstitution) {
+            if (
+                existInstitution.institutionType !== "Recipient" &&
+                existInstitution.institutionType !== "Both"
+            ) {
+                return res.status(404).send({
+                    message:
+                        "La institución debe ser Recipient o Both para poder tener necesidades."
+                });
+            }
+        } else {
+            return res.status(404).send({
+                message: "El ID de la institución no existe."
+            });
+        }
+
+        // Validar artículo
+        const existArticle = await ARTICLE.findByPk(article_id);
+        if (!existArticle) {
+            return res.status(404).send({
+                message: "El ID del artículo no existe."
+            });
+        }
+
+        // Verificar duplicados
         const existNeed = await INSTITUTIONNEED.findOne({
             where: { institution_id, article_id }
         });
@@ -29,6 +82,7 @@ const createNeeds = async (req, res) => {
             });
         }
 
+        // Crear necesidad
         const need = await INSTITUTIONNEED.create({
             available,
             institution_id,
@@ -39,13 +93,16 @@ const createNeeds = async (req, res) => {
             message: "Se agregó la necesidad correctamente",
             data: need
         });
+
     } catch (err) {
         console.error("Error:", err.message);
-        return res.status(500).json({message: "Error al intentar crear una necesidad."});
+        return res.status(500).json({ message: "Error al intentar crear una necesidad." });
     }
 };
 const getNeed = async (req, res) => {
     try {
+
+        const responsable_user = req.user_find;
         let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
@@ -60,6 +117,13 @@ const getNeed = async (req, res) => {
             return res.status(404).json({ message: "La necesidad no existe." });
         }
 
+        // SI ES INSTITUCIÓN, SOLO PUEDE VER LAS SUYAS
+        if (responsable_user.rol === 4) {
+            if (need.institution_id !== responsable_user.id) {
+                return res.status(403).json({ message: "No tiene permiso para ver esta necesidad." });
+            }
+        }
+
         return res.status(200).json({ data: need });
 
     } catch (err) {
@@ -67,11 +131,26 @@ const getNeed = async (req, res) => {
         return res.status(500).json({message: "Error al intentar obtener una necesidad."});
     }
 };
-const getNeeds = async (_req, res) => {
+const getNeeds = async (req, res) => {
     try {
-        const needs = await INSTITUTIONNEED.findAll();
+        const responsable_user = req.user_find;
 
-        return res.status(200).json({ data: needs });
+        let needs;
+
+        if (responsable_user.rol === 4) {
+            // Solo las suyas
+            needs = await INSTITUTIONNEED.findAll({
+                where: { institution_id: responsable_user.id }
+            });
+        } else {
+            // Admin ve todas
+            needs = await INSTITUTIONNEED.findAll();
+        }
+
+        return res.status(200).json({ 
+            message: "Se listo las necesidades correctamente",
+            data: needs 
+        });
 
     } catch (err) {
         console.error("Error:", err.message);
@@ -80,20 +159,26 @@ const getNeeds = async (_req, res) => {
 };
 const getNeedByInstitution = async (req, res) => {
     try {
-        const { institution_id } = req.params;
+        const responsable_user = req.user_find;
+        let { id } = req.params;
 
-        if (!institution_id || isNaN(Number(institution_id))) {
-            return res.status(400).json({ message: "Institution ID inválido." });
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
         }
 
-        const existInstitution = await INSTITUTION.findByPk(institution_id);
+        id = Number(id);
+
+        // Si ES institución → solo puede consultar SUS NECESIDADES
+        if (responsable_user.rol === 4 && responsable_user.id !== id) {
+            return res.status(403).json({ message: "No tiene permiso para ver necesidades de otra institución." });
+        }
+
+        const existInstitution = await INSTITUTION.findByPk(id);
         if(!existInstitution){
-            return res.status(404).send({message: "El ID de la institucion que introdujo no existe"})
+            return res.status(404).send({message: "El ID de la institucion no existe"});
         }
 
-        const needs = await INSTITUTIONNEED.findAll({
-            where: { institution_id }
-        });
+        const needs = await INSTITUTIONNEED.findAll({ where: { institution_id:id } });
 
         if (needs.length === 0) {
             return res.status(404).json({
@@ -101,24 +186,26 @@ const getNeedByInstitution = async (req, res) => {
             });
         }
 
-        return res.status(200).json({ data: needs });
+        return res.status(200).json({ 
+            message: "Se listaron las necesidades correctamente",
+            data: needs });
 
     } catch (err) {
-        res.status(500).json({ message: "Error al obtener necesidades de la institución." });
+        console.error("Error:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener necesidades de la institución."});
     }
 };
 const updateNeed = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { available } = req.body;
+        const responsable_user = req.user_find;
+
+        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
         }
 
-        if (available === undefined || isNaN(Number(available))) {
-            return res.status(400).json({ message: "El campo 'available' es obligatorio y debe ser número." });
-        }
+        id = Number(id);
 
         const need = await INSTITUTIONNEED.findByPk(id);
 
@@ -126,7 +213,59 @@ const updateNeed = async (req, res) => {
             return res.status(404).json({ message: "La necesidad no existe." });
         }
 
-        await need.update({ available });
+        // SI ES INSTITUCIÓN → solo puede editar necesidades suyas
+        if (responsable_user.rol === 4) {
+            if (need.institution_id !== responsable_user.id) {
+                return res.status(403).json({ message: "No tiene permiso para modificar esta necesidad." });
+            }
+        }
+
+        const { available, article_id } = req.body;
+        const updateFields = {};
+
+        if (available !== undefined) {
+            if (!isNaN(Number(available))) {
+                updateFields.available = Number(available);
+            } else {
+                return res.status(400).json({ message: "available debe ser un número válido." });
+            }
+        }
+
+        if (article_id !== undefined) {
+            if (!isNaN(Number(article_id))) {
+
+                // EVITAR DUPLICADO
+                const duplicateNeed = await INSTITUTIONNEED.findOne({
+                    where: {
+                        institution_id: need.institution_id,
+                        article_id: Number(article_id)
+                    }
+                });
+
+                if (duplicateNeed && duplicateNeed.id !== need.id) {
+                    return res.status(400).json({
+                        message: "Ya existe una necesidad con ese artículo para esta institución."
+                    });
+                }
+
+                // Verificar que exista el artículo
+                const existArticle = await ARTICLE.findByPk(article_id);
+                if (!existArticle) {
+                    return res.status(404).json({ message: "El ID del artículo no existe." });
+                }
+
+                updateFields.article_id = Number(article_id);
+
+            } else {
+                return res.status(400).json({ message: "article_id debe ser un número válido." });
+            }
+        }
+
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ message: "Debe enviar al menos un campo para actualizar." });
+        }
+
+        await need.update(updateFields);
 
         return res.status(200).json({
             message: "Necesidad actualizada correctamente",
@@ -135,7 +274,7 @@ const updateNeed = async (req, res) => {
 
     } catch (err) {
         console.error("Error:", err.message);
-        return res.status(500).json({message: "Error al intentar actualizar una necesidad."});
+        return res.status(500).json({ message: "Error al intentar actualizar la necesidad." });
     }
 };
 const updateStatusNeed = async (req,res) =>{
@@ -159,18 +298,17 @@ const updateStatusNeed = async (req,res) =>{
             return res.status(404).send({message: "El campo es obligatorio y tiene que introducir un valor valido"})
         }
 
-        if(status !== "Pending" || status !== "Resolved"){
+        if(status !== "Pending" && status !== "Resolved"){
             return res.status(404).send({message: "Tiene que elegir un estado valido, ya sea 'Pending' o 'Resolved'. "})
         }
 
         existInstitution.update(
-            {status: status},
-            {
-                where:{
-                    institution_id: id
-                }
-            }
+            {status: status}
         )
+
+        return res.status(200).json({
+            message: "Se actualizo correctamente",
+        })
     } catch (err) {
         console.error("Error:", err.message);
         return res.status(500).json({message: "Error al intentar actualizar el estado de una necesidad."});
@@ -178,6 +316,8 @@ const updateStatusNeed = async (req,res) =>{
 }
 const deleteNeed = async (req, res) => {
     try {
+        const responsable_user = req.user_find;
+
         let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
@@ -186,17 +326,25 @@ const deleteNeed = async (req, res) => {
 
         id = Number(id);
 
-        const existNeed = await INSTITUTIONNEED.findByPk(id);
-        if(!existNeed){
-            return res.status(404).send({message: "El ID de la necesidad que introdujo no es existe o Ya fue eliminada"})
+        const need = await INSTITUTIONNEED.findByPk(id);
+        if(!need){
+            return res.status(404).send({message: "La necesidad no existe o ya fue eliminada"});
         }
-        existNeed.destroy()
+
+        // Si ES institución → solo puede borrar las suyas
+        if (responsable_user.rol === 4) {
+            if (need.institution_id !== responsable_user.id) {
+                return res.status(403).json({ message: "No tiene permiso para eliminar esta necesidad." });
+            }
+        }
+
+        await need.destroy();
 
         return res.status(200).json({ message: "Necesidad eliminada correctamente." });
 
     } catch (err) {
         console.error("Error:", err.message);
-        return res.status(500).json({message: "Error al intentar eleminar la necesidad."});
+        return res.status(500).json({message: "Error al intentar eliminar la necesidad."});
     }
 };
 
