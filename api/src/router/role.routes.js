@@ -23,7 +23,7 @@ router.post(
     createRole
 ); // No Testeado
 
-// Obtener todas las donaciones recibidas por parte de BAA (ASSIGN)
+// Cambiar de rol a un usuario (ASSIGN)
 router.patch(
     '/:id',
     verifyToken,

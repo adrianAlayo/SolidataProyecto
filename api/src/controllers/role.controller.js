@@ -70,7 +70,7 @@ const assignRoles = async (req,res) =>{
         console.error("Error asignar el rol:", err.message);
         return res.status(500).json({ message: "Error al intentar asignar un rol." });
     } 
-}
+};
 const editRole = async (req, res) => {
     try {
         const { name, updateRole, updateDescription } = req.body;

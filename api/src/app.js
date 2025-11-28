@@ -13,6 +13,7 @@ const inventoryRouter = require('./router/inventory.routes');
 const reportRouter = require('./router/report.routes');
 const typeRouter = require('./router/type.routes');
 const userRouter = require('./router/user.routes');
+const roleRouter = require('./router/role.routes');
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -36,6 +37,7 @@ app.use('/inventory', inventoryRouter);
 app.use('/report', reportRouter);
 app.use('/type', typeRouter);
 app.use('/user', userRouter);
+app.use('/role', roleRouter);
 
 
 
