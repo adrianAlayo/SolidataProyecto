@@ -6,7 +6,7 @@ const {
     createType,
     getTypes,
     getType,
-    UpdateType,
+    updateType,
     deleteType
 
 } = require('../controllers/type.controller');
@@ -44,7 +44,7 @@ router.put(
     '/:id',
     verifyToken,
     authorize("TYPES", "UPDATE"),
-    UpdateType
+    updateType
 ); // No Testeado
 
 // Eliminar un tipo (DELETE)
