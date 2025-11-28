@@ -45,7 +45,7 @@ router.get(
 
 // Obtener el inventario de los items de una donacion (READ)
 router.get(
-    '/ByDonationitem',
+    '/ByDonationItem/:id',
     verifyToken,
     authorize("INVENTORIES", "READ"),
     getInventoryByDonationItem
@@ -53,7 +53,7 @@ router.get(
 
 // Obtener el stock total de un artículo (READ)
 router.get(
-    '/OnlyArticle',
+    '/OnlyArticle/:id',
     verifyToken,
     authorize("INVENTORIES", "READ"),
     getInventoryOnlyArticle
