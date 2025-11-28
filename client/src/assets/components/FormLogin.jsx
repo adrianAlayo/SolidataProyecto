@@ -22,16 +22,17 @@ export function FormLogin() {
       loginUser(data.token);
 
       const payload = jwtDecode(data.token);
-
-      switch (payload.roleName) {
-        case "Admin":
-          navigate("/admin");
+      console.log(payload);
+      
+      switch (payload.rol) {
+        case 1:
+          navigate("/admin/");
           break;
         case "Institucion":
           navigate("/institution");
           break;
-        case "Operador":
-          navigate("/employeeOperator");
+        case 2:
+          navigate("/homeemployeeOp");
           break;
         case "Coordinador":
           navigate("/employeeCoordinator");
