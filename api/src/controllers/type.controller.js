@@ -1,28 +1,37 @@
 const TYPE = require('../models/type');
+const IsString = require('../utils/isString.util');
+const { where } = require('sequelize');
 
 const createType = async (req, res) => {
     try {
         const { name } = req.body;
 
         // Validaciones
-        if (!name || typeof name !== "string" || name.trim() === "") {
+        if (!IsString(name)) {
             return res.status(400).send({ message: "El campo 'name' es obligatorio y debe ser un texto válido." });
         }
 
         // Validar si ya existe
-        const existType = await TYPE.findOne({ where: { name } });
+        const existType = await TYPE.findOne({
+            where:{
+                name: name
+            }
+        });
         if (existType) {
             return res.status(400).send({ message: "El type ya existe." });
         }
 
         const newType = await TYPE.create({ name });
 
-        return res.status(201).send({
+        if(!newType){
+            return res.status(404).send({message: "Ocurrio un error inesperado al intentar crear el nuevo tipo de institucion"})
+        }
+        return res.status(201).json({
             message: "TYPE creado correctamente.",
             data: newType,
         });
     } catch (err) {
-        console.error("Error!!! a la hora de crear el TYPE: ->    ", err);
+        console.error("Error:", err.message);
         return res.status(500).send({ message: "Error!!! a la hora de crear el TYPE: -> "});
     }
 };
@@ -60,11 +69,17 @@ const getType = async (req, res) => {
 };
 const updateType = async (req, res) => {
     try {
-        const { id } = req.params;
+        let { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
         const { name } = req.body;
 
         // Validación
-        if (!name || typeof name !== "string" || name.trim() === "") {
+        if (!IsString(name)) {
             return res.status(400).send({ message: "El campo 'name' es obligatorio y debe ser válido." });
         }
 
@@ -76,7 +91,7 @@ const updateType = async (req, res) => {
 
         // Verificar si existe otro type con el mismo nombre
         const nameExists = await TYPE.findOne({ where: { name } });
-        if (nameExists && nameExists.id !== Number(id)) {
+        if (nameExists) {
             return res.status(400).send({ message: "Ya existe un Type con ese nombre." });
         }
 

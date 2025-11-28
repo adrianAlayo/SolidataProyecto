@@ -1,4 +1,4 @@
-const { where, Model } = require('sequelize');
+const { where, Model, Op } = require('sequelize');
 const USER = require('../models/user');
 const ROLE = require('../models/role');
 const IsString = require ('../utils/isString.util');
@@ -73,59 +73,79 @@ const assignRoles = async (req,res) =>{
 };
 const editRole = async (req, res) => {
     try {
-        const { name, updateRole, updateDescription } = req.body;
+        let { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
 
         // Verificar que el rol exista
-        const role = await ROLE.findOne({ where: { name } });
+        const role = await ROLE.findOne({ where: { id } });
         if (!role) {
         return res.status(404).send({ message: "No se encontró el rol especificado." });
         }
 
+        const { name, description} = req.body;
+
         // Armar objeto dinámico de actualización
         const fieldsToUpdate = {};
 
-        if (isString(updateRole)) {
-        // Verificar que el nuevo nombre no exista ya
-        const duplicate = await ROLE.findOne({ where: { name: updateRole } });
-        if (duplicate) {
-            return res.status(400).send({ message: "Ya existe un rol con ese nuevo nombre." });
+        if(name !== undefined){
+            if(!isString(name)){
+                return res.status(404).send({message: "El campo 'name' deber un tipo valido"})
+            }
+            const existName = await ROLE.findOne({
+                where: {
+                    name: name
+                }
+            });
+            if(existName){
+                return res.status(404).send({message: "El 'name' que puso para que se actualize ya existe"})
+            }
+            fieldsToUpdate.name = name;
         }
-        fieldsToUpdate.name = updateRole;
-        }
-
-        if (isString(updateDescription)) {
-        fieldsToUpdate.description = updateDescription;
+        if(description !== undefined){
+            if(!isString(description)){
+                return res.status(404).send({message: "El campo 'description' deber un tipo valido"})
+            }
+            fieldsToUpdate.description = description;
         }
 
         if (Object.keys(fieldsToUpdate).length === 0) {
         return res.status(400).send({
-            message: "Debe proporcionar 'updateRole' o 'updateDescription' para actualizar.",
+            message: "Debe completar al menos 1 campo para actualizar.",
         });
         }
 
-        // Actualizar el rol
-        await ROLE.update(fieldsToUpdate, { where: { name } });
+        // Actualizar
+        await ROLE.update(fieldsToUpdate, { where: { id } });
 
-        return res.status(200).send({
+        return res.status(200).json({
             message: "Rol actualizado correctamente.",
             updatedFields: fieldsToUpdate,
         });
     } catch (error) {
-        console.error("Error al editar rol:", error);
+        console.error("Error:", error.message);
         return res.status(500).send({ message: "Error!!! A la hora de editar el ROL" });
     }
 };
 const deleteRole = async (req, res) => {
   try {
-    const { name } = req.body;
+        let { id } = req.params;
 
-    const role = await ROLE.findOne({ where: { name } });
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+    const role = await ROLE.findOne({ where: { id } });
     if (!role) {
       return res.status(404).send({ message: "No se encontró el rol." });
     }
-
-    // Eliminar el rol
-    await ROLE.destroy({ where: { name } });
+    role.destroy()
 
     return res.status(200).send({ message: "Rol eliminado correctamente." });
   } catch (error) {
@@ -152,7 +172,7 @@ const getRoles = async (_req, res) => {
 }
 const getRole = async (req,res) =>{
     try {
-        const { id } = req.params;
+        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
@@ -172,7 +192,7 @@ const getRole = async (req,res) =>{
         });
 
     } catch (err) {
-        console.error("Error al obtener la info del rol:", err.message);
+        console.error("Error:", err.message);
         return res.status(500).json({message: "Error al intentar obtener la informacion del rol."});
     }
 }

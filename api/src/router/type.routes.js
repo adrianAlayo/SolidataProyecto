@@ -21,7 +21,7 @@ router.post(
     verifyToken,
     authorize("TYPES", "CREATE"),
     createType
-); // No Testeado
+); // Testeado
 
 // Obtener todas los Tipos (READ)
 router.get(
@@ -29,7 +29,7 @@ router.get(
     verifyToken,
     authorize("TYPES", "READ"),
     getTypes
-); // No Testeado
+); // Testeado
 
 // Obtener la informacion de 1 tipo (READ)
 router.get(
@@ -37,7 +37,7 @@ router.get(
     verifyToken,
     authorize("TYPES", "READ"),
     getType
-); // No Testeado
+); // Testeado
 
 // Actualizar el tipo (UPDATE)
 router.put(
@@ -45,7 +45,7 @@ router.put(
     verifyToken,
     authorize("TYPES", "UPDATE"),
     updateType
-); // No Testeado
+); // Testeado
 
 // Eliminar un tipo (DELETE)
 router.delete(
@@ -53,6 +53,6 @@ router.delete(
     verifyToken,
     authorize("TYPES", "DELETE"),
     deleteType
-); // No Testeado
+); // Testeado
 
 module.exports = router;
