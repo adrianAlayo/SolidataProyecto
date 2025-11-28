@@ -3,64 +3,82 @@ const router = express.Router();
 
 // Controladores
 const {
-    createItem,
-    getItem,
-    getItems,
-    getItemsByDonation,
-    updateItem,
-    deleteItem
+    createInstitution,
+    getInstitution,
+    getInstitutions,
+    getInstitutionsInactive,
+    getInstitutionsActive,
+    disableInstitution,
+    acceptInstitution,
+    deleteInstitution
 } = require('../controllers/institution.controller');
 
 // Middlewares
 const verifyToken = require('../middlewares/VerifyToken.middleware');
 const authorize = require('../middlewares/AuthorizationRole.middleware');
 
-// Crear un item de donacion (CREATE)
+// Crear una institucion (CREATE)
 router.post(
     '/',
     verifyToken,
-    authorize("DONATIONITEMS", "CREATE"),
-    createItem
+    authorize("INSTITUTIONS", "CREATE"),
+    createInstitution
 ); // Testeado
 
-// Obtener todos los items (READ)
+// Obtener todas las instituciones (READ)
 router.get(
     '/',
     verifyToken,
-    authorize("DONATIONITEMS", "READ"),
-    getItems
+    authorize("INSTITUTIONS", "READ"),
+    getInstitutions
 ); // Testeado
 
-// Obtener la informacion de 1 item (READ)
+// Obtener la informacion de 1 institucion (READ)
 router.get(
     '/:id',
     verifyToken,
-    authorize("DONATIONITEMS", "READ"),
-    getItem
+    authorize("INSTITUTIONS", "READ"),
+    getInstitution
 ); // Testeado
 
-// Obtener la informacion de los ITEMS de un mismo donante (READ)
+// Obtener todas las instituciones inactivas (READ)
 router.get(
-    '/ByDonation/:donation_id',
+    '/Inactive',
     verifyToken,
-    authorize("DONATIONITEMS", "READ"),
-    getItemsByDonation
+    authorize("INSTITUTIONS", "READ"),
+    getInstitutionsInactive
 ); // Testeado
 
-// Actualizar un item (PUT)
-router.put(
+// Obtener todas las instituciones activas (READ)
+router.get(
+    '/Active',
+    verifyToken,
+    authorize("INSTITUTIONS", "READ"),
+    getInstitutionsActive
+); // Testeado
+
+// Desactivas una institucion (CHANGE_STATUS)
+router.patch(
     '/:id',
     verifyToken,
-    authorize("DONATIONITEMS", "UPDATE"),
-    updateItem
+    authorize("INSTITUTIONS", "CHANGE_STATUS"),
+    disableInstitution
 ); // Testeado
 
-// Obtener todos las donaciones de un mismo voluntario donador(DELETE)
+// Aceptar una institucion (APPROVE)
+router.patch(
+    '/:id',
+    verifyToken,
+    authorize("INSTITUTIONS", "APPROVE"),
+    acceptInstitution
+); // Testeado
+
+// Eliminar una institucion (DELETE)
 router.delete(
     '/:id',
     verifyToken,
-    authorize("DONATIONS", "DELETE"),
-    deleteItem
+    authorize("INSTITUTIONS", "DELETE"),
+    deleteInstitution
 ); // Testeado
 
 module.exports = router;

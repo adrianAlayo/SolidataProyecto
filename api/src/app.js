@@ -8,6 +8,10 @@ const authRouter = require('./router/auth.routes');
 const userRouter = require('./router/user.routes');
 const donationRouter = require('./router/donation.routes');
 const donationItemRouter = require('./router/donationItem.routes');
+const institutionRouter = require('./router/institution.routes');
+
+
+
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -24,7 +28,8 @@ app.use('/auth',authRouter);
 app.use('/articles', articleRouter);
 app.use('/user', userRouter);
 app.use('/donation', donationRouter);
-app.use('/item',donationItemRouter);
+app.use('/item', donationItemRouter);
+app.use('/institution', institutionRouter);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {

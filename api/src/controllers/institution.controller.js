@@ -1,5 +1,7 @@
-const { where, Op } = require('sequelize');
+const { where, Op } = require('sequelize');const bcrypt = require('bcrypt');
+
 const INSTITUTION = require('../models/institution');
+const USER = require('../models/user');
 
 const createInstitution = async(req,res) =>{
     try{
@@ -16,16 +18,14 @@ const createInstitution = async(req,res) =>{
             name: name_inst, 
             location: location_inst,
             institutionType: type_inst,
-            status: "Active", 
-            type_id: type, 
+            type_id: type,
         });
         const user_create = await USER.create({
             first_name: first_name, 
             last_name: last_name, 
             email: email,
             password: password_hash_inCharge, 
-            phone: phone, 
-            is_active: true, 
+            phone: phone,  
             institution_id: institution_create.id,
             role_id: 4 // rol por defecto para instituciones 
         });
@@ -36,8 +36,55 @@ const createInstitution = async(req,res) =>{
             institution_create,
         });
     }catch(err){
-        console.error("Error al crear una institucion:", err);
+        console.error("Error al crear una institucion:", err.message);
         return res.status(500).json({message: "Error al intentar crear una institucion."});
+    }
+}
+const getInstitutions = async(_req,res) =>{
+    try{
+        const institutions = await INSTITUTION.findAll({
+            attributes:{
+                exclude: "password"
+            }
+        })
+        if(!institutions || institutions.length === 0){
+            res.status(404).send({message: "No hay instituciones por el momento"});
+        }
+
+        res.status(201).json({
+            message: "Liista de instituciones exitosamente",
+            institutions
+        });
+        
+    }catch(err){
+        console.error("Error al obtener la lista de las instituciones:", err.message);
+        return res.status(500).json({message: "Error al intentar obtener la lista de las institciones."});
+    }
+}
+const getInstitution = async(req,res) =>{
+    try {
+       let { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+        const institution = await INSTITUTION.findByPk(id);
+
+        if (!institution) {
+            return res.status(404).json({ message: "No se encontro la institucion." });
+        }
+
+        return res.status(200).json({
+            message: "Artículo encontrado.",
+            data: institution
+        });
+
+    } catch (err) {
+        console.error("Error al obtener una institucion:", err);
+        return res.status(500).json({message: "Error al intentar obtener una institucion."});
     }
 }
 const getInstitutionsInactive = async(_req,res) =>{
@@ -87,53 +134,6 @@ const getInstitutionsActive = async(_req,res) =>{
         return res.status(500).json({message: "Error al intentar obtener la lista de las institciones activas."});
     }
 }
-const getInstitutions = async(_req,res) =>{
-    try{
-        const institutions = await INSTITUTION.findAll({
-            attributes:{
-                exclude: "password"
-            }
-        })
-        if(!institutions || institutions.length === 0){
-            res.status(404).send({message: "No hay instituciones por el momento"});
-        }
-
-        res.status(201).json({
-            message: "Liista de instituciones exitosamente",
-            institutions
-        });
-        
-    }catch(err){
-        console.error("Error al obtener la lista de las instituciones:", err.message);
-        return res.status(500).json({message: "Error al intentar obtener la lista de las institciones."});
-    }
-}
-const getInstitution = async(req,res) =>{
-    try {
-       const { id } = req.params;
-
-        if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "ID inválido." });
-        }
-
-        id = Number(id);
-
-        const institution = await INSTITUTION.findByPk(id);
-
-        if (!institution) {
-            return res.status(404).json({ message: "No se encontro la institucion." });
-        }
-
-        return res.status(200).json({
-            message: "Artículo encontrado.",
-            data: institution
-        });
-
-    } catch (err) {
-        console.error("Error al obtener una institucion:", err);
-        return res.status(500).json({message: "Error al intentar obtener una institucion."});
-    }
-}
 const disableInstitution = async (req,res) =>{
     try{
         const {name,email} = req.body;
@@ -163,13 +163,13 @@ const disableInstitution = async (req,res) =>{
 
         res.status(201).json({message: "Se dios de baja (Parcial) exitosamente a la Institucion"})
     }catch(err){
-        console.error("Error al desactivar la institucion:", err.message);
+        console.error("Error:", err.message);
         return res.status(500).json({message: "Error al intentar al desactivar la institucion."});    
     }
 }
 const acceptInstitution = async (req, res) => {
     try {
-       const { id } = req.params;
+       let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
@@ -193,13 +193,13 @@ const acceptInstitution = async (req, res) => {
 
         res.status(200).json({message: "La institución fue aceptada correctamente",});
     } catch (err) {
-        console.error("Error al aceptar a la institucion: ", err.message);
+        console.error("Error: ", err.message);
         return res.status(500).json({ message: "Error al intentar aceptar a la institucion." });
     }
 };
 const deleteInstitution = async (req,res)=>{
     try{
-       const { id } = req.params;
+       let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
@@ -216,7 +216,7 @@ const deleteInstitution = async (req,res)=>{
 
         res.status(200).send({ message: "La Institucion eliminado correctamente" });
     }catch(err){
-        console.error("Error al eliminar la institucion:", err.message);
+        console.error("Error:", err.message);
         return res.status(500).json({ message: "Error al intentar eliminar la institucion." });
     }
 };

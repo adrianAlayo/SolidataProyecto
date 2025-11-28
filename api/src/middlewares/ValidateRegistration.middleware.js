@@ -31,15 +31,14 @@ async function ValidateRegistrationInstitution (req, res, next) {
     }
 
     //Verificar que exista el Tipo de Institution
-    const exist_TypeInst = await TYPE.findOne({
+    const exist_Type = await TYPE.findOne({
         where:{
             name: type,
         }
     })
-    if(!exist_TypeInst){
+    if(!exist_Type){
         return res.status(404).json({ message: "Tiene que selecionar una tipo valido." });
     }
-    type_inst = exist_TypeInst.id;
 
     if(type_inst !== "Both" && type_inst !== "Recipient" && type_inst !== "Donor"){
         return res.status(404).send({message: "Tine que introducir un valor valido 'Both', 'Recipient' o 'Donor'. "})
@@ -55,6 +54,7 @@ async function ValidateRegistrationInstitution (req, res, next) {
         name_inst,
         location_inst,
         type_inst,
+        type,
     };
     next();
 }
