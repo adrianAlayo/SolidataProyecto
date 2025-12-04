@@ -21,9 +21,9 @@ const menuData = [
     { 
         label: "Rol", 
         children: [
-            { label: "Crear", path: "#" }, 
-            { label: "Actualizar", path: "#" }, 
-            { label: "Eliminar", path: "#" },
+            { label: "Crear", path: "/admin/roles/create" }, 
+            { label: "Actualizar", path: "/admin/roles/update" }, 
+            { label: "Eliminar", path: "/admin/roles/delete" },
         ] 
     }, 
     { 

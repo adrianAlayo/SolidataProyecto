@@ -19,6 +19,9 @@ import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
 import CreateArticles from "./assets/pages/admin/article/CreateArticle.jsx";
 import UpdateArticles from "./assets/pages/admin/article/UpdateArticle.jsx";
 import DeleteArticles from "./assets/pages/admin/article/DeleteArticle.jsx";
+import CreateRoles from "./assets/pages/admin/rol/CreateRol.jsx";
+import UpdateRoles from "./assets/pages/admin/rol/UpdateRol.jsx";
+import DeleteRoles from "./assets/pages/admin/rol/DeleteRol.jsx";
 
 function App() {
     return (
@@ -58,6 +61,11 @@ function App() {
                 <Route path="/admin/articles/:id" element={<div className="#"> </div>} /> {/* GET id */}
                 <Route path="/admin/articles/update" element={<div className="#"> <UpdateArticles/> </div>} />  {/* PUT */}
                 <Route path="/admin/articles/delete" element={<div className="#"> <DeleteArticles/> </div>} />  {/* DELTE */}
+
+
+                <Route path="/admin/roles/create" element={<div className="#"> <CreateRoles/> </div>} /> {/* GET*/}
+                <Route path="/admin/roles/update" element={<div className="#"> <UpdateRoles/> </div>} /> {/* GET*/}
+                <Route path="/admin/roles/delete" element={<div className="#"> <DeleteRoles/> </div>} /> {/* GET*/}
 
 
                 <Route path="/admin/items/" element={<div className="#"> </div>} />  {/* POST */}
