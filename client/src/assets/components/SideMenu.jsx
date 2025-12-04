@@ -5,78 +5,77 @@ import {
   ListItemButton,
   ListItemText,
   Collapse,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { Menu, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import menuData from "./SideMenuData";
 import "./SideMenu.css";
 
-export default function Sidebar({ mode = "admin" }) {
+export default function SideMenu() {
   const [open, setOpen] = useState(false);
-  const [openForms, setOpenForms] = useState(false);
 
+  // Estado dinámico para submenús (almacena qué ítems están abiertos)
+  const [openMap, setOpenMap] = useState({});
+
+  const navigate = useNavigate();
   const toggleDrawer = () => setOpen(!open);
 
-  // MENÚS SEGÚN USUARIO
-  const menuAdmin = [
-    { label: "Home" },
-    { label: "Historial" },
-    { label: "Solicitud" },
-    {
-      label: "Formularios",
-      children: ["Existencia", "Negación"]
-    }
-  ];
+  // --- Manejar apertura/cierre dinámico ---
+  const toggleItem = (id) => {
+    setOpenMap((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
-  const menuEmployee = [
-    { label: "Home" },
-    { label: "Historial" },
-    {
-      label: "Formularios",
-      children: ["Registro Donaciones", "Registro Donantes"]
-    }
-  ];
+  // --- Render recursivo para soportar submenús infinitos ---
+  const renderMenu = (items, parentId = "") => (
+    <List component="div" disablePadding>
+      {items.map((item) => {
+        const hasChildren = Array.isArray(item.children);
+        const itemId = parentId ? `${parentId}/${item.label}` : item.label;
 
-  const menu = mode === "admin" ? menuAdmin : menuEmployee;
+        return (
+          <div key={itemId}>
+            <ListItemButton
+              sx={{ pl: parentId ? 4 : 2 }}
+              onClick={() => {
+                if (hasChildren) {
+                  toggleItem(itemId);
+                } else {
+                  navigate(item.path);
+                  toggleDrawer();
+                }
+              }}
+            >
+              <ListItemText primary={item.label} />
+              {hasChildren &&
+                (openMap[itemId] ? <ExpandLess /> : <ExpandMore />)}
+            </ListItemButton>
+
+            {/* Submenús */}
+            {hasChildren && (
+              <Collapse in={!!openMap[itemId]} timeout="auto" unmountOnExit>
+                {renderMenu(item.children, itemId)}
+              </Collapse>
+            )}
+          </div>
+        );
+      })}
+    </List>
+  );
 
   return (
     <>
       {/* BOTÓN HAMBURGUESA */}
-      <IconButton onClick={toggleDrawer} className="sidebar-toggle" >
+      <IconButton onClick={toggleDrawer} className="sidebar-toggle">
         <Menu />
       </IconButton>
 
-      {/* SIDEBAR DESPLEGABLE */}
+      {/* SIDEBAR */}
       <Drawer anchor="left" open={open} onClose={toggleDrawer}>
-        <div className="sidebar-container">
-          <List>
-            {menu.map((item) => (
-              <div key={item.label}>
-                {!item.children ? (
-                  <ListItemButton onClick={() => console.log(item.label)}>
-                    <ListItemText primary={item.label} />
-                  </ListItemButton>
-                ) : (
-                  <>
-                    <ListItemButton onClick={() => setOpenForms(!openForms)}>
-                      <ListItemText primary={item.label} />
-                      {openForms ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-
-                    <Collapse in={openForms} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {item.children.map((sub) => (
-                          <ListItemButton key={sub} sx={{ pl: 4 }}>
-                            <ListItemText primary={sub} />
-                          </ListItemButton>
-                        ))}
-                      </List>
-                    </Collapse>
-                  </>
-                )}
-              </div>
-            ))}
-          </List>
-        </div>
+        <div className="sidebar-container">{renderMenu(menuData)}</div>
       </Drawer>
     </>
   );

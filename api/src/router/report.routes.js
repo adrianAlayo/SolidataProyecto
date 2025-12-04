@@ -55,13 +55,5 @@ router.get(
     UserActivity
 ); // No Testeado
 
-// Obtener la informacion de todos los inventory (READ)
-router.get(
-    '/Inventory',
-    verifyToken,
-    authorize("INVENTORIES", "READ"),
-    Inventory
-); // No Testeado
-
 
 module.exports = router;

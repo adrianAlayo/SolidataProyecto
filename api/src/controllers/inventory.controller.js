@@ -75,7 +75,6 @@ const createInventory = async (req, res) => {
     return res.status(500).json({ message: 'Error interno al crear inventory', error: err.message });
   }
 };
-
 const getInventory = async (req, res) => {
     try {
         let { id } = req.params;
@@ -103,7 +102,6 @@ const getInventory = async (req, res) => {
         return res.status(500).json({ message: 'Error interno al obtener inventory', error: err.message });
     }
 };
-
 const getInventories = async (_req, res) => {
   try {
     const inventories = await INVENTORY.findAll({
@@ -121,7 +119,6 @@ const getInventories = async (_req, res) => {
     return res.status(500).json({ message: 'Error interno al listar inventories', error: err.message });
   }
 };
-
 const getInventoryByDonationItem = async (req, res) => {
     try {
         let { id } = req.params;
@@ -174,8 +171,6 @@ const getInventoryByDonationItem = async (req, res) => {
         });
     }
 };
-
-//FUN
 const getInventoryOnlyArticle = async (req, res) => {
   try {
         let { id } = req.params;
@@ -214,7 +209,6 @@ const getInventoryOnlyArticle = async (req, res) => {
     return res.status(500).json({ message: 'Error interno al calcular stock por artículo', error: err.message });
   }
 };
-//FUN
 const getInventoriesOnlyArticles = async (_req, res) => {
   try {
     // hacemos join DonationItem -> Inventory -> Article y agrupamos por article_id
@@ -256,7 +250,6 @@ const getInventoriesOnlyArticles = async (_req, res) => {
     return res.status(500).json({ message: 'Error interno al agrupar stock por artículo', error: err.message });
   }
 };
-//FUN
 const getInventoriesOnlyArticlesArea = async (req, res) => {
   try {
     const rows = await INVENTORY.findAll({
@@ -300,7 +293,6 @@ const getInventoriesOnlyArticlesArea = async (req, res) => {
     return res.status(500).json({ message: 'Error interno al agrupar stock por artículo y área' });
   }
 };
-//Fun 
 const getInventoryOnlyArticleArea = async (req, res) => {
   try {
     const { article_id, area } = req.body;
@@ -335,7 +327,6 @@ const getInventoryOnlyArticleArea = async (req, res) => {
     return res.status(500).json({ message: 'Error interno al calcular stock por artículo en área', error: err.message });
   }
 };
-
 const updateInventory = async (req, res) => {
   try {
         let { id } = req.params;
@@ -382,7 +373,6 @@ const updateInventory = async (req, res) => {
         return res.status(500).json({ message: 'Error interno al actualizar inventory'});
   }
 };
-
 const deleteInventory = async (req, res) => {
   try {
         let { id } = req.params;

@@ -12,6 +12,14 @@
   background-repeat: no-repeat;
 
 }
+.donationTableFormulary{
+  display: flex;
+  justify-content: center;  /* Centra horizontal */
+  align-items: center;       /* Centra vertical */
+  text-align: center;        /* Centra texto */
+  height: 100%;
+  width: 100%;
+}
 
 .pageContainerIndex {
   display: flex;

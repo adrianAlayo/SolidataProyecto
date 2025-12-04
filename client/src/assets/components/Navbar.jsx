@@ -47,7 +47,7 @@ export default function Navbar() {
         <Typography
           variant="h6"
           sx={{ fontWeight: "bold", cursor: "pointer" }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("#")}
         >
           Solidata
         </Typography>
