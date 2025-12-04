@@ -100,13 +100,6 @@ const menuData = [
         ] 
     }, 
     { 
-        label: "Formularios", 
-        children: [
-            { label: "Existencia", path: "/admin/forms/existencia" }, 
-            { label: "Negación", path: "/admin/forms/negacion" }
-        ] 
-    }, 
-    { 
         label: "Informacion", 
         children: [
             { label: "Articulo/s", path: "#" }, 
