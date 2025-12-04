@@ -2,33 +2,59 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notification from "../Notification";
 import './FormDeleteRol.css'
+import { deleteRole } from "../../services/rol.service";
+
 
 export default function DeleteRol() {
 
     const [id, setId] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Estados para notificación
+        // Notificaciones
     const [notifOpen, setNotifOpen] = useState(false);
     const [notifMsg, setNotifMsg] = useState("");
     const [notifType, setNotifType] = useState("success");
 
+    const showNotification = (message, type = "success") => {
+        setNotifMsg(message);
+        setNotifType(type);
+        setNotifOpen(true);
+    };
+
     const navigate = useNavigate();
 
     const handleDelete = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      alert("Rol eliminado con Exito!");
-      navigate("/admin/home");
-    } catch (err) {
-      console.error(err);
-      alert("Error al eliminar un rol");
-    } finally {
-      setLoading(false);
-    }
-  };
+            e.preventDefault();
+            setLoading(true);
+    
+            try {
+                const result = await deleteRole(id);
+    
+                showNotification(result.message, "success");
+    
+                setTimeout(() => {
+                    navigate("/admin/home");
+                }, 1000);
+            } catch (err) {
+                console.log(err.message);
+                
+                const apiMessage = err.response?.data?.message;
+                const apiDetails = err.response?.data?.details; // opcional, si lo envías
+                const status = err.response?.status;
+    
+                let finalMessage = "";
+    
+                if (status) finalMessage += `Error ${status}: `;
+                if (apiMessage) finalMessage += apiMessage;
+    
+                // Si hay detalles, los agregamos
+                if (apiDetails) finalMessage += ` — ${apiDetails}`;
+    
+                showNotification(finalMessage || "Error inesperado.", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
 
     return (
         <>
