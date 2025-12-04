@@ -91,7 +91,6 @@
   }
 }
 
-/* Inputs con animación suave */
 .inputAnim {
   transition: all 0.25s ease;
   outline: none;
@@ -118,7 +117,7 @@
   transform: translateY(0);
 }
 
-/* CENTRADO EN PANTALLA COMO EL LOGIN PRO */
+
 .formloginBox {
   background-color: green;
   border-radius: 40px;
@@ -127,12 +126,12 @@
   align-items: center;
   flex-direction: column;
 
-  width: 350px;  /* similar a la card de tu compañero */
+  width: 350px;  
   padding: 10px;
   margin: auto;
 }
 
-/* GRID 2 COLUMNAS PARA REGISTER */
+
 .gridTwoCols {
     width: 100%;
     display: grid;
@@ -141,7 +140,6 @@
     justify-items: center;
 }
 
-/* Asegura que los inputs mantengan el ancho bonito */
 .gridTwoCols input {
     width: 90%;
 }

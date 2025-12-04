@@ -14,6 +14,9 @@ import "leaflet/dist/leaflet.css";
 import RecoverPassword from "./assets/components/FormRecoverPass.jsx";
 import RegisterUser from "./assets/components/FormRegisterUser.jsx";
 import RegisterInstitution from "./assets/components/FormRegisterInstitution.jsx";
+import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
+import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
+import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
 
 
 function App() {
@@ -38,9 +41,14 @@ function App() {
             <Route path="/admin/register/user" element={<div className="#"> </div>} />
             <Route path="/admin/register/institution" element={<div className="#"> </div>} />
 
+            <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
+            <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>
+            <Route path="/admin/users/update" element={<div className="#"> <UpdateUsers/> </div>}/>
+
+
             <Route path="/admin/donations/history" element={<div className="#"> <HistoryD/> </div>} />  {/* POST */}
             <Route path="/admin/donations/update" element={<div className="#"> <UpdateD/> </div>} />  {/* POST */}
-            <Route path="/admin/donations/updateStaus" element={<div className="#"> <UpdateStatusD/> </div>} />  {/* POST */}
+            <Route path="/admin/donations/updateStatus" element={<div className="#"> <UpdateStatusD/> </div>} />  {/* POST */}
             <Route path="/admin/donations/delete" element={<div className="#"> <DeleteD/> </div>} />  {/* POST */}
 
 

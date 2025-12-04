@@ -4,10 +4,10 @@ const menuData = [
     { 
         label: "Usuarios", 
         children: [
-            { label: "Crear", path: "#" }, 
-            { label: "Actualizar", path: "#" }, 
+            { label: "Crear", path: "/admin/users/create" }, 
+            { label: "Actualizar", path: "/admin/users/update" }, 
             { label: "Cambiar Rol", path: "#" }, 
-            { label: "Eliminar", path: "#" },
+            { label: "Eliminar", path: "/admin/users/delete" },
         ], 
     }, 
     { 
@@ -31,7 +31,7 @@ const menuData = [
         children: [
             { label: "Crear", path: "#" }, 
             { label: "Actualizar", path: "/admin/donations/update" }, 
-            { label: "Actualizar Estado", path: "/admin/donations/updateStaus" }, 
+            { label: "Actualizar Estado", path: "/admin/donations/updateStatus" }, 
             { label: "Eliminar", path: "/admin/donations/delete" }, 
             { label: "Productos", 
                 children: [
