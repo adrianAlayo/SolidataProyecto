@@ -76,7 +76,7 @@ export function FormLogin() {
 
         <div className="linksLogin">
           <a className="linkBackLog" href="/">Volver atrás</a>
-          <a className="linkRecoverLog" href="/#">¿Olvidaste tu contraseña?</a>
+          <a className="linkRecoverLog" href="/recoverpass">¿Olvidaste tu contraseña?</a>
         </div>
 
         <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>

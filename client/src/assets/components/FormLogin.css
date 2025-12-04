@@ -131,3 +131,17 @@
   padding: 10px;
   margin: auto;
 }
+
+/* GRID 2 COLUMNAS PARA REGISTER */
+.gridTwoCols {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    justify-items: center;
+}
+
+/* Asegura que los inputs mantengan el ancho bonito */
+.gridTwoCols input {
+    width: 90%;
+}

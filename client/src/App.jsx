@@ -7,6 +7,9 @@ import { AuthProvider } from "./assets/context/AuthContext.jsx";
 import "./App.css"; import HomeAdmin from "./assets/pages/auth/HomeAdmin.jsx";
 import HomeEmployeeOp from "./assets/pages/auth/HomeEmployeeOp.jsx";
 import "leaflet/dist/leaflet.css";
+import RecoverPassword from "./assets/components/FormRecoverPass.jsx";
+import RegisterUser from "./assets/components/FormRegisterUser.jsx";
+import RegisterInstitution from "./assets/components/FormRegisterInstitution.jsx";
 
 function App() {
     return (
@@ -20,25 +23,27 @@ function App() {
         
             {/* PAGINAS AUTH */}
             <Route path="/login" element={<div className="pageContainerLog"> <Login /></div>} />
-            <Route path="/register/Institution" element={<div className="#"> <RegisterInstitution /></div>} />
+            <Route path="/register/user" element={<div className="pageContainerLog"> <RegisterUser/> </div>}/>
+            <Route path="/register/institution" element={<div className="pageContainerLog"> <RegisterInstitution/> </div>}/>
+            <Route path="/recoverpass" element={<div className="pageContainerLog"> <RecoverPassword /> </div>} />
             
             {/* PAGINA ROL ADMIN*/}
             <Route path="/admin/home" element={<div className="#"> <HomeAdmin /></div>} />
-            <Route path="/admin/register/user" element={<div className="#"> <RegisterUser /></div>} />
-            <Route path="/admin/register/institution" element={<div className="#"> <RegisterInstitution /></div>} />
+            <Route path="/admin/register/user" element={<div className="#"> </div>} />
+            <Route path="/admin/register/institution" element={<div className="#"> </div>} />
 
-            <Route path="/admin/article/" element={<div className="#"> <RegisterArticle /></div>} />  {/* POST */}
-            <Route path="/admin/article/" element={<div className="#"> <GetArticle /></div>} /> {/* GET*/}
-            <Route path="/admin/article/:id" element={<div className="#"> <GetArticles /></div>} /> {/* GET id */}
-            <Route path="/admin/article/:id" element={<div className="#"> <PutArticle /></div>} />  {/* PUT */}
-            <Route path="/admin/article/:id" element={<div className="#"> <DeleteArticle /></div>} />  {/* DELTE */}
+            <Route path="/admin/article/" element={<div className="#"> </div>} />  {/* POST */}
+            <Route path="/admin/article/" element={<div className="#"> </div>} /> {/* GET*/}
+            <Route path="/admin/article/:id" element={<div className="#"> </div>} /> {/* GET id */}
+            <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* PUT */}
+            <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* DELTE */}
 
 
-            <Route path="/admin/item/" element={<div className="#"> <RegisterItem /></div>} />  {/* POST */}
-            <Route path="/admin/item/" element={<div className="#"> <GetItems /></div>} /> {/* GET*/}
-            <Route path="/admin/item/:id" element={<div className="#"> <GetItem /></div>} /> {/* GET id */}
-            <Route path="/admin/item/:id" element={<div className="#"> <PutArticle /></div>} />  {/* PUT */}
-            <Route path="/admin/item/:id" element={<div className="#"> <DeleteArticle /></div>} />  {/* DELTE */}
+            <Route path="/admin/item/" element={<div className="#"> </div>} />  {/* POST */}
+            <Route path="/admin/item/" element={<div className="#"> </div>} /> {/* GET*/}
+            <Route path="/admin/item/:id" element={<div className="#"> </div>} /> {/* GET id */}
+            <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* PUT */}
+            <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* DELTE */}
 
             {/* PAGINA ROL COORDINADOR*/}
             

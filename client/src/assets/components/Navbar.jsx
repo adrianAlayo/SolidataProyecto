@@ -30,7 +30,7 @@ export default function Navbar() {
   };
 
 
-  const guestRoutes = ["/", "/login", "/register"];
+  const guestRoutes = ["/", "/login", "/register/user", "/register/institution", "/recoverpass"];
 
 
   const isGuestPage = guestRoutes.includes(location.pathname);
@@ -67,7 +67,7 @@ export default function Navbar() {
               variant="contained"
               color="primary"
               component={Link}
-              to="/register"
+              to="/register/user"
               sx={{ fontWeight: "bold" }}
             >
               Registrarse
