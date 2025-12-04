@@ -1,115 +1,201 @@
 import { useState } from "react";
 import "./FormUpdateUser.css";
 import { useNavigate } from "react-router-dom";
+import { updateUser, getUser } from "../../../services/user.service";
+import Notification from "../../../components/Notification";
 
-export default function RegisterUser() {
-  const [id, setId] = useState("");
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function UpdateUser() {
 
-  const navigate = useNavigate();
+    const [id, setId] = useState("");
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("");
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    const [loading, setLoading] = useState(false);
+    const [loadingSearch, setLoadingSearch] = useState(false);
 
-    try {
-      alert("Usuario creado con Exito!");
-      navigate("/admin/home");
-    } catch (err) {
-      console.error(err);
-      alert("Error al crear un usuario");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const navigate = useNavigate();
 
-  return (
-    <section className="formloginBox animationFadeIn">
-      <form className="formlogin" onSubmit={handleRegister}>
+    // Notificaciones
+    const [notifOpen, setNotifOpen] = useState(false);
+    const [notifMsg, setNotifMsg] = useState("");
+    const [notifType, setNotifType] = useState("success");
 
-        <h2 className="textWelcome">Actualizar Usuario</h2>
-        <h5 className="textLogin">Actualiza un usuario del sistema</h5>
+    const showNotification = (message, type = "success") => {
+        setNotifMsg(message);
+        setNotifType(type);
+        setNotifOpen(true);
+    };
 
+    // Buscar usuario por ID y autocompletar
+    const handleSearchUser = async () => {
+        if (!id) {
+            return showNotification("Debe ingresar un ID.", "error");
+        }
 
-        {/*Alayo fijate de tal vez hacer una funcion de que al momento de ingresar el id, se cargen los datos
-        de ese usuario en los inputs del form, y de ahi que el admin los edite, no se si es posible pero fijate
-        igual eso te digo que tendrias que hacer una funcion y mezclarlo con un estado en el input del id*/}
+        setLoadingSearch(true);
 
+        try {
+            const result = await getUser(id);
 
+            const user = result.data;
 
-        {/* CONTENEDOR 2 COLUMNAS */}
-        <div className="gridTwoCols">
+            setFirstName(user.first_name || undefined);
+            setLastName(user.last_name || undefined);
+            setEmail(user.email || undefined);
+            setPhone(user.phone || undefined);
+            setPassword(undefined); // nunca mostramos password real
 
-          <input
-            className="inputEmailLog inputAnim"
-            type="text"
-            placeholder="ID Usuario"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-          /> 
-        
+            showNotification("Usuario encontrado.", "success");
 
-          <input
-            className="inputEmailLog inputAnim"
-            type="text"
-            placeholder="Nombre"
-            value={first_name}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
+        } catch (err) {
+            showNotification(
+                err.response?.data?.message || "No se pudo obtener el usuario.",
+                "error"
+            );
 
-          <input
-            className="inputEmailLog inputAnim"
-            type="text"
-            placeholder="Apellido"
-            value={last_name}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
+            // limpiar inputs
+            setFirstName(undefined);
+            setLastName(undefined);
+            setEmail(undefined);
+            setPhone(undefined);
+            setPassword(undefined);
 
-          <input
-            className="inputEmailLog inputAnim"
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        } finally {
+            setLoadingSearch(false);
+        }
+    };
 
-          <input
-            className="inputEmailLog inputAnim"
-            type="tel"
-            placeholder="Teléfono"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
+    // ✔️ Actualizar usuario
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-          <input
-            className="inputPasswordLog inputAnim"
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        try {
+            const fieldsUpdate = {
+                first_name,
+                last_name,
+                email,
+                phone,
+                password
+            };
 
-        </div>
+            const result = await updateUser(id, fieldsUpdate);
 
-        <div className="linksLogin">
-          <a className="linkBackLog" href="/admin/home">Volver Atras</a>
-        </div>
+            showNotification(result.message, "success");
 
-        <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>
-          {loading ? "Actualizando..." : "Actualizar Usuario"}
-        </button>
+            setTimeout(() => {
+                navigate("/admin/home");
+            }, 1000);
 
-      </form>
-    </section>
-  );
+        } catch (err) {
+            const apiMessage = err.response?.data?.message;
+            const status = err.response?.status;
+
+            showNotification(
+                `Error ${status || ""}: ${apiMessage || "Error inesperado."}`,
+                "error"
+            );
+
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <section className="formloginBox animationFadeIn">
+                <form className="formlogin" onSubmit={handleUpdate}>
+                    <h2 className="textWelcome">Actualizar Usuario</h2>
+                    <h5 className="textLogin">Actualiza un usuario del sistema</h5>
+
+                    <div className="gridTwoCols">
+
+                        {/* INPUT DEL ID + BOTÓN BUSCAR */}
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            <input
+                                className="inputEmailLog inputAnim"
+                                type="text"
+                                placeholder="ID"
+                                value={id}
+                                onChange={(e) => setId(e.target.value)}
+                            />
+
+                            <button
+                                type="button"
+                                className="buttonLogin"
+                                onClick={handleSearchUser}
+                                disabled={loadingSearch}
+                            >
+                                {loadingSearch ? "Buscando..." : "Buscar"}
+                            </button>
+                        </div>
+
+                        <input
+                            className="inputEmailLog inputAnim"
+                            type="text"
+                            placeholder="Nombre"
+                            value={first_name}
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+
+                        <input
+                            className="inputEmailLog inputAnim"
+                            type="text"
+                            placeholder="Apellido"
+                            value={last_name}
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+
+                        <input
+                            className="inputEmailLog inputAnim"
+                            type="email"
+                            placeholder="Correo electrónico"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+
+                        <input
+                            className="inputEmailLog inputAnim"
+                            type="tel"
+                            placeholder="Teléfono"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                        />
+
+                        <input
+                            className="inputPasswordLog inputAnim"
+                            type="password"
+                            placeholder="Nueva contraseña (opcional)"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="linksLogin">
+                        <a className="linkBackLog" href="/admin/home">
+                            Volver Atras
+                        </a>
+                    </div>
+
+                    <button
+                        className="buttonLogin buttonAnim"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Actualizando..." : "Actualizar Usuario"}
+                    </button>
+                </form>
+            </section>
+
+            <Notification
+                open={notifOpen}
+                message={notifMsg}
+                severity={notifType}
+                onClose={() => setNotifOpen(false)}
+            />
+        </>
+    );
 }

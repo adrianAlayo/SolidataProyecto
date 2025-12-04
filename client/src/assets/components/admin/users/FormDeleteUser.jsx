@@ -1,51 +1,95 @@
 import { useState } from "react";
 import "./FormDeleteUser.css";
 import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../../../services/user.service";
+import Notification from "../../../components/Notification";
 
-export default function FormDeleteUser() {
-  const [id, setId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+export default function DeleteUser() {
+    const [id, setId] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const handleRecover = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    // Estados para notificación
+    const [notifOpen, setNotifOpen] = useState(false);
+    const [notifMsg, setNotifMsg] = useState("");
+    const [notifType, setNotifType] = useState("success");
 
-    try {
-      alert("Usuario Eliminado con Exito");
-      navigate("/admin/home");
-    } catch (err) {
-      alert("Hubo un error al intentar eliminar el usuario");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const showNotification = (message, type = "success") => {
+        setNotifMsg(message);
+        setNotifType(type);
+        setNotifOpen(true);
+    };
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-  return (
-    <section className="formloginBox animationFadeIn">
-      <form className="formlogin" onSubmit={handleRecover}>
-        
-        <h2 className="textWelcome">Eliminar Usuario</h2>
-        <h5 className="textLogin">Ingresá el ID del usuario que desea eliminar</h5>
+        try {
+            const result = await deleteUser(id);
+            showNotification(result.message, "success");
 
-        <input
-          className="inputEmailLog inputAnim"
-          type="id"
-          placeholder="ID del usuario"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          required
-        />
+            setTimeout(() => {
+                navigate("/admin/home");
+            }, 1000);
+        } catch (err) {
+            console.log(err.message);
+            
+            const apiMessage = err.response?.data?.message;
+            const apiDetails = err.response?.data?.details; // opcional, si lo envías
+            const status = err.response?.status;
 
-        <div className="linksLogin">
-          <a className="linkBackLog" href="/admin/home">Volver atrás</a>
-        </div>
+            let finalMessage = "";
 
-        <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>
-          {loading ? "Eliminando..." : "Eliminar"}
-        </button>
-      </form>
-    </section>
-  );
+            if (status) finalMessage += `Error ${status}: `;
+            if (apiMessage) finalMessage += apiMessage;
+
+            // Si hay detalles, los agregamos
+            if (apiDetails) finalMessage += ` — ${apiDetails}`;
+
+            showNotification(finalMessage || "Error inesperado.", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <section className="formloginBox animationFadeIn">
+                <form className="formlogin" onSubmit={handleDelete}>
+                    <h2 className="textWelcome">Eliminar Usuario</h2>
+                    <h5 className="textLogin">
+                        Ingresá el ID del usuario que desea eliminar
+                    </h5>
+
+                    <input
+                        className="inputEmailLog inputAnim"
+                        type="id"
+                        placeholder="ID del usuario"
+                        value={id}
+                        onChange={(e) => setId(e.target.value)}
+                        required
+                    />
+
+                    <div className="linksLogin">
+                        <a className="linkBackLog" href="/admin/home">
+                            Volver atrás
+                        </a>
+                    </div>
+
+                    <button
+                        className="buttonLogin buttonAnim"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Eliminando..." : "Eliminar"}
+                    </button>
+                </form>
+            </section>
+            <Notification
+                open={notifOpen}
+                message={notifMsg}
+                severity={notifType}
+                onClose={() => setNotifOpen(false)}
+            />
+        </>
+    );
 }

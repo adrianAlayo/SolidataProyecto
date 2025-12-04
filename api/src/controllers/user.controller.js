@@ -58,7 +58,7 @@ const createUser = async(req,res) =>{
 }
 const getUser = async (req,res) =>{
     try {
-        const { id } = req.params;
+        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
@@ -182,7 +182,7 @@ const disableUser = async (req,res) =>{
 }
 const deleteUsers = async (req, res) => {
     try {
-        const { id } = req.params;
+        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
