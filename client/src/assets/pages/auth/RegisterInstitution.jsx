@@ -1,8 +1,7 @@
-import FormRegisterInstitution from '../../components/FormRegisterInstitution.jsx'
-import '../../components/FormRegisterInstitution.css'
+import FormRegisterInstitution from '../../components/institution/FormRegisterInstitution.jsx'
+import '../../components/institution/FormRegisterInstitution.css'
 
 export function RegisterInstitution () {
-    
     return (
         <>
             <FormRegisterInstitution/>

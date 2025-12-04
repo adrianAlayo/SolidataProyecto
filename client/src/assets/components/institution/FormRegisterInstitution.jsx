@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./FormLogin.css";
+import "../FormLogin.css";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterInstitution() {
