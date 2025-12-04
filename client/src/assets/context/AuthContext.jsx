@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // 🔹 Cuando la app se monta, revisamos si ya hay un token guardado
+  // Cuando la app se monta, revisamos si ya hay un token guardado
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -15,14 +15,14 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // 🔹 Guardar token + usuario cuando se loguea
+  // Guardar token + usuario cuando se loguea
   const loginUser = (token) => {
     localStorage.setItem("token", token);
     const decoded = jwtDecode(token);
     setUser(decoded);
   };
 
-  // 🔹 Eliminar token y cerrar sesión
+  // Eliminar token y cerrar sesión
   const logoutUser = () => {
     localStorage.removeItem("token");
     setUser(null);

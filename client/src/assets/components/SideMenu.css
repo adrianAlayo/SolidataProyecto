@@ -1,13 +1,26 @@
-
 .MuiDrawer-paper {
   width: 300px !important;   
   background: #0d1b2a !important;  
   color: white !important;
-  overflow: hidden !important;
+  overflow-y: auto !important;   /* 🔥 SCROLL VERTICAL */
+  overflow-x: hidden !important; /* Mantener oculto horizontal */
   box-shadow: 3px 0 10px rgba(0,0,0,0.4);
   padding-top: 10px;
   border-right: none !important;
 }
+.MuiDrawer-paper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.MuiDrawer-paper::-webkit-scrollbar-thumb {
+  background: #415a77;
+  border-radius: 4px;
+}
+
+.MuiDrawer-paper::-webkit-scrollbar-thumb:hover {
+  background: #627d98;
+}
+
 
 .sidebar-container {
   height: 100%;

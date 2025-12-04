@@ -9,7 +9,6 @@ const VerificationEmail = require('../utils/verificationEmail.util');
 const VerificationPhone = require ('../utils/isValidPhone.util');
 
 
-
 const createUser = async(req,res) =>{
     try{
         let {first_name,last_name,email,password,phone,role_id} = req.body;
@@ -205,9 +204,95 @@ const deleteUsers = async (req, res) => {
         return res.status(500).json({ message: "Error al intentar eliminar al usario." });
     }
 };
-const updateUser = async (req, res) =>{
+const updateUser = async (req, res) => {
+    try {
+        let { id } = req.params;
 
-}
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+        const user = await USER.findByPk(id);
+        if (!user) {
+            return res.status(404).send({ message: "El usuario no existe." });
+        }
+
+        const { first_name, last_name, email, password, phone } = req.body;
+
+        const updateFields = {};
+
+        if (first_name !== undefined) {
+            if (IsString(first_name)) {
+                updateFields.first_name = first_name;
+            } else {
+                return res.status(400).send({ message: "first_name debe ser texto válido." });
+            }
+        }
+
+        if (last_name !== undefined) {
+            if (IsString(last_name)) {
+                updateFields.last_name = last_name;
+            } else {
+                return res.status(400).send({ message: "last_name debe ser texto válido." });
+            }
+        }
+
+        if (email !== undefined) {
+            if (IsString(email) && VerificationEmail(email)) {
+                const existEmail = await USER.findOne({
+                    where: { email }
+                });
+
+                if (existEmail && existEmail.id !== id) {
+                    return res.status(400).send({
+                        message: "El email ya está siendo usado por otro usuario."
+                    });
+                }
+
+                updateFields.email = email;
+            } else {
+                return res.status(400).send({ message: "email inválido." });
+            }
+        }
+
+        if (password !== undefined) {
+            if (IsString(password) && VerificationPassword(password)) {
+                updateFields.password = password;
+            } else {
+                return res.status(400).send({ message: "password inválido." });
+            }
+        }
+
+        if (phone !== undefined) {
+            if (IsString(phone) && VerificationPhone(phone)) {
+                updateFields.phone = phone;
+            } else {
+                return res.status(400).send({ message: "phone inválido." });
+            }
+        }
+
+        // Si no enviaron campos
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).send({
+                message: "Debe enviar al menos un campo para actualizar."
+            });
+        }
+
+        await user.update(updateFields);
+
+        return res.status(200).json({
+            message: "Usuario actualizado correctamente.",
+            data: user
+        });
+
+    } catch (err) {
+        console.error("Error:", err.message);
+        return res.status(500).send({ message: "Error al actualizar el usuario." });
+    }
+};
+
 
 
 module.exports = {

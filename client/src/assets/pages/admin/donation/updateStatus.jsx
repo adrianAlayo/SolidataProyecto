@@ -1,0 +1,15 @@
+import SideMenu from "../../../components/SideMenu";
+import '../../../components/SideMenu.css';
+
+
+export function DeleteDonation () {
+
+    return (
+        <>
+            <SideMenu />
+            <h1>Hola Actualizacion de Estado</h1>
+        </>
+    )
+}
+
+export default DeleteDonation

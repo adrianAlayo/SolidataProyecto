@@ -258,34 +258,11 @@ const UserActivity = async (_req, res) => {
     });
   }
 };
-const Inventory = async (_req,res) =>{
-    // Solo poder ver la informacion del inventario
-    try {
-        const inventory_found = await INVENTORY.findAll(
 
-        )
-
-        if(!inventory_found){
-            return res.status(404).send({message: "No se encontro ningun inventario"})
-        }
-
-        return res.status(201).json({
-            message: "Se extrajo la informacion con exito",
-            Data: inventory_found,
-        })
-
-    } catch (err) {
-        return res.status(500).send({
-            message: "Ocurrion un error !!! en la peticion interna: -> ",
-            error: err.message,
-        });
-    }
-}
 module.exports = {
     Donations, // GET
     BAAReceived, // GET
     BAADonated, // GET
     Stock, // GET
     UserActivity, // GET
-    Inventory
 }

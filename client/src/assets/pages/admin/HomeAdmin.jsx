@@ -1,5 +1,5 @@
 import SideMenu from "../../components/SideMenu";
-import '../../components/SideMenu.css'
+import '../../components/SideMenu.css';
 
 export function HomeAdmin () {
 
