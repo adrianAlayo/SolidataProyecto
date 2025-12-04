@@ -18,7 +18,7 @@ router.post('/login', validateLoginData, Login);
 // Recover pASSOWORD — este endpoint permitira actualizar la contra
 router.put('/recoverPassword', RecoverPassword);
 
-// Registro de instituciones
+// Registro de instituciones + user
 router.post('/register/institution',validateRegInstitution ,RegisterInstitution);
 
 module.exports = router;

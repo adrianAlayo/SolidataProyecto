@@ -67,7 +67,7 @@ export default function Navbar() {
               variant="contained"
               color="primary"
               component={Link}
-              to="/register/user"
+              to="/register/institution"
               sx={{ fontWeight: "bold" }}
             >
               Registrarse

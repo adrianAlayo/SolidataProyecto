@@ -14,3 +14,7 @@ export async function recoverPassword(email, password, confirmPassword) {
     );
     return res.data;
 }
+export async function RegisterInstitution(first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type) {
+    const res = await axios.post(`${API_URL}/register/institution`, {first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type});
+    return res.data;
+}
