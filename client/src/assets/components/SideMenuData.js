@@ -6,7 +6,7 @@ const menuData = [
         children: [
             { label: "Crear", path: "/admin/users/create" }, 
             { label: "Actualizar", path: "/admin/users/update" }, 
-            { label: "Cambiar Rol", path: "#" }, 
+            { label: "Cambiar Rol", path: "/admin/users/assignRol" }, 
             { label: "Eliminar", path: "/admin/users/delete" },
         ], 
     }, 

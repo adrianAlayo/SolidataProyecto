@@ -7,7 +7,6 @@ import UpdateD from "./assets/pages/admin/donation/update.jsx";
 import UpdateStatusD from "./assets/pages/admin/donation/updateStatus.jsx";
 import DeleteD from "./assets/pages/admin/donation/delete.jsx";
 //import Login from "./assets/components/FormLogin.jsx"; 
-import { AuthProvider } from "./assets/context/AuthContext.jsx";
 import "./App.css"; import HomeAdmin from "./assets/pages/admin/HomeAdmin.jsx";
 import HomeEmployeeOp from "./assets/pages/auth/HomeEmployeeOp.jsx";
 import "leaflet/dist/leaflet.css";
@@ -18,61 +17,62 @@ import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
 import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
 import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
 
-
 function App() {
     return (
-        <AuthProvider>
-        {/* Navbar SIEMPRE visible */}
-        <div className="NavContainer"><Navbar /></div>
-        {/* Rutas de la aplicación */}
-        <Routes>
-            {/* PAGINA DE INICIO */}
-            <Route path="/" element={<div className="pageContainerIndex"> <Index /> </div>} />
-        
-            {/* PAGINAS AUTH */}
-            <Route path="/login" element={<div className="pageContainerLog"> <Login /></div>} />
-            <Route path="register/user" element={<div className="pageContainerLog"> <RegisterUser/> </div>}/>
-            <Route path="/register/institution" element={<div className="pageContainerLog"> <RegisterInstitution/> </div>} />
-            <Route path="/recoverpass" element={<div className="pageContainerLog"> <RecoverPassword/> </div>} />
+        <>
+            {/* Navbar SIEMPRE visible */}
+            <div className="NavContainer"><Navbar /></div>
+            {/* Rutas de la aplicación */}
+            <Routes>
+                {/* PAGINA DE INICIO */}
+                <Route path="/" element={<div className="pageContainerIndex"> <Index /> </div>} />
             
-            {/* PAGINA ROL ADMIN*/}
-            <Route path="/admin/home" element={<div className="#"> <HomeAdmin /></div>} />
-            <Route path="/admin/" element={<div className="#"> <HomeAdmin /></div>} />
-            <Route path="/admin/register/user" element={<div className="#"> </div>} />
-            <Route path="/admin/register/institution" element={<div className="#"> </div>} />
+                {/* PAGINAS AUTH */}
+                <Route path="/login" element={<div className="pageContainerLog"> <Login /></div>} />
+                <Route path="register/user" element={<div className="pageContainerLog"> <RegisterUser/> </div>}/>
+                <Route path="/register/institution" element={<div className="pageContainerLog"> <RegisterInstitution/> </div>} />
+                <Route path="/recoverpass" element={<div className="pageContainerLog"> <RecoverPassword/> </div>} />
+                
+                {/* PAGINA ROL ADMIN*/}
+                <Route path="/admin/home" element={<div className="#"> <HomeAdmin /></div>} />
+                <Route path="/admin/" element={<div className="#"> <HomeAdmin /></div>} />
+                <Route path="/admin/register/user" element={<div className="#"> </div>} />
+                <Route path="/admin/register/institution" element={<div className="#"> </div>} />
 
-            <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
-            <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>
-            <Route path="/admin/users/update" element={<div className="#"> <UpdateUsers/> </div>}/>
-
-
-            <Route path="/admin/donations/history" element={<div className="#"> <HistoryD/> </div>} />  {/* POST */}
-            <Route path="/admin/donations/update" element={<div className="#"> <UpdateD/> </div>} />  {/* POST */}
-            <Route path="/admin/donations/updateStatus" element={<div className="#"> <UpdateStatusD/> </div>} />  {/* POST */}
-            <Route path="/admin/donations/delete" element={<div className="#"> <DeleteD/> </div>} />  {/* POST */}
-
-
-            <Route path="/admin/article/" element={<div className="#"> </div>} />  {/* POST */}
-            <Route path="/admin/article/" element={<div className="#"> </div>} /> {/* GET*/}
-            <Route path="/admin/article/:id" element={<div className="#"> </div>} /> {/* GET id */}
-            <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* PUT */}
-            <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+                <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
+                <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>
+                <Route path="/admin/users/update" element={<div className="#"> <UpdateUsers/> </div>}/>
 
 
-            <Route path="/admin/item/" element={<div className="#"> </div>} />  {/* POST */}
-            <Route path="/admin/item/" element={<div className="#"> </div>} /> {/* GET*/}
-            <Route path="/admin/item/:id" element={<div className="#"> </div>} /> {/* GET id */}
-            <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* PUT */}
-            <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+                <Route path="/admin/donations/history" element={<div className="#"> <HistoryD/> </div>} />  {/* POST */}
+                <Route path="/admin/donations/update" element={<div className="#"> <UpdateD/> </div>} />  {/* POST */}
+                <Route path="/admin/donations/updateStatus" element={<div className="#"> <UpdateStatusD/> </div>} />  {/* POST */}
+                <Route path="/admin/donations/delete" element={<div className="#"> <DeleteD/> </div>} />  {/* POST */}
 
-            {/* PAGINA ROL COORDINADOR*/}
-            
 
-            {/* PAGINA ROL OPERADOR*/}
-            <Route path="Operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
+                <Route path="/admin/article/" element={<div className="#"> </div>} />  {/* POST */}
+                <Route path="/admin/article/" element={<div className="#"> </div>} /> {/* GET*/}
+                <Route path="/admin/article/:id" element={<div className="#"> </div>} /> {/* GET id */}
+                <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* PUT */}
+                <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* DELTE */}
 
-            {/* PAGINA ROL VOLUNTARIO*/}
-            {/* acá después agregás tus otras rutas */}
-        </Routes> </AuthProvider>);
+
+                <Route path="/admin/item/" element={<div className="#"> </div>} />  {/* POST */}
+                <Route path="/admin/item/" element={<div className="#"> </div>} /> {/* GET*/}
+                <Route path="/admin/item/:id" element={<div className="#"> </div>} /> {/* GET id */}
+                <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* PUT */}
+                <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+
+                {/* PAGINA ROL COORDINADOR*/}
+                
+
+                {/* PAGINA ROL OPERADOR*/}
+                <Route path="Operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
+
+                {/* PAGINA ROL VOLUNTARIO*/}
+                {/* acá después agregás tus otras rutas */}
+            </Routes>
+        </>
+    );
 }
 export default App;
