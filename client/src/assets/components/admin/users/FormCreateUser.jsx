@@ -70,7 +70,7 @@ export default function CreateUser() {
 
     return (
         <>
-            <section className="formloginBox animationFadeIn">
+            <section className="formCreateBox animationFadeIn">
                 <form className="formlogin" onSubmit={handleCreate}>
                     <h2 className="textWelcome">Crear Usuario</h2>
                     <h5 className="textLogin">Crea un nuevo usuario en el sistema</h5>

@@ -29,7 +29,7 @@ export default function RegisterUser() {
   };
 
   return (
-    <section className="formloginBox animationFadeIn">
+    <section className="formRegisterUserBox animationFadeIn">
       <form className="formlogin" onSubmit={handleRegister}>
 
         <h2 className="textWelcome">Crear Usuario</h2>

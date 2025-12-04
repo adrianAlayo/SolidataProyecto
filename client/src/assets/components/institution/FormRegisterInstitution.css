@@ -24,14 +24,6 @@
     align-content: center;
 }
 
-.formloginBox {
-    background-color: green;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
 
 .buttonLogin {
     padding: 10px;
@@ -127,7 +119,7 @@
 }
 
 /* CENTRADO EN PANTALLA COMO EL LOGIN PRO */
-.formloginBox {
+.formRegisterInstitutionBox {
   background-color: green;
   border-radius: 40px;
   display: flex;

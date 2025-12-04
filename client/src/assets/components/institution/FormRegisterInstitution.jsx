@@ -53,7 +53,7 @@ export default function RegisterInstitution() {
   };
 
   return (
-    <section className="formloginBox animationFadeIn" style={{ width: 420 }}>
+    <section className="formRegisterInstitutionBox animationFadeIn" style={{ width: 420 }}>
       <form className="formlogin" onSubmit={handleSubmit}>
 
         <h2 className="textWelcome">Registrar Institución</h2>

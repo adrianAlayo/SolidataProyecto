@@ -117,7 +117,7 @@
   transform: translateY(0);
 }
 
-.formloginBox {
+.formCreateBox {
   background-color: rgb(2, 21, 107);
   border-radius: 40px;
   display: flex;

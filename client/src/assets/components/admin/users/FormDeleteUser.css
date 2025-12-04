@@ -25,7 +25,7 @@
 }
 
 
-.buttonLogin {
+.buttonDelete {
     padding: 10px;
     padding-left: 30px;
     padding-right: 30px;
@@ -116,7 +116,7 @@
   transform: translateY(0);
 }
 
-.formloginBox {
+.formDeleteBox {
   background-color: rgb(2, 21, 107);
   border-radius: 40px;
   display: flex;

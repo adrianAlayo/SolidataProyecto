@@ -24,14 +24,6 @@
     align-content: center;
 }
 
-.formloginBox {
-    background-color: green;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
 
 .buttonLogin {
     padding: 10px;
@@ -129,17 +121,4 @@
   width: 350px;  
   padding: 10px;
   margin: auto;
-}
-
-
-.gridTwoCols {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.8rem;
-    justify-items: center;
-}
-
-.gridTwoCols input {
-    width: 90%;
 }

@@ -53,7 +53,7 @@ export default function DeleteUser() {
 
     return (
         <>
-            <section className="formloginBox animationFadeIn">
+            <section className="formDeleteBox animationFadeIn">
                 <form className="formlogin" onSubmit={handleDelete}>
                     <h2 className="textWelcome">Eliminar Usuario</h2>
                     <h5 className="textLogin">
@@ -76,7 +76,7 @@ export default function DeleteUser() {
                     </div>
 
                     <button
-                        className="buttonLogin buttonAnim"
+                        className="buttonDelete buttonAnim"
                         type="submit"
                         disabled={loading}
                     >

@@ -24,15 +24,6 @@
     align-content: center;
 }
 
-.formloginBox {
-    background-color: green;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
 .buttonLogin {
     padding: 10px;
     padding-left: 30px;
@@ -117,7 +108,7 @@
   transform: translateY(0);
 }
 
-.formloginBox {
+.formRegisterUserBox {
   background-color: green;
   border-radius: 40px;
   display: flex;
