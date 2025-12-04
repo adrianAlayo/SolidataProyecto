@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notification from "../Notification";
 import './FormCreateArticle.css'
+import { CreateArticle } from "../../services/article.service";
 
-export default function CreateArticle() {
+export default function CreateArticleF() {
 
     const [name, setName] = useState("");
     const [category, setCategory] = useState("");
@@ -11,27 +12,55 @@ export default function CreateArticle() {
     const [unit, setUnit] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Estados para notificación
+    // Notificaciones
     const [notifOpen, setNotifOpen] = useState(false);
     const [notifMsg, setNotifMsg] = useState("");
     const [notifType, setNotifType] = useState("success");
 
+    const showNotification = (message, type = "success") => {
+        setNotifMsg(message);
+        setNotifType(type);
+        setNotifOpen(true);
+    };
+
     const navigate = useNavigate();
 
     const handleCreate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+        e.preventDefault();
+        setLoading(true);
 
-    try {
-      alert("Articulo creado con Exito!");
-      navigate("/admin/home");
-    } catch (err) {
-      console.error(err);
-      alert("Error al registrar un articulo");
-    } finally {
-      setLoading(false);
-    }
-  };
+        try {
+            const result = await CreateArticle(
+                name,
+                category,
+                variant,
+                unit,
+            )
+            showNotification(result.message, "success");
+
+            setTimeout(() => {
+                navigate("/admin/home");
+            }, 1000);
+        } catch (err) {
+            console.log(err.message);
+            
+            const apiMessage = err.response?.data?.message;
+            const apiDetails = err.response?.data?.details; // opcional, si lo envías
+            const status = err.response?.status;
+
+            let finalMessage = "";
+
+            if (status) finalMessage += `Error ${status}: `;
+            if (apiMessage) finalMessage += apiMessage;
+
+            // Si hay detalles, los agregamos
+            if (apiDetails) finalMessage += ` — ${apiDetails}`;
+
+            showNotification(finalMessage || "Error inesperado.", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -41,7 +70,7 @@ export default function CreateArticle() {
                     <h5 className="textLogin">Registra un articulo nuevo en el sistema</h5>
 
                     <div className="gridTwoCols">
-                        
+
                         <input
                             className="inputEmailLog inputAnim"
                             type="text"
@@ -64,7 +93,7 @@ export default function CreateArticle() {
                             <option value="Higiene">Higiene</option>
                         </select>
 
-                        
+
 
                         <input
                             className="inputEmailLog inputAnim"

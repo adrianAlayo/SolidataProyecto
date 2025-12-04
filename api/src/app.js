@@ -28,7 +28,6 @@ app.use(express.json());
 app.use('/auth',authRouter);
 
 app.use('/articles', articleRouter);
-
 app.use('/user', userRouter);
 app.use('/donation', donationRouter);
 app.use('/item', donationItemRouter);
@@ -37,7 +36,6 @@ app.use('/need', institutionNeedRouter);
 app.use('/inventory', inventoryRouter);
 app.use('/report', reportRouter);
 app.use('/type', typeRouter);
-app.use('/user', userRouter);
 app.use('/role', roleRouter);
 
 

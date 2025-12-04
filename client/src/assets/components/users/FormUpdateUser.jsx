@@ -68,7 +68,7 @@ export default function UpdateUser() {
         }
     };
 
-    // ✔️ Actualizar usuario
+    // Actualizar usuario
     const handleUpdate = async (e) => {
         e.preventDefault();
         setLoading(true);
