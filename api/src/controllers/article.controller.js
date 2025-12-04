@@ -5,7 +5,7 @@ const IsString = require('../utils/isString.util');
 const createArticle = async (req, res) => { 
     try {
         const { name,category,variant,unit } = req.body;
-
+        
         if(!IsString(name) || !IsString(category) || !IsString(variant) || !IsString(unit)){
             return res.status(404).send({message: "Todos los compos son obligatorios y deben ser texto valido."})
         }

@@ -1,5 +1,5 @@
-import FormUpdateUser from '../../../components/admin/users/FormUpdateUser.jsx'
-import '../../../components/admin/users/FormUpdateUser.css'
+import FormUpdateUser from '../../../components/users/FormUpdateUser.jsx'
+import '../../../components/users/FormUpdateUser.css'
 import SideMenu from '../../../components/SideMenu.jsx'
 
 export function UpdateUsers () {

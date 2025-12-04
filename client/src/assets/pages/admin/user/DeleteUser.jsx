@@ -1,5 +1,5 @@
-import FormDeleteUser from '../../../components/admin/users/FormDeleteUser.jsx'
-import '../../../components/admin/users/FormDeleteUser.css'
+import FormDeleteUser from '../../../components/users/FormDeleteUser.jsx'
+import '../../../components/users/FormDeleteUser.css'
 import SideMenu from '../../../components/SideMenu.jsx'
 
 export function DeleteUsers () {

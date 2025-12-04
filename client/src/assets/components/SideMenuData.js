@@ -13,9 +13,9 @@ const menuData = [
     { 
         label: "Articulo", 
         children: [
-            { label: "Crear", path: "#" }, 
-            { label: "Actualizar", path: "#" }, 
-            { label: "Eliminar", path: "#" },
+            { label: "Crear", path: "/admin/articles/create" }, 
+            { label: "Actualizar", path: "/admin/articles/update" }, 
+            { label: "Eliminar", path: "/admin/articles/delete" },
         ] 
     }, 
     { 

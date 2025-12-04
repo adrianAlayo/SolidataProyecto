@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../../../services/user.service";
-import Notification from "../../../components/Notification";
+import { createUser } from "../../services/user.service";
+import Notification from "../../components/Notification";
 
 export default function CreateUser() {
 

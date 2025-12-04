@@ -16,6 +16,9 @@ import RegisterInstitution from "./assets/components/institution/FormRegisterIns
 import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
 import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
 import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
+import CreateArticles from "./assets/pages/admin/article/CreateArticle.jsx";
+import UpdateArticles from "./assets/pages/admin/article/UpdateArticle.jsx";
+import DeleteArticles from "./assets/pages/admin/article/DeleteArticle.jsx";
 
 function App() {
     return (
@@ -50,18 +53,18 @@ function App() {
                 <Route path="/admin/donations/delete" element={<div className="#"> <DeleteD/> </div>} />  {/* POST */}
 
 
-                <Route path="/admin/article/" element={<div className="#"> </div>} />  {/* POST */}
-                <Route path="/admin/article/" element={<div className="#"> </div>} /> {/* GET*/}
-                <Route path="/admin/article/:id" element={<div className="#"> </div>} /> {/* GET id */}
-                <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* PUT */}
-                <Route path="/admin/article/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+                <Route path="/admin/articles/create" element={<div className="#"> <CreateArticles/> </div>} />  {/* POST */}
+                <Route path="/admin/articles/" element={<div className="#"> </div>} /> {/* GET*/}
+                <Route path="/admin/articles/:id" element={<div className="#"> </div>} /> {/* GET id */}
+                <Route path="/admin/articles/update" element={<div className="#"> <UpdateArticles/> </div>} />  {/* PUT */}
+                <Route path="/admin/articles/delete" element={<div className="#"> <DeleteArticles/> </div>} />  {/* DELTE */}
 
 
-                <Route path="/admin/item/" element={<div className="#"> </div>} />  {/* POST */}
-                <Route path="/admin/item/" element={<div className="#"> </div>} /> {/* GET*/}
-                <Route path="/admin/item/:id" element={<div className="#"> </div>} /> {/* GET id */}
-                <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* PUT */}
-                <Route path="/admin/item/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+                <Route path="/admin/items/" element={<div className="#"> </div>} />  {/* POST */}
+                <Route path="/admin/items/" element={<div className="#"> </div>} /> {/* GET*/}
+                <Route path="/admin/items/:id" element={<div className="#"> </div>} /> {/* GET id */}
+                <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* PUT */}
+                <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* DELTE */}
 
                 {/* PAGINA ROL COORDINADOR*/}
                 

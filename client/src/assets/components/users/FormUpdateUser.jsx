@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./FormUpdateUser.css";
 import { useNavigate } from "react-router-dom";
-import { updateUser, getUser } from "../../../services/user.service";
-import Notification from "../../../components/Notification";
+import { updateUser, getUser } from "../../services/user.service";
+import Notification from "../Notification";
 
 export default function UpdateUser() {
 
@@ -106,7 +106,7 @@ export default function UpdateUser() {
 
     return (
         <>
-            <section className="formloginBox animationFadeIn">
+            <section className="formUpdateBox animationFadeIn">
                 <form className="formlogin" onSubmit={handleUpdate}>
                     <h2 className="textWelcome">Actualizar Usuario</h2>
                     <h5 className="textLogin">Actualiza un usuario del sistema</h5>
@@ -117,7 +117,9 @@ export default function UpdateUser() {
                         <div style={{ display: "flex", gap: "10px" }}>
                             <input
                                 className="inputEmailLog inputAnim"
-                                type="text"
+                                type="number"
+                                min={1}
+                                step={1}
                                 placeholder="ID"
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}

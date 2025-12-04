@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./FormDeleteUser.css";
 import { useNavigate } from "react-router-dom";
-import { deleteUser } from "../../../services/user.service";
-import Notification from "../../../components/Notification";
+import { deleteUser } from "../../services/user.service";
+import Notification from "../../components/Notification";
 
 export default function DeleteUser() {
     const [id, setId] = useState("");
@@ -62,7 +62,9 @@ export default function DeleteUser() {
 
                     <input
                         className="inputEmailLog inputAnim"
-                        type="id"
+                        type="number"
+                        min={1}
+                        step={1}
                         placeholder="ID del usuario"
                         value={id}
                         onChange={(e) => setId(e.target.value)}
