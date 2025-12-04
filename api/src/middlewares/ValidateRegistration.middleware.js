@@ -17,7 +17,7 @@ async function ValidateRegistrationInstitution (req, res, next) {
 
     //Verificar que la contraseña tenga May,Min,Num y mas de 8 caracteres
     if (!VerificationPassword(password)) {
-        return res.status(400).json({ message: "Contraseña/s inválida/s" });
+        return res.status(400).json({ message: "Contraseña invalida, tiene que tener al Menos 1 Mayuscula, 1 Minuscula, 1 Numero y al menos entre 8 o mas caracteres" });
     }
 
     //Verificar que sea un email
@@ -33,7 +33,7 @@ async function ValidateRegistrationInstitution (req, res, next) {
     //Verificar que exista el Tipo de Institution
     const exist_Type = await TYPE.findOne({
         where:{
-            name: type,
+            id: type,
         }
     })
     if(!exist_Type){
