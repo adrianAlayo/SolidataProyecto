@@ -1,54 +1,118 @@
 import { useState } from "react";
 import "./FormLogin.css";
 import { useNavigate } from "react-router-dom";
+import { recoverPassword } from "../services/auth.service";
+import Notification from "./Notification";
 
 export default function RecoverPassword() {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const handleRecover = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    // Notificaciones
+    const [notifOpen, setNotifOpen] = useState(false);
+    const [notifMsg, setNotifMsg] = useState("");
+    const [notifType, setNotifType] = useState("success");
 
-    try {
-      // ACÁ después llamás a tu servicio real
-      // await recoverPassword(email);
+    const showNotification = (message, type = "success") => {
+        setNotifMsg(message);
+        setNotifType(type);
+        setNotifOpen(true);
+    };
 
-      alert("Si el correo existe, te enviamos un email para recuperar la contraseña.");
-      navigate("/login");
-    } catch (err) {
-      alert("Hubo un error al intentar enviar el correo.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleRecover = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-  return (
-    <section className="formloginBox animationFadeIn">
-      <form className="formlogin" onSubmit={handleRecover}>
-        
-        <h2 className="textWelcome">¿Olvidaste tu contraseña?</h2>
-        <h5 className="textLogin">Ingresá tu email para recuperarla</h5>
+        try {
+            const result = await recoverPassword(
+                email,
+                password,
+                confirmPassword
+            );
 
-        <input
-          className="inputEmailLog inputAnim"
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+            showNotification("Contraseña actualizada correctamente ✔", "success");
 
-        <div className="linksLogin">
-          <a className="linkBackLog" href="/login">Volver al login</a>
-        </div>
+            setTimeout(() => {
+                navigate("/login");
+            }, 1200);
 
-        <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>
-          {loading ? "Enviando..." : "Enviar"}
-        </button>
-      </form>
-    </section>
-  );
+        } catch (err) {
+            console.error(err);
+
+            const apiMessage = err.response?.data?.message;
+            const status = err.response?.status;
+
+            let finalMessage = "Error al intentar recuperar la contraseña.";
+
+            if (status) finalMessage = `Error ${status}: `;
+            if (apiMessage) finalMessage += apiMessage;
+
+            showNotification(finalMessage, "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <section className="formloginBox animationFadeIn">
+                <form className="formlogin" onSubmit={handleRecover}>
+
+                    <h2 className="textWelcome">¿Olvidaste tu contraseña?</h2>
+                    <h5 className="textLogin">Completá los campos para cambiarla</h5>
+
+                    <input
+                        className="inputEmailLog inputAnim"
+                        type="email"
+                        placeholder="Correo electrónico"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+
+                    <input
+                        className="inputPasswordLog inputAnim"
+                        type="password"
+                        placeholder="Nueva contraseña"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+
+                    <input
+                        className="inputPasswordLog inputAnim"
+                        type="password"
+                        placeholder="Confirmar contraseña"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                    />
+
+                    <div className="linksLogin">
+                        <a className="linkBackLog" href="/login">
+                            Volver al login
+                        </a>
+                    </div>
+
+                    <button
+                        className="buttonLogin buttonAnim"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Actualizando..." : "Actualizar contraseña"}
+                    </button>
+                </form>
+            </section>
+
+            <Notification
+                open={notifOpen}
+                message={notifMsg}
+                severity={notifType}
+                onClose={() => setNotifOpen(false)}
+            />
+        </>
+    );
 }

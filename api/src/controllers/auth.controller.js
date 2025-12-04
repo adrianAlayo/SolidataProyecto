@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 
 const CreateTokenInsti = require('../utils/createTokenInstitution.util');
 const CreateTokenUser = require('../utils/createTokenUser.util');
-
+const isString = require("../utils/isString.util");
+const verificationPassword = require("../utils/verificationPassword.util");
+const VerificationEmail = require('../utils/verificationEmail.util');
 
 const HelloURL = (_req,res) =>{
     res.status(200).send("La URL /auth funciona todo GOOOOOTI");
@@ -79,10 +81,56 @@ const RegisterInstitution = async(req,res) =>{
             message: "Ocurrio un error al intentar guardar los datos en la base de datosssss: ->" + e})
     }
 }
+const RecoverPassword = async (req, res) => {
+    try {
+        const { email, password, confirmPassword } = req.body;
+
+        if (!isString(email) || !VerificationEmail(email)) {
+            return res.status(400).send({
+                message: "El email es obligatorio y debe tener un formato válido."
+            });
+        }
+
+        const existUser = await USER.findOne({ where: { email } });
+
+        if (!existUser) {
+            return res.status(404).send({
+                message: "No existe un usuario con ese correo electrónico."
+            });
+        }
+
+        if (!verificationPassword(password) || !verificationPassword(confirmPassword)) {
+            return res.status(400).send({
+                message: "La contraseña debe tener al menos 1 Mayuscula, 1 Minuscula, 1 Numero y tener entre 8 o mas caracteres"
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).send({
+                message: "Las contraseñas no coinciden."
+            });
+        }
+        const password_hash_inCharge = await bcrypt.hash(password, 7);
+
+        await existUser.update({ password:password_hash_inCharge });
+
+        return res.status(200).json({
+            message: "Se actualizó la contraseña correctamente."
+        });
+
+    } catch (err) {
+        console.error("Error:", err.message);
+        return res.status(500).json({
+            message: "Error al intentar recuperar la contraseña."
+        });
+    }
+};
+
 
 module.exports = { 
     HelloURL,
 
+    RecoverPassword,
     Login,
     RegisterInstitution,
 };
