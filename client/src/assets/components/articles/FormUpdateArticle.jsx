@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Notification from "../Notification";
 import './FormUpdateArticle.css'
 
-export default function CreateArticle() {
+export default function UpdateArticle() {
 
     const [id, setId] = useState("");
     const [name, setName] = useState("");

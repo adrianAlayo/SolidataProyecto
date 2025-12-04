@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Notification from "../Notification";
 import './FormDeleteArticle.css'
 
-export default function CreateArticle() {
+export default function DeleteArticle() {
 
     const [id, setId] = useState("");
     const [loading, setLoading] = useState(false);
