@@ -27,6 +27,9 @@ import CreateItems from "./assets/pages/admin/item/CreateItem.jsx";
 import UpdateItems from "./assets/pages/admin/item/UpdateItem.jsx";
 import DeleteItems from "./assets/pages/admin/item/DeleteItem.jsx";
 import High_Low from "./assets/pages/admin/High_Low.jsx";
+import CreateInventories from "./assets/pages/admin/inventory/CreateInventory.jsx";
+import UpdateInventories from "./assets/pages/admin/inventory/UpdateInventory.jsx";
+import DeleteInventories from "./assets/pages/admin/inventory/DeleteInventory.jsx";
 
 function App() {
     return (
@@ -68,6 +71,9 @@ function App() {
                 <Route path="/admin/articles/update" element={<div className="#"> <UpdateArticles/> </div>} />  {/* PUT */}
                 <Route path="/admin/articles/delete" element={<div className="#"> <DeleteArticles/> </div>} />  {/* DELTE */}
 
+                <Route path="/admin/inventories/create" element={<div className="#"> <CreateInventories/> </div>} /> {/* GET*/}
+                <Route path="/admin/inventories/update" element={<div className="#"> <UpdateInventories/> </div>} /> {/* GET*/}
+                <Route path="/admin/inventories/delete" element={<div className="#"> <DeleteInventories/> </div>} /> {/* GET*/}
 
                 <Route path="/admin/roles/create" element={<div className="#"> <CreateRoles/> </div>} /> {/* GET*/}
                 <Route path="/admin/roles/update" element={<div className="#"> <UpdateRoles/> </div>} /> {/* GET*/}

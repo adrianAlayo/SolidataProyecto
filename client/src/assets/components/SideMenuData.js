@@ -68,9 +68,9 @@ const menuData = [
     { 
         label: "Inventario", 
         children: [
-            { label: "Crear", path: "#" }, 
-            { label: "Actualizar", path: "#" }, 
-            { label: "Eliminar", path: "#" },
+            { label: "Crear", path: "/admin/inventories/create" }, 
+            { label: "Actualizar", path: "/admin/inventories/update" }, 
+            { label: "Eliminar", path: "/admin/inventories/delete" },
         ] 
     }, 
     { 
