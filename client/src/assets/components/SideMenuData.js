@@ -83,22 +83,7 @@ const menuData = [
             { label: "Actividad Usuarios", path: "#" },
         ] 
     }, 
-    { label: "Altas/Bajas", 
-        children: [
-            { label: "Usuario", 
-                children: [
-                    {label: "Alta", path: "#" }, 
-                    { label: "Baja", path: "#" },
-                ] 
-            }, 
-            { label: "Institucion", 
-                children: [
-                    { label: "Alta", path: "#" }, 
-                    { label: "Baja", path: "#" },
-                ] 
-            }
-        ] 
-    }, 
+    { label: "Altas/Bajas", path:"/admin/HighLow"}, 
     { 
         label: "Informacion", 
         children: [

@@ -1,7 +1,8 @@
-const { where } = require('sequelize');
+const { where, Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const USER = require('../models/user');
 const ROLE = require('../models/role');
+const INSTITUTION = require('../models/institution');
 
 const IsString = require('../utils/isString.util');
 const VerificationPassword = require('../utils/verificationPassword.util');
@@ -150,29 +151,41 @@ const getUsersInactive = async (_req,res) =>{
 }
 const disableUser = async (req,res) =>{
     try{
-        const {email} = req.body;
-        
-        if(!IsString(email)){
-            return res.status(404).send({message:"Todos los campos son obligatorios y tiene que tener un valor valido"})
+        let { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
         }
 
-        if(!VerificationEmail(email)){
-            return res.status(404).send({message: "Tienes que introducir un EMAIL"})
-        }
-        
-        const institution_found = await USER.update(
-            {is_active: false},
-            {
-                where: {
-                    email,
-                    is_active: true,
-                }
+        id = Number(id);
+
+        const existUser = await USER.findOne({
+            where:{
+                id:id
             }
-        )
-
-        if(!institution_found){
-            return res.status(404).send({message: "El usuario no existe o esta 'Inactivo o Pendiente' "})
+        })
+        if(!existUser){
+            return res.status(404).send({message: "El ID del usuario que introdujo no existe"})
         }
+
+        await existUser.update({is_active: false});
+        
+        if(existUser.role_id === 4 && existUser.institution_id){
+            const institution_found = await INSTITUTION.update(
+                {status: "Inactive"},
+                {
+                    where: {
+                        id: existUser.institution_id,
+                        [Op.or]: [{status:"Active"},{status:"Pending"}],
+                    }
+                }
+            )
+
+            if(!institution_found){
+                return res.status(404).send({message: "La institucion no existe o esta 'Inactivo o Pendiente' "})
+            }
+        }   
+
 
         res.status(201).json({message: "Se dios de baja (Parcial) exitosamente al usuario"})
     }catch(err){
@@ -292,10 +305,53 @@ const updateUser = async (req, res) => {
         return res.status(500).send({ message: "Error al actualizar el usuario." });
     }
 };
+const AcceptUser = async (req, res) => {
+    try {
+       let { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        id = Number(id);
+
+        const existUser = await USER.findOne({
+            where:{
+                id:id
+            }
+        })
+        if(!existUser){
+            return res.status(404).send({message: "El ID del usuario que introdujo no existe"})
+        }
+
+        await existUser.update({is_active: true});
+
+        if(existUser.role_id === 4 && existUser.institution_id){
+            const institution_found = await INSTITUTION.update(
+                { status: "Active" }, // el cambio
+                {
+                    where: {
+                        id:existUser.institution_id,
+                    }
+                }
+            )
+
+            if (!institution_found) {
+                return res.status(404).send({message: "La institución no existe o ya está activa"});
+            }
+        }
+        
+        res.status(200).json({message: "El Usuario fue ACEPTADO correctamente",});
+    } catch (err) {
+        console.error("Error: ", err.message);
+        return res.status(500).json({ message: "Error al intentar aceptar a al Uuario." });
+    }
+};
 
 
 
 module.exports = {
+    AcceptUser,
     getUsersActive, //
     getUsersInactive, //
     getUser, // params

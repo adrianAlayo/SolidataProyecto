@@ -22,6 +22,7 @@ import DeleteArticles from "./assets/pages/admin/article/DeleteArticle.jsx";
 import CreateRoles from "./assets/pages/admin/rol/CreateRol.jsx";
 import UpdateRoles from "./assets/pages/admin/rol/UpdateRol.jsx";
 import DeleteRoles from "./assets/pages/admin/rol/DeleteRol.jsx";
+import High_Low from "./assets/pages/admin/High_Low.jsx";
 
 function App() {
     return (
@@ -73,6 +74,8 @@ function App() {
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} /> {/* GET id */}
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* PUT */}
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+
+                <Route path="/admin/HighLow" element={<div className="#"> <High_Low/> </div>} />  {/* PATCH */}
 
                 {/* PAGINA ROL COORDINADOR*/}
                 

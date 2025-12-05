@@ -46,14 +46,15 @@ export async function getUsersInactive() {
 }
 
 
-export async function disableUser(email) {
-    const res = await axios.put(
-        `${API_URL}/disable`,
-        { email },
-        getAuthHeaders()
-    );
-    return res.data;
+export async function disableUser(id) {
+    return axios.patch(`${API_URL}/disable/${id}`, {}, getAuthHeaders());
 }
+
+export async function activeUser(id) {
+    return axios.patch(`${API_URL}/active/${id}`, {}, getAuthHeaders());
+}
+
+
 
 export async function deleteUser(id) {
     const res = await axios.delete(`${API_URL}/${id}`, getAuthHeaders());

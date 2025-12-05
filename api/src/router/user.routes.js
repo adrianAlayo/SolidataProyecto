@@ -10,7 +10,8 @@ const {
     disableUser,
     updateUser,
     deleteUsers,
-    createUser
+    createUser,
+    AcceptUser
 } = require('../controllers/user.controller');
 
 // Middlewares
@@ -44,7 +45,7 @@ router.get(
 
 // Obtener los usuarios activos (READ)
 router.get(
-    '/Active',
+    '/active',
     verifyToken,
     authorize("USERS", "READ"),
     getUsersActive
@@ -52,7 +53,7 @@ router.get(
 
 // Obtener los usuarios inactivos (READ)
 router.get(
-    '/Inactive',
+    '/inactive',
     verifyToken,
     authorize("USERS", "READ"),
     getUsersInactive
@@ -66,12 +67,19 @@ router.put(
     updateUser
 );
 
-// Actualizar el estado del usuario (CHANGE_STATUS)
+// desabilitar un usuario (CHANGE_STATUS)
 router.patch(
-    '/:id',
+    '/disable/:id',
     verifyToken,
-    authorize("USERS", "CHANGE_STATUS"),
+    authorize("USERS", "APPROVE"),
     disableUser
+);
+// habilitar un usuario (CHANGE_STATUS)
+router.patch(
+    '/active/:id',
+    verifyToken,
+    authorize("USERS", "APPROVE"),
+    AcceptUser
 );
 
 // Actualizar el estado del usuario (DELETE)
