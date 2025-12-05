@@ -134,69 +134,6 @@ const getInstitutionsActive = async(_req,res) =>{
         return res.status(500).json({message: "Error al intentar obtener la lista de las institciones activas."});
     }
 }
-const disableInstitution = async (req,res) =>{
-    try{
-        const {name,email} = req.body;
-        
-        if(!VerifyCamp(name,email)){
-            return res.status(404).send({message: "Todos los campos tienen que ser 'String' y estar Completos"})
-        }
-
-        if(!VerificationEmail(email)){
-            return res.status(404).send({message: "Tienes que introducir un EMAIL"})
-        }
-        
-        const institution_found = await INSTITUTION.update(
-            { status: "Inactive" }, // el cambio
-            {
-                where: {
-                    name: name, 
-                    email: email,
-                    [Op.or]: [{status:"Active"},{status:"Pending"}],
-                }
-            }
-        )
-
-        if(!institution_found){
-            return res.status(404).send({message: "La institucion no existe o ya esta 'Inactiva'. "})
-        }
-
-        res.status(201).json({message: "Se dios de baja (Parcial) exitosamente a la Institucion"})
-    }catch(err){
-        console.error("Error:", err.message);
-        return res.status(500).json({message: "Error al intentar al desactivar la institucion."});    
-    }
-}
-const acceptInstitution = async (req, res) => {
-    try {
-       let { id } = req.params;
-
-        if (!id || isNaN(Number(id))) {
-            return res.status(400).json({ message: "ID inválido." });
-        }
-
-        id = Number(id);
-
-        const institution_found = await INSTITUTION.update(
-            { status: "Active" }, // el cambio
-            {
-                where: {
-                    id:id,
-                    [Op.or]: [{status:"Inactive"},{status:"Pending"}],
-                }
-            }
-        )
-
-        if (!institution_found) {
-            return res.status(404).send({message: "La institución no existe o ya está activa"});
-        }
-
-        res.status(200).json({message: "La institución fue aceptada correctamente",});
-    } catch (err) {
-        console.error("Error: ", err.message);
-        return res.status(500).json({ message: "Error al intentar aceptar a la institucion." });
-    }
-};
 const deleteInstitution = async (req,res)=>{
     try{
        let { id } = req.params;
@@ -227,7 +164,5 @@ module.exports = {
     getInstitutionsActive, // 
     getInstitutionsInactive, // 
     getInstitution, // params
-    disableInstitution, //body
-    acceptInstitution, //params
     deleteInstitution //params
 }

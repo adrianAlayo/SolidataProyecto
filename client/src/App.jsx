@@ -26,6 +26,7 @@ import CreateDonations from "./assets/pages/admin/donation/CreateDonation.jsx";
 import CreateItems from "./assets/pages/admin/item/CreateItem.jsx";
 import UpdateItems from "./assets/pages/admin/item/UpdateItem.jsx";
 import DeleteItems from "./assets/pages/admin/item/DeleteItem.jsx";
+import High_Low from "./assets/pages/admin/High_Low.jsx";
 
 function App() {
     return (
@@ -79,6 +80,8 @@ function App() {
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} /> {/* GET id */}
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* PUT */}
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+
+                <Route path="/admin/HighLow" element={<div className="#"> <High_Low/> </div>} />  {/* PATCH */}
 
                 {/* PAGINA ROL COORDINADOR*/}
                 

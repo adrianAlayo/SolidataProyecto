@@ -63,7 +63,7 @@ const deleteArticle = async (req, res) => {
 const putArticle = async (req, res) => {
     try {
         let { id } = req.params;
-        const { name, category, variant, unit } = req.body;
+        
 
         if (!id || isNaN(Number(id))) {
             return res.status(400).json({ message: "ID inválido." });
@@ -76,13 +76,34 @@ const putArticle = async (req, res) => {
             return res.status(404).json({ message: "El artículo no existe." });
         }
 
+        const { name, category, variant, unit } = req.body;
         // Construimos solo los campos enviados
         const updateData = {};
 
-        if (name) updateData.name = name;
-        if (category) updateData.category = category;
-        if (variant) updateData.variant = variant;
-        if (unit) updateData.unit = unit;
+        if (name !== undefined) {
+            if (!IsString(name)) {
+                return res.status(400).json({ message: 'name debe ser un string' });
+            }
+            updateData.name = name;
+        }
+        if (category !== undefined) {
+            if (!IsString(category)) {
+                return res.status(400).json({ message: 'name debe ser un string' });
+            }
+            updateData.category = category;
+        }
+        if (variant !== undefined) {
+            if (!IsString(variant)) {
+                return res.status(400).json({ message: 'name debe ser un string' });
+            }
+            updateData.variant = variant;
+        }
+        if (unit !== undefined) {
+            if (!IsString(unit)) {
+                return res.status(400).json({ message: 'name debe ser un string' });
+            }
+            updateData.unit = unit;
+        }
 
         if (Object.keys(updateData).length === 0) {
             return res.status(400).json({ message: "Debe enviar al menos un campo para actualizar." });
