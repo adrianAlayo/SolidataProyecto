@@ -8,8 +8,6 @@ const {
     getInstitutions,
     getInstitutionsInactive,
     getInstitutionsActive,
-    disableInstitution,
-    acceptInstitution,
     deleteInstitution
 } = require('../controllers/institution.controller');
 
@@ -55,22 +53,6 @@ router.get(
     verifyToken,
     authorize("INSTITUTIONS", "READ"),
     getInstitutionsActive
-); // Testeado
-
-// Desactivas una institucion (CHANGE_STATUS)
-router.patch(
-    '/:id',
-    verifyToken,
-    authorize("INSTITUTIONS", "CHANGE_STATUS"),
-    disableInstitution
-); // Testeado
-
-// Aceptar una institucion (APPROVE)
-router.patch(
-    '/:id',
-    verifyToken,
-    authorize("INSTITUTIONS", "APPROVE"),
-    acceptInstitution
 ); // Testeado
 
 // Eliminar una institucion (DELETE)
