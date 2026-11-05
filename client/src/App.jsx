@@ -33,7 +33,7 @@ import DeleteInventories from "./assets/pages/admin/inventory/DeleteInventory.js
 
 function App() {
     const { pathname } = useLocation();
-    const hideNavbar = pathname === "/login";
+    const hideNavbar = pathname === "/login" || pathname === "/recoverpass";
 
     return (
         <>
