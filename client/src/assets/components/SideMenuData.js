@@ -49,7 +49,7 @@ const menuData = [
             { label: "Eliminar", path: "#" }, 
             { label: "Necesidades", 
                 children: [
-                    { label: "Crear Necesidad", path: "#" }, 
+                    { label: "Ver Necesidades", path: "/admin/needs" },
                     { label: "Actualizar Necesidad", path: "#" }, 
                     { label: "Actualizar Estado", path: "#" }, 
                     { label: "Eliminar Necesidad", path: "#" },
@@ -68,6 +68,7 @@ const menuData = [
     { 
         label: "Inventario", 
         children: [
+            { label: "Ver stock", path: "/admin/inventory" },
             { label: "Crear", path: "/admin/inventories/create" }, 
             { label: "Actualizar", path: "/admin/inventories/update" }, 
             { label: "Eliminar", path: "/admin/inventories/delete" },
