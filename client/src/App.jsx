@@ -30,6 +30,8 @@ import High_Low from "./assets/pages/admin/High_Low.jsx";
 import CreateInventories from "./assets/pages/admin/inventory/CreateInventory.jsx";
 import UpdateInventories from "./assets/pages/admin/inventory/UpdateInventory.jsx";
 import DeleteInventories from "./assets/pages/admin/inventory/DeleteInventory.jsx";
+import NeedsList from "./assets/pages/admin/needs/NeedsList.jsx";
+import InventoryList from "./assets/pages/admin/inventory/InventoryList.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -90,6 +92,8 @@ function App() {
                 <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* DELTE */}
 
                 <Route path="/admin/HighLow" element={<div className="#"> <High_Low/> </div>} />  {/* PATCH */}
+                <Route path="/admin/needs" element={<NeedsList />} />
+                <Route path="/admin/inventory" element={<InventoryList />} />
 
                 {/* PAGINA ROL COORDINADOR*/}
                 
