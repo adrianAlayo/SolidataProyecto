@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./assets/components/Navbar.jsx";
 import Index from "./assets/pages/auth/Index.jsx";
 import Login from "./assets/pages/auth/Login.jsx";
@@ -32,10 +32,12 @@ import UpdateInventories from "./assets/pages/admin/inventory/UpdateInventory.js
 import DeleteInventories from "./assets/pages/admin/inventory/DeleteInventory.jsx";
 
 function App() {
+    const { pathname } = useLocation();
+    const hideNavbar = pathname === "/login";
+
     return (
         <>
-            {/* Navbar SIEMPRE visible */}
-            <div className="NavContainer"><Navbar /></div>
+            {!hideNavbar && <div className="NavContainer"><Navbar /></div>}
             {/* Rutas de la aplicación */}
             <Routes>
                 {/* PAGINA DE INICIO */}
