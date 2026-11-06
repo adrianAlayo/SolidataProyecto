@@ -33,7 +33,7 @@ La beta no incluye todavía una asignación automática de cantidades desde nece
 ```text
 api/                 API Express, modelos Sequelize, rutas, controladores y utilidades
 client/              Aplicación React/Vite
-buckup/              Exportaciones PostgreSQL y carga SQL opcional de instituciones ficticias
+buckup/              Scripts SQL de estructura y registros de prueba
 ```
 
 ## Requisitos
@@ -79,14 +79,14 @@ npm run dev
 
 Vite muestra la dirección local, normalmente `http://localhost:5173`. La API permite solicitudes CORS desde ese origen.
 
-## Datos de demostración
+## Base de datos
 
-En `buckup/` quedan dos scripts SQL de texto, listos para ejecutar desde DBeaver sobre una base vacía:
+Los archivos de `buckup/` se ejecutan en este orden desde DBeaver, sobre una base PostgreSQL vacía:
 
-- `SOLIDATA_Esqueleto.sql`: estructura, relaciones, datos de referencia y un usuario Admin. Contraseña inicial: `123`.
-- `SOLIDATA_Datos_Prueba.sql`: la misma estructura con datos de demostración (incluye donaciones, ítems, instituciones e inventario) y cinco instituciones de CABA para probar el mapa.
+1. `esqueleto.sql`: crea tipos, tablas, claves, relaciones y columnas de ubicación del mapa.
+2. `registros.sql`: inserta los datos base y los registros de prueba, incluidas cinco instituciones de CABA. Incluye el usuario administrador `admin@example.invalid` con contraseña inicial `123`.
 
-No restaures el archivo de datos sobre una base que quieras conservar: contiene datos de demostración. Para que una institución aparezca en el mapa debe tener coordenadas válidas. Si se inserta sin ellas, iniciá la API, abrí Home y seleccioná **Revisar direcciones**; el geocodificador gratuito intentará ubicarla y señalará como aproximadas las coincidencias por localidad.
+`registros.sql` puede repetirse para completar una carga interrumpida sin duplicar claves ya insertadas. Para empezar desde cero, creá otra base vacía y ejecutá ambos archivos en orden. No corras `esqueleto.sql` de nuevo sobre tablas existentes.
 ## Estado
 
 SOLIDATA es una **beta escolar**: prioriza una experiencia presentable y los flujos principales. Algunos reportes o acciones pueden depender de los permisos y datos cargados en la base; la asignación por necesidad, la reserva de stock y la confirmación independiente por parte de la institución quedan como trabajo futuro.
