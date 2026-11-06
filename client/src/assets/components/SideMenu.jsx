@@ -44,7 +44,11 @@ export default function SideMenu() {
                 if (hasChildren) {
                   toggleItem(itemId);
                 } else {
-                  navigate(item.path);
+                  const path = item.path === "#"
+                    ? `/en-desarrollo/${encodeURIComponent(item.label)}`
+                    : item.path;
+                  navigate(path);
+                  toggleDrawer();
                 }
               }}
             >

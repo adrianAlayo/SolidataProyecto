@@ -28,6 +28,7 @@ import InventoryList from "./assets/pages/admin/inventory/InventoryList.jsx";
 import ItemsList from "./assets/pages/admin/item/ItemsList.jsx";
 import Account from "./assets/pages/auth/Account.jsx";
 import ArticlesList from "./assets/pages/admin/article/ArticlesList.jsx";
+import PendingPage from "./assets/pages/PendingPage.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -51,8 +52,8 @@ function App() {
                 {/* PAGINA ROL ADMIN*/}
                 <Route path="/admin/home" element={<div className="#"> <HomeAdmin /></div>} />
                 <Route path="/admin/" element={<div className="#"> <HomeAdmin /></div>} />
-                <Route path="/admin/register/user" element={<div className="#"> </div>} />
-                <Route path="/admin/register/institution" element={<div className="#"> </div>} />
+                <Route path="/admin/register/user" element={<PendingPage title="Alta de usuarios" />} />
+                <Route path="/admin/register/institution" element={<PendingPage title="Alta de instituciones" />} />
 
                 <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
                 <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>
@@ -85,19 +86,19 @@ function App() {
                 <Route path="/admin/donations/items" element={<ItemsList />} />
                 <Route path="/admin/donations/items/update" element={<ItemsList />} />
                 <Route path="/admin/donations/items/delete" element={<ItemsList />} />
-                <Route path="/admin/items/:id" element={<div className="#"> </div>} /> {/* GET id */}
-                <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* PUT */}
-                <Route path="/admin/items/:id" element={<div className="#"> </div>} />  {/* DELTE */}
+                <Route path="/admin/items/:id" element={<PendingPage title="Detalle del artículo de donación" />} />
 
                 <Route path="/admin/HighLow" element={<div className="#"> <High_Low/> </div>} />  {/* PATCH */}
                 <Route path="/admin/needs" element={<NeedsList />} />
                 <Route path="/admin/inventory" element={<InventoryList />} />
+                <Route path="/en-desarrollo/:section" element={<PendingPage />} />
 
                 {/* PAGINA ROL COORDINADOR*/}
                 
 
                 {/* PAGINA ROL OPERADOR*/}
-                <Route path="Operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
+                <Route path="/operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
+                <Route path="/Operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
 
                 {/* PAGINA ROL VOLUNTARIO*/}
                 {/* acá después agregás tus otras rutas */}
