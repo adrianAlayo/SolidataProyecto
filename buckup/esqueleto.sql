@@ -1,6 +1,6 @@
--- SOLIDATA | Base PostgreSQL con datos de prueba
--- Esquema completo + datos de demostracion + cinco instituciones ficticias CABA para probar el mapa.
--- Ejecutar sobre una base vacia en DBeaver; el usuario administrador inicia con contrasena 123.
+-- SOLIDATA | Esqueleto PostgreSQL (tipos, tablas y restricciones)
+-- Solo estructura; ejecutar una vez sobre una base PostgreSQL vacia antes de registros.sql.
+-- Ejecutar sobre una base vacia en DBeaver.
 --
 -- PostgreSQL database dump
 --
@@ -575,7 +575,278 @@ ALTER TABLE ONLY public."Users" ALTER COLUMN id SET DEFAULT nextval('public."Use
 
 
 --
--- Data for Name: Actions; Type: TABLE DATA; Schema: public; Owner: -
+-- Name: Actions Actions_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY public."Actions"
+    ADD CONSTRAINT "Actions_name_key" UNIQUE (name);
+
+
+--
+-- Name: Actions Actions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Actions"
+    ADD CONSTRAINT "Actions_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Articles Articles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Articles"
+    ADD CONSTRAINT "Articles_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: DonationItems DonationItems_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."DonationItems"
+    ADD CONSTRAINT "DonationItems_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Donations Donations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Donations"
+    ADD CONSTRAINT "Donations_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Entities Entities_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Entities"
+    ADD CONSTRAINT "Entities_name_key" UNIQUE (name);
+
+
+--
+-- Name: Entities Entities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Entities"
+    ADD CONSTRAINT "Entities_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: InstitutionsNeeds InstitutionsNeeds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."InstitutionsNeeds"
+    ADD CONSTRAINT "InstitutionsNeeds_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Institutions Institutions_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Institutions"
+    ADD CONSTRAINT "Institutions_name_key" UNIQUE (name);
+
+
+--
+-- Name: Institutions Institutions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Institutions"
+    ADD CONSTRAINT "Institutions_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Inventories Inventories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Inventories"
+    ADD CONSTRAINT "Inventories_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Permissions Permissions_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Permissions"
+    ADD CONSTRAINT "Permissions_name_key" UNIQUE (name);
+
+
+--
+-- Name: Permissions Permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Permissions"
+    ADD CONSTRAINT "Permissions_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: RolePermissions RolePermissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."RolePermissions"
+    ADD CONSTRAINT "RolePermissions_pkey" PRIMARY KEY (role_id, permission_id);
+
+
+--
+-- Name: Roles Roles_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Roles"
+    ADD CONSTRAINT "Roles_name_key" UNIQUE (name);
+
+
+--
+-- Name: Roles Roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Roles"
+    ADD CONSTRAINT "Roles_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Types Types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Types"
+    ADD CONSTRAINT "Types_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Users Users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Users"
+    ADD CONSTRAINT "Users_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: DonationItems DonationItems_article_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."DonationItems"
+    ADD CONSTRAINT "DonationItems_article_id_fkey" FOREIGN KEY (article_id) REFERENCES public."Articles"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: DonationItems DonationItems_donation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."DonationItems"
+    ADD CONSTRAINT "DonationItems_donation_id_fkey" FOREIGN KEY (donation_id) REFERENCES public."Donations"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Donations Donations_donor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Donations"
+    ADD CONSTRAINT "Donations_donor_id_fkey" FOREIGN KEY (donor_id) REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Donations Donations_receiver_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Donations"
+    ADD CONSTRAINT "Donations_receiver_institution_id_fkey" FOREIGN KEY (receiver_institution_id) REFERENCES public."Institutions"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Donations Donations_responsable_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Donations"
+    ADD CONSTRAINT "Donations_responsable_user_id_fkey" FOREIGN KEY (responsable_user_id) REFERENCES public."Users"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: InstitutionsNeeds InstitutionsNeeds_article_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."InstitutionsNeeds"
+    ADD CONSTRAINT "InstitutionsNeeds_article_id_fkey" FOREIGN KEY (article_id) REFERENCES public."Articles"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: InstitutionsNeeds InstitutionsNeeds_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."InstitutionsNeeds"
+    ADD CONSTRAINT "InstitutionsNeeds_institution_id_fkey" FOREIGN KEY (institution_id) REFERENCES public."Institutions"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Institutions Institutions_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Institutions"
+    ADD CONSTRAINT "Institutions_type_id_fkey" FOREIGN KEY (type_id) REFERENCES public."Types"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Inventories Inventories_donation_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Inventories"
+    ADD CONSTRAINT "Inventories_donation_item_id_fkey" FOREIGN KEY (donation_item_id) REFERENCES public."DonationItems"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Permissions Permissions_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Permissions"
+    ADD CONSTRAINT "Permissions_action_id_fkey" FOREIGN KEY (action_id) REFERENCES public."Actions"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Permissions Permissions_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Permissions"
+    ADD CONSTRAINT "Permissions_entity_id_fkey" FOREIGN KEY (entity_id) REFERENCES public."Entities"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: RolePermissions RolePermissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."RolePermissions"
+    ADD CONSTRAINT "RolePermissions_permission_id_fkey" FOREIGN KEY (permission_id) REFERENCES public."Permissions"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: RolePermissions RolePermissions_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."RolePermissions"
+    ADD CONSTRAINT "RolePermissions_role_id_fkey" FOREIGN KEY (role_id) REFERENCES public."Roles"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Users Users_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Users"
+    ADD CONSTRAINT "Users_institution_id_fkey" FOREIGN KEY (institution_id) REFERENCES public."Institutions"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Users Users_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."Users"
+    ADD CONSTRAINT "Users_role_id_fkey" FOREIGN KEY (role_id) REFERENCES public."Roles"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+
+-- Coordenadas y trazabilidad de geocodificacion utilizadas por el mapa SOLIDATA.
+ALTER TABLE public."Institutions"
+    ADD COLUMN IF NOT EXISTS latitude double precision,
+    ADD COLUMN IF NOT EXISTS longitude double precision,
+    ADD COLUMN IF NOT EXISTS location_checked_at timestamp with time zone,
+    ADD COLUMN IF NOT EXISTS location_accuracy character varying(20);
 
