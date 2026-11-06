@@ -53,7 +53,12 @@ const createInstitution = async(req,res) =>{
 const geocodeMissingInstitutions = async (_req, res) => {
     try {
         const institutions = await INSTITUTION.findAll({
-            where: { location_checked_at: null },
+            where: {
+                [Op.or]: [
+                    { latitude: null },
+                    { longitude: null },
+                ],
+            },
             order: [['id', 'ASC']],
         });
 
