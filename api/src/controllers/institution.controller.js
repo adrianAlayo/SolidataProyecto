@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const INSTITUTION = require('../models/institution');
 const USER = require('../models/user');
 const TYPE = require('../models/type');
+const geocodeInstitution = require('../utils/geocodeInstitution.util');
 
 const institutionIncludes = [{ model: TYPE, attributes: ['id', 'name'] }];
 
@@ -17,10 +18,15 @@ const createInstitution = async(req,res) =>{
         }
 
         const password_hash_inCharge = await bcrypt.hash(password, 7);
+        const coordinates = await geocodeInstitution(name_inst, location_inst);
         
         const institution_create = await INSTITUTION.create({
             name: name_inst, 
             location: location_inst,
+            latitude: coordinates?.latitude ?? null,
+            longitude: coordinates?.longitude ?? null,
+            location_accuracy: coordinates?.accuracy ?? null,
+            location_checked_at: new Date(),
             institutionType: type_inst,
             type_id: type,
         });
@@ -44,6 +50,38 @@ const createInstitution = async(req,res) =>{
         return res.status(500).json({message: "Error al intentar crear una institucion."});
     }
 }
+const geocodeMissingInstitutions = async (_req, res) => {
+    try {
+        const institutions = await INSTITUTION.findAll({
+            where: { location_checked_at: null },
+            order: [['id', 'ASC']],
+        });
+
+        let located = 0;
+        let notLocated = 0;
+        for (const institution of institutions) {
+            const coordinates = await geocodeInstitution(institution.name, institution.location);
+            await institution.update({
+                latitude: coordinates?.latitude ?? null,
+                longitude: coordinates?.longitude ?? null,
+                location_accuracy: coordinates?.accuracy ?? null,
+                location_checked_at: new Date(),
+            });
+            if (coordinates) located += 1;
+            else notLocated += 1;
+        }
+
+        return res.status(200).json({
+            message: 'Se revisaron las ubicaciones pendientes.',
+            checked: institutions.length,
+            located,
+            notLocated,
+        });
+    } catch (err) {
+        console.error('Error al geocodificar instituciones:', err.message);
+        return res.status(500).json({ message: 'No se pudieron revisar las ubicaciones.' });
+    }
+};
 const getInstitutions = async(_req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({ include: institutionIncludes, order: [['name', 'ASC']] });
@@ -155,6 +193,16 @@ const updateInstitution = async (req, res) => {
         }
         if (!Object.keys(changes).length) return res.status(400).json({ message: 'No hay cambios para guardar.' });
 
+        const locationChanged = changes.location && changes.location !== institution.location;
+        const nameChanged = changes.name && changes.name !== institution.name;
+        if (locationChanged || nameChanged) {
+            const coordinates = await geocodeInstitution(changes.name || institution.name, changes.location || institution.location);
+            changes.latitude = coordinates?.latitude ?? null;
+            changes.longitude = coordinates?.longitude ?? null;
+            changes.location_accuracy = coordinates?.accuracy ?? null;
+            changes.location_checked_at = new Date();
+        }
+
         if (changes.name) {
             const duplicate = await INSTITUTION.findOne({ where: { name: changes.name, id: { [Op.ne]: id } } });
             if (duplicate) return res.status(409).json({ message: 'Ya existe una institución con ese nombre.' });
@@ -201,5 +249,6 @@ module.exports = {
     getInstitutionsInactive, // 
     getInstitution, // params
     deleteInstitution, //params
-    updateInstitution
+    updateInstitution,
+    geocodeMissingInstitutions,
 }
