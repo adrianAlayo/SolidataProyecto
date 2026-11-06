@@ -29,6 +29,11 @@ export async function getInstitution(id) {
     return res.data;
 }
 
+export async function updateInstitution(id, data) {
+    const res = await axios.put(`${API_URL}/${id}`, data, getAuthHeaders());
+    return res.data;
+}
+
 // Obtener instituciones INACTIVAS
 export async function getInstitutionsInactive() {
     const res = await axios.get(`${API_URL}/Inactive`, getAuthHeaders());

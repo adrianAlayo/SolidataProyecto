@@ -40,10 +40,10 @@ const menuData = [
         ] 
     }, 
     { 
-        label: "Institucion", 
+        label: "Instituciones",
         children: [
-            { label: "Crear", path: "#" },
-            { label: "Eliminar", path: "#" }, 
+            { label: "Ver instituciones", path: "/admin/institutions" },
+            { label: "Registrar institución", path: "/register/institution" },
             { label: "Necesidades", 
                 children: [
                     { label: "Ver Necesidades", path: "/admin/needs" },

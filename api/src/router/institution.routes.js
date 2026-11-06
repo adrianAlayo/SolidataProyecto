@@ -8,6 +8,7 @@ const {
     getInstitutions,
     getInstitutionsInactive,
     getInstitutionsActive,
+    updateInstitution,
     deleteInstitution
 } = require('../controllers/institution.controller');
 
@@ -31,20 +32,20 @@ router.get(
     getInstitutions
 ); // Testeado
 
-// Obtener la informacion de 1 institucion (READ)
-router.get(
-    '/:id',
-    verifyToken,
-    authorize("INSTITUTIONS", "READ"),
-    getInstitution
-); // Testeado
-
 // Obtener todas las instituciones inactivas (READ)
 router.get(
     '/Inactive',
     verifyToken,
     authorize("INSTITUTIONS", "READ"),
     getInstitutionsInactive
+); // Testeado
+
+// Obtener la informacion de 1 institucion (READ)
+router.get(
+    '/:id',
+    verifyToken,
+    authorize("INSTITUTIONS", "READ"),
+    getInstitution
 ); // Testeado
 
 // Obtener todas las instituciones activas (READ)
@@ -54,6 +55,13 @@ router.get(
     authorize("INSTITUTIONS", "READ"),
     getInstitutionsActive
 ); // Testeado
+
+router.put(
+    '/:id',
+    verifyToken,
+    authorize("INSTITUTIONS", "UPDATE"),
+    updateInstitution
+);
 
 // Eliminar una institucion (DELETE)
 router.delete(

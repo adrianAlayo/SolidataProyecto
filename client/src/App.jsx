@@ -29,6 +29,7 @@ import ItemsList from "./assets/pages/admin/item/ItemsList.jsx";
 import Account from "./assets/pages/auth/Account.jsx";
 import ArticlesList from "./assets/pages/admin/article/ArticlesList.jsx";
 import PendingPage from "./assets/pages/PendingPage.jsx";
+import InstitutionsList from "./assets/pages/admin/institution/InstitutionsList.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -91,6 +92,7 @@ function App() {
                 <Route path="/admin/HighLow" element={<div className="#"> <High_Low/> </div>} />  {/* PATCH */}
                 <Route path="/admin/needs" element={<NeedsList />} />
                 <Route path="/admin/inventory" element={<InventoryList />} />
+                <Route path="/admin/institutions" element={<InstitutionsList />} />
                 <Route path="/en-desarrollo/:section" element={<PendingPage />} />
 
                 {/* PAGINA ROL COORDINADOR*/}

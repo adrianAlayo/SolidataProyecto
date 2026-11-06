@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AppBar, Avatar, Box, Button, Menu, MenuItem, Toolbar } from "@mui/material";
-import { AccountCircleRounded, HomeRounded, Inventory2Rounded, LocalShippingRounded, LogoutRounded, RestaurantRounded, VolunteerActivismRounded } from "@mui/icons-material";
+import { AccountCircleRounded, BusinessRounded, HomeRounded, Inventory2Rounded, LocalShippingRounded, LogoutRounded, RestaurantRounded, VolunteerActivismRounded } from "@mui/icons-material";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import "./Navbar.css";
@@ -25,6 +25,7 @@ export default function Navbar() {
     { label: "Donaciones", to: "/admin/donations/history", icon: <LocalShippingRounded /> },
     { label: "Artículos", to: "/admin/articles", icon: <RestaurantRounded /> },
     { label: "Inventario", to: "/admin/inventory", icon: <Inventory2Rounded /> },
+    { label: "Instituciones", to: "/admin/institutions", icon: <BusinessRounded /> },
   ];
 
   const handleLogout = () => {
