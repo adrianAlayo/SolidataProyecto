@@ -56,6 +56,7 @@ export default function DonationHistory() {
 
   return (
     <main className="donationHistoryPage">
+      <SideMenu />
       <header className="donationHistoryHeading"><span>♡</span><div><h1>Historial de donaciones</h1><p>Buscá y administrá las donaciones registradas.</p></div></header>
       <section className="donationHistoryPanel">
         <div className="donationHistoryTitle">Donaciones <span>{filtered.length} de {donations.length} registros</span></div>

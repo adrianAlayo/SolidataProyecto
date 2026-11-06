@@ -1,6 +1,7 @@
 // menuData.js
 
 const menuData = [
+    { label: "Inicio", path: "/admin/home" },
     { 
         label: "Usuarios", 
         children: [
@@ -47,9 +48,7 @@ const menuData = [
             { label: "Necesidades", 
                 children: [
                     { label: "Ver Necesidades", path: "/admin/needs" },
-                    { label: "Actualizar Necesidad", path: "#" }, 
-                    { label: "Actualizar Estado", path: "#" }, 
-                    { label: "Eliminar Necesidad", path: "#" },
+                    { label: "Administrar necesidades", path: "/admin/needs" },
                 ] 
             }, 
             { 
