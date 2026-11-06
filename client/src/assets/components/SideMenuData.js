@@ -31,6 +31,7 @@ const menuData = [
         label: "Donaciones", 
         children: [
             { label: "Historial de donaciones", path: "/admin/donations/history" },
+            { label: "Entregas", path: "/admin/deliveries" },
             { label: "Crear", path: "/admin/donations/create" }, 
             { label: "Items", 
                 children: [
