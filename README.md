@@ -81,10 +81,13 @@ Vite muestra la dirección local, normalmente `http://localhost:5173`. La API pe
 
 ## Datos de demostración
 
-En `buckup/` hay exportaciones PostgreSQL en formato de respaldo personalizado, no archivos SQL de texto plano. Se pueden restaurar en una base de prueba con `pg_restore` o con la opción de restauración de DBeaver. Revisá el destino antes de restaurar: la operación puede reemplazar datos existentes. No uses información de demostración como datos de producción.
+En `buckup/` quedan dos scripts SQL de texto, listos para ejecutar desde DBeaver sobre una base vacía:
 
-Para añadir cinco instituciones ficticias de CABA a una base ya inicializada, ejecutá `buckup/seed-institutions-caba.sql` desde DBeaver sobre la base de prueba. Luego, en el Home, usá **Revisar direcciones** para ubicar las nuevas filas. Solo se guardan marcadores si el geocodificador confirma la localidad; esos puntos son aproximados.
+- `SOLIDATA_Esqueleto.sql`: estructura, relaciones, datos de referencia y un usuario Admin. Contraseña inicial: `123`.
+- `SOLIDATA_Datos_Prueba.sql`: la misma estructura con datos de demostración (incluye donaciones, ítems, instituciones e inventario) y cinco instituciones de CABA para probar el mapa.
 
+No restaures el archivo de datos sobre una base que quieras conservar: contiene datos de demostración. Para que una institución aparezca en el mapa debe tener coordenadas válidas. Si se inserta sin ellas, iniciá la API, abrí Home y seleccioná **Revisar direcciones**; el geocodificador gratuito intentará ubicarla y señalará como aproximadas las coincidencias por localidad.
 ## Estado
 
 SOLIDATA es una **beta escolar**: prioriza una experiencia presentable y los flujos principales. Algunos reportes o acciones pueden depender de los permisos y datos cargados en la base; la asignación por necesidad, la reserva de stock y la confirmación independiente por parte de la institución quedan como trabajo futuro.
+
