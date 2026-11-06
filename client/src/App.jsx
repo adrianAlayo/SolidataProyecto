@@ -31,6 +31,7 @@ import ArticlesList from "./assets/pages/admin/article/ArticlesList.jsx";
 import PendingPage from "./assets/pages/PendingPage.jsx";
 import InstitutionsList from "./assets/pages/admin/institution/InstitutionsList.jsx";
 import ReportsPage from "./assets/pages/admin/ReportsPage.jsx";
+import DeliveryBoard from "./assets/pages/admin/DeliveryBoard.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -95,6 +96,7 @@ function App() {
                 <Route path="/admin/inventory" element={<InventoryList />} />
                 <Route path="/admin/institutions" element={<InstitutionsList />} />
                 <Route path="/admin/reports" element={<ReportsPage />} />
+                <Route path="/admin/deliveries" element={<DeliveryBoard />} />
                 <Route path="/en-desarrollo/:section" element={<PendingPage />} />
 
                 {/* PAGINA ROL COORDINADOR*/}
