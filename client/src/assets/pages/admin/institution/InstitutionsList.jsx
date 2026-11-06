@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SideMenu from "../../../components/SideMenu.jsx";
 import Notification from "../../../components/Notification.jsx";
+import TablePager from "../../../components/TablePager.jsx";
 import { deleteInstitution, getInstitutions, updateInstitution } from "../../../services/institution.service.js";
 import { getTypes } from "../../../services/type.service.js";
 import "./InstitutionsList.css";
@@ -15,6 +16,8 @@ export default function InstitutionsList() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [sort, setSort] = useState("name");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ name: "", location: "", institutionType: "Recipient", status: "Pending", type_id: "" });
@@ -35,6 +38,7 @@ export default function InstitutionsList() {
     const text = `${item.name} ${item.location} ${item.Type?.name || ""} ${typeLabel[item.institutionType] || ""}`.toLowerCase();
     return text.includes(query.toLowerCase()) && (status === "all" || item.status === status);
   }).sort((a, b) => sort === "location" ? a.location.localeCompare(b.location, "es") : a.name.localeCompare(b.name, "es")), [institutions, query, status, sort]);
+  const pageRows = filtered.slice(page * pageSize, (page + 1) * pageSize);
 
   const save = async () => {
     try {
@@ -66,9 +70,9 @@ export default function InstitutionsList() {
         <select aria-label="Filtrar por estado" value={status} onChange={(e) => setStatus(e.target.value)}><option value="all">Todos los estados</option><option value="Active">Activas</option><option value="Pending">Pendientes</option><option value="Inactive">Inactivas</option></select>
         <select aria-label="Ordenar instituciones" value={sort} onChange={(e) => setSort(e.target.value)}><option value="name">Nombre A–Z</option><option value="location">Ubicación</option></select>
       </div>
-      {loading ? <p className="institutionsMessage">Cargando instituciones...</p> : filtered.length === 0 ? <p className="institutionsMessage">{institutions.length ? "No hay resultados para la búsqueda." : "Todavía no hay instituciones registradas."}</p> :
+      {loading ? <p className="institutionsMessage">Cargando instituciones...</p> : filtered.length === 0 ? <p className="institutionsMessage">{institutions.length ? "No hay resultados para la búsqueda." : "Todavía no hay instituciones registradas."}</p> : <>
         <div className="institutionsTableWrap"><table className="institutionsTable"><thead><tr><th>Institución</th><th>Ubicación</th><th>Categoría</th><th>Participación</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
-          {filtered.map((item) => <tr key={item.id}>{editingId === item.id ? <>
+          {pageRows.map((item) => <tr key={item.id}>{editingId === item.id ? <>
             <td><input aria-label="Nombre de institución" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></td>
             <td><input aria-label="Ubicación" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></td>
             <td><select aria-label="Categoría" value={form.type_id} onChange={(e) => setForm({ ...form, type_id: e.target.value })}>{types.map((type) => <option key={type.id} value={type.id}>{type.name}</option>)}</select></td>
@@ -80,7 +84,7 @@ export default function InstitutionsList() {
             <td><span className={`institutionStatus ${item.status?.toLowerCase()}`}>{statusLabel[item.status] || item.status}</span></td>
             <td className="institutionActions"><button onClick={() => { setEditingId(item.id); setForm({ name: item.name, location: item.location, institutionType: item.institutionType, status: item.status, type_id: String(item.type_id || item.Type?.id || "") }); }}>Editar</button><button className="deleteAction" onClick={() => remove(item)}>Eliminar</button></td>
           </>}</tr>)}
-        </tbody></table></div>}
+        </tbody></table></div><TablePager count={filtered.length} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(0); }} /></>}
     </section>
     <Notification open={notice.open} message={notice.message} severity={notice.severity} onClose={() => setNotice({ ...notice, open: false })} />
   </main>;
