@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SideMenu from "../../../components/SideMenu.jsx";
 import Notification from "../../../components/Notification.jsx";
+import TablePager from "../../../components/TablePager.jsx";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import { GetArticles } from "../../../services/article.service.js";
 import { getInstitutions } from "../../../services/institution.service.js";
@@ -18,6 +19,8 @@ export default function NeedsList() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [sort, setSort] = useState("newest");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -52,6 +55,7 @@ export default function NeedsList() {
     const timeB = new Date(b.createdAt || 0).getTime();
     return sort === "oldest" ? timeA - timeB : timeB - timeA;
   }), [needs, query, status, sort]);
+  const pageRows = filtered.slice(page * pageSize, (page + 1) * pageSize);
 
   const save = async (event) => {
     event.preventDefault();
@@ -119,15 +123,15 @@ export default function NeedsList() {
         <select aria-label="Filtrar por estado" value={status} onChange={(e) => setStatus(e.target.value)}><option value="all">Todos los estados</option><option value="Pending">Pendientes</option><option value="Resolved">Resueltas</option></select>
         <select aria-label="Ordenar por fecha" value={sort} onChange={(e) => setSort(e.target.value)}><option value="newest">Más recientes</option><option value="oldest">Más antiguas</option></select>
       </div>
-      {loading ? <p className="needsMessage">Cargando necesidades...</p> : filtered.length === 0 ? <p className="needsMessage">{needs.length ? "No hay resultados para la búsqueda." : "Todavía no hay necesidades registradas."}</p> :
+      {loading ? <p className="needsMessage">Cargando necesidades...</p> : filtered.length === 0 ? <p className="needsMessage">{needs.length ? "No hay resultados para la búsqueda." : "Todavía no hay necesidades registradas."}</p> : <>
         <div className="needsTableWrap"><table className="needsTable"><thead><tr><th>Institución</th><th>Artículo</th><th>Categoría</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
-          {filtered.map((need) => <tr key={need.id}>
+          {pageRows.map((need) => <tr key={need.id}>
             <td>{need.Institution?.name || "Institución"}</td><td>{need.Article?.name || "Artículo"}{need.Article?.variant ? ` · ${need.Article.variant}` : ""}</td><td>{need.Article?.category || "—"}</td><td>{need.available} {need.Article?.unit || ""}</td>
             <td>{need.createdAt ? new Date(need.createdAt).toLocaleDateString("es-AR") : "—"}</td>
             <td><span className={`needStatus ${need.status === "Resolved" ? "resolved" : "pending"}`}>{need.status === "Resolved" ? "Resuelta" : "Pendiente"}</span></td>
             <td className="needsActions"><button type="button" onClick={() => startEdit(need)}>Editar</button>{!isInstitution && <button type="button" onClick={() => changeStatus(need)}>{need.status === "Resolved" ? "Reabrir" : "Resolver"}</button>}<button className="needsDeleteAction" type="button" onClick={() => remove(need)}>Eliminar</button></td>
           </tr>)}
-        </tbody></table></div>}
+        </tbody></table></div><TablePager count={filtered.length} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(0); }} /></>}
     </section>
     <Notification open={notice.open} message={notice.message} severity={notice.severity} onClose={() => setNotice({ ...notice, open: false })} />
   </main>;
