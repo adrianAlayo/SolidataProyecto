@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AssessmentRounded, DownloadRounded, Inventory2Rounded, LocalShippingRounded, RefreshRounded, SearchRounded } from "@mui/icons-material";
 import SideMenu from "../../components/SideMenu.jsx";
+import TablePager from "../../components/TablePager.jsx";
 import { getDonations } from "../../services/donation.service.js";
 import { getInventories } from "../../services/inventory.service.js";
 import { getNeeds } from "../../services/institutionNeed.service.js";
@@ -19,6 +20,8 @@ export default function ReportsPage() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [sort, setSort] = useState("newest");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
 
   const loadReports = useCallback(async () => {
     setLoading(true);
@@ -58,6 +61,7 @@ export default function ReportsPage() {
   }, [data, query, sort, status, stockRows, tab]);
 
   const totalStock = data.inventory.reduce((sum, item) => sum + Number(item.available || 0), 0);
+  const pageRows = rows.slice(page * pageSize, (page + 1) * pageSize);
   const delivered = data.donations.filter((item) => item.status === "Delivered").length;
 
   const downloadCsv = () => {
@@ -92,9 +96,9 @@ export default function ReportsPage() {
         {tab === "Donaciones" && <select aria-label="Ordenar por fecha" value={sort} onChange={(event) => setSort(event.target.value)}><option value="newest">Más recientes</option><option value="oldest">Más antiguas</option></select>}
       </div>
       <div className="reportsCount">{loading ? "Cargando información…" : `${rows.length} de ${tab === "Donaciones" ? data.donations.length : tab === "Inventario" ? stockRows.length : data.needs.length} registros`}</div>
-      {loading ? <p className="reportsEmpty">Cargando reporte…</p> : !rows.length ? <p className="reportsEmpty">No hay registros para mostrar con estos filtros.</p> : <div className="reportsTableWrap"><table className="reportsTable"><thead><tr>{tab === "Donaciones" ? <><th>Institución receptora</th><th>Fecha</th><th>Estado</th><th>Nota</th></> : tab === "Inventario" ? <><th>Artículo</th><th>Variante</th><th>Sector</th><th>Disponible</th></> : <><th>Institución</th><th>Artículo</th><th>Cantidad</th><th>Estado</th></>}</tr></thead>
-        <tbody>{rows.map((row, index) => tab === "Donaciones" ? <tr key={row.id}><td>{row.receiver_institution?.name || "—"}</td><td>{dateLabel(row.donation_date)}</td><td><span className={`reportStatus ${row.status === "Delivered" ? "done" : row.status === "Not Delivered" ? "cancelled" : "pending"}`}>{stateLabel(row.status)}</span></td><td>{row.note || "—"}</td></tr> : tab === "Inventario" ? <tr key={`${row.name}-${row.area}-${index}`}><td>{row.name}</td><td>{row.variant}</td><td>{row.area}</td><td>{row.available.toLocaleString("es-AR")}</td></tr> : <tr key={row.id}><td>{row.Institution?.name || "—"}</td><td>{row.Article?.name || "—"}</td><td>{Number(row.available || 0).toLocaleString("es-AR")}</td><td><span className={`reportStatus ${row.status === "Resolved" ? "done" : "pending"}`}>{stateLabel(row.status)}</span></td></tr>)}</tbody>
-      </table></div>}
+      {loading ? <p className="reportsEmpty">Cargando reporte…</p> : !rows.length ? <p className="reportsEmpty">No hay registros para mostrar con estos filtros.</p> : <><div className="reportsTableWrap"><table className="reportsTable"><thead><tr>{tab === "Donaciones" ? <><th>Institución receptora</th><th>Fecha</th><th>Estado</th><th>Nota</th></> : tab === "Inventario" ? <><th>Artículo</th><th>Variante</th><th>Sector</th><th>Disponible</th></> : <><th>Institución</th><th>Artículo</th><th>Cantidad</th><th>Estado</th></>}</tr></thead>
+        <tbody>{pageRows.map((row, index) => tab === "Donaciones" ? <tr key={row.id}><td>{row.receiver_institution?.name || "—"}</td><td>{dateLabel(row.donation_date)}</td><td><span className={`reportStatus ${row.status === "Delivered" ? "done" : row.status === "Not Delivered" ? "cancelled" : "pending"}`}>{stateLabel(row.status)}</span></td><td>{row.note || "—"}</td></tr> : tab === "Inventario" ? <tr key={`${row.name}-${row.area}-${index}`}><td>{row.name}</td><td>{row.variant}</td><td>{row.area}</td><td>{row.available.toLocaleString("es-AR")}</td></tr> : <tr key={row.id}><td>{row.Institution?.name || "—"}</td><td>{row.Article?.name || "—"}</td><td>{Number(row.available || 0).toLocaleString("es-AR")}</td><td><span className={`reportStatus ${row.status === "Resolved" ? "done" : "pending"}`}>{stateLabel(row.status)}</span></td></tr>)}</tbody>
+      </table></div><TablePager count={rows.length} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(0); }} /></>}
     </section>
     <footer className="reportsFooter">SOLIDATA · Datos consultados en la base del sistema.</footer>
   </main>;
