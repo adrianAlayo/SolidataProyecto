@@ -45,7 +45,6 @@ export default function SideMenu() {
                   toggleItem(itemId);
                 } else {
                   navigate(item.path);
-                  toggleDrawer();
                 }
               }}
             >
@@ -69,7 +68,7 @@ export default function SideMenu() {
   return (
     <>
       {/* BOTÓN HAMBURGUESA */}
-      <IconButton onClick={toggleDrawer} className="sidebar-toggle">
+      <IconButton onClick={toggleDrawer} className="sidebar-toggle" aria-label="Abrir menú lateral">
         <Menu />
       </IconButton>
 

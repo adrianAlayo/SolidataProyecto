@@ -41,7 +41,7 @@ export function FormLogin() {
                     3: "/coordinator/home",
                     4: "/institution/home",
                 };
-                navigate(destinations[rol] || "/");
+            navigate(destinations[rol] || "/", { replace: true });
             }, 600);
         } catch (error) {
             showNotification(

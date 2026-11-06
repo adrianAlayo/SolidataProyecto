@@ -1,6 +1,7 @@
 const USER = require('../models/user');
 const DONATION = require('../models/donation');
 const INSTITUTION = require('../models/institution');
+const DONATIONITEM = require('../models/donationItem');
 
 const IsString = require('../utils/isString.util');
 const IsDate = require('../utils/isDate.util')
@@ -23,14 +24,18 @@ const createDonation = async (req, res) => {
             receiver_institution_id
         } = req.body;
 
+        if (!donation_date || !IsDate(donation_date) || !Number.isInteger(Number(donor_id)) || Number(donor_id) <= 0 || !Number.isInteger(Number(receiver_institution_id)) || Number(receiver_institution_id) <= 0) {
+            return res.status(400).json({ message: "Indique fecha válida, donante y una institución receptora." });
+        }
+
         // Evitar duplicados: mismo donor_id + misma receiver + misma fecha (día)
         const start = TransformDate.startOfDay(donation_date);
         const end = TransformDate.endOfDay(donation_date);
 
         const existDonation = await DONATION.findOne({
             where: {
-                donor_id:donor_id,
-                receiver_institution_id:receiver_institution_id,
+                donor_id: Number(donor_id),
+                receiver_institution_id: Number(receiver_institution_id),
                 donation_date: {
                     [Op.between]: [start, end]
                 }
@@ -44,8 +49,8 @@ const createDonation = async (req, res) => {
         const newDonation = await DONATION.create({
             note,
             donation_date,
-            donor_id,
-            receiver_institution_id,
+            donor_id: Number(donor_id),
+            receiver_institution_id: Number(receiver_institution_id),
             responsable_user_id: responsable_user.id
         });
 
@@ -116,10 +121,6 @@ const getDonations = async (_req, res) => {
             order: [["donation_date", "DESC"]]
         });
 
-        if(list.length === 0 && !list){
-            return res.status(404).send({message: "No se encontraron donaciones"})
-        }
-
         return res.status(200).json({
             message: "Se encontraron las donaciones",
             data: list
@@ -146,9 +147,6 @@ const getDonationsByResponsable = async (req, res) => {
 
         });
 
-        if(list.length === 0 && !list){
-            return res.status(404).send({message: "No se encontraron donaciones"})
-        }
         return res.status(200).json({
             message: "Se encontraron donaciones de un mismo responsable",
             data: list
@@ -173,9 +171,6 @@ const getDonationsByDonor = async (req, res) => {
             }
         });
 
-        if(list.length === 0 || !list){
-            return res.status(404).send({message: "No se encontraron donaciones"})
-        }
         return res.status(200).json({
             message: "Se encontraron las donaciones de un mismo donador",
             data: list
@@ -206,10 +201,6 @@ const getDonationsByVolunteerDonor = async (req, res) => {
                 donor_id: id 
             }
         }); 
-
-        if(list.length === 0 && !list){
-            return res.status(404).send({message: "No se encontraron donaciones"})
-        }
 
         return res.status(200).json({
             message: "Se encontraron donaciones de un mismo voluntario",
@@ -244,10 +235,6 @@ const getDonationsByInstitutionDonor = async (req, res) => {
             }
         });
 
-        if(list.length === 0 && !list){
-            return res.status(404).send({message: "No se encontraron donaciones"})
-        }
-
         return res.status(200).json({
             message: "Se encotnraron donaciones de una misma institucion donadora",
             data: list
@@ -273,10 +260,6 @@ const getDonationsByReceiver = async (req, res) => {
             }
         });
 
-
-        if(list.length === 0 || !list){
-            return res.status(404).send({message: "No se encontraron donaciones"})
-        }
 
         return res.status(200).json({
             message: "Se encontraron las donaciones solamente de un receptor en especifico",
@@ -306,7 +289,6 @@ const updateDonation = async (req, res) => {
         const {
             note,
             donation_date,
-            responsable_user_id,
             donor_id,
             receiver_institution_id
         } = req.body;
@@ -343,23 +325,13 @@ const updateDonation = async (req, res) => {
             updateFields.donation_date = donation_date;
         }
 
-        // RESPONSABLE_USER_ID
-        if (responsable_user_id !== undefined) {
-            if (typeof responsable_user_id !== "number") {
-                return res.status(400).send({
-                    message: "responsable_user_id debe ser número."
-                });
-            }
-            updateFields.responsable_user_id = responsable_user_id;
-        }
-
         // DONOR_ID
         if (donor_id !== undefined) {
-
-            if (typeof donor_id !== "number")
+            if (!Number.isInteger(Number(donor_id)) || Number(donor_id) <= 0) {
                 return res.status(400).send({ message: "donor_id debe ser número." });
+            }
 
-            const donor = await USER.findByPk(donor_id);
+            const donor = await USER.findByPk(Number(donor_id));
 
             if (!donor)
                 return res.status(404).send({ message: "El donante no existe." });
@@ -370,6 +342,7 @@ const updateDonation = async (req, res) => {
                     return res.status(400).send({ message: "La institución del donante no existe." });
                 }
                 const institution = await INSTITUTION.findByPk(donor.institution_id)
+                if (!institution) return res.status(400).send({ message: "La institución del donante no existe." });
                 const type = institution.institutionType;
 
                 if (type !== "Donor" && type !== "Both") {
@@ -388,19 +361,19 @@ const updateDonation = async (req, res) => {
                 });
             }
 
-            updateFields.donor_id = donor_id;
+            updateFields.donor_id = Number(donor_id);
         }
 
         // RECEIVER_INSTITUTION_ID
         if (receiver_institution_id !== undefined) {
 
-            if (typeof receiver_institution_id !== "number") {
+            if (!Number.isInteger(Number(receiver_institution_id)) || Number(receiver_institution_id) <= 0) {
                 return res.status(400).send({
                     message: "receiver_institution_id debe ser número."
                 });
             }
 
-            const receiver = await INSTITUTION.findByPk(receiver_institution_id);
+            const receiver = await INSTITUTION.findByPk(Number(receiver_institution_id));
             if (!receiver)
                 return res.status(404).send({ message: "La institución receptora no existe." });
 
@@ -411,7 +384,7 @@ const updateDonation = async (req, res) => {
                 });
             }
 
-            updateFields.receiver_institution_id = receiver_institution_id;
+            updateFields.receiver_institution_id = Number(receiver_institution_id);
         }
 
         // Si no enviaron nada
@@ -438,7 +411,10 @@ const updateDonationStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        const donation = await DONATION.findByPk(id);
+        if (!Number.isInteger(Number(id)) || Number(id) <= 0) return res.status(400).json({ message: "ID inválido." });
+        if (req.user_find?.rol !== 1 && req.user_find?.rol !== 3) return res.status(403).json({ message: "No tiene permisos para actualizar donaciones." });
+
+        const donation = await DONATION.findByPk(Number(id));
         if (!donation) {
             return res.status(404).send({ message: "Donación no encontrada." });
         }
@@ -447,18 +423,8 @@ const updateDonationStatus = async (req, res) => {
             return res.status(404).send({message:"Tiene que elegir un estado valido 'Scheduled', 'Delivered' o 'Not Delivered'. "})
         } 
 
-        const updateDonation = await DONATION.update(
-            {status: status},
-            {
-                where:{
-                    id: id
-                }
-            }
-        )
+        await donation.update({ status });
 
-        if(!updateDonation){
-            return res.status(404).send({message: "No se pudo actualizar la donacion"})
-        }
         return res.status(200).json({
             message: "Estado actualizado."
         });
@@ -481,7 +447,15 @@ const deleteDonation = async (req, res) => {
         const donation = await DONATION.findByPk(id);
         if (!donation) return res.status(404).send({ message: "Donación no encontrada." });
 
-        await donation.destroy();
+        const transaction = await DONATION.sequelize.transaction();
+        try {
+            await DONATIONITEM.destroy({ where: { donation_id: id }, transaction });
+            await donation.destroy({ transaction });
+            await transaction.commit();
+        } catch (error) {
+            await transaction.rollback();
+            throw error;
+        }
 
         return res.status(200).send({ message: "Donación eliminada con éxito." });
 

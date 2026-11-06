@@ -5,6 +5,11 @@ const INSTITUTIONNEED = require('../models/institutionneed');
 const { where } = require('sequelize');
 const IsString = require('../utils/isString.util');
 
+const needIncludes = [
+    { model: INSTITUTION, attributes: ['id', 'name'] },
+    { model: ARTICLE, attributes: ['id', 'name', 'category', 'variant', 'unit'] }
+];
+
 const createNeeds = async (req, res) => {
     try {
         const responsable_user = req.user_find;
@@ -32,8 +37,8 @@ const createNeeds = async (req, res) => {
                 return res.status(400).json({ message: "Debe enviar available y article_id." });
             }
 
-            // El institution_id se toma del usuario logueado
-            institution_id = responsable_user.institution_id;
+            // En el token institucional, id corresponde a la institución.
+            institution_id = responsable_user.id;
         }
 
         // VALIDAR tipos
@@ -111,7 +116,7 @@ const getNeed = async (req, res) => {
 
         id = Number(id);
 
-        const need = await INSTITUTIONNEED.findByPk(id);
+        const need = await INSTITUTIONNEED.findByPk(id, { include: needIncludes });
 
         if (!need) {
             return res.status(404).json({ message: "La necesidad no existe." });
@@ -119,7 +124,7 @@ const getNeed = async (req, res) => {
 
         // SI ES INSTITUCIÓN, SOLO PUEDE VER LAS SUYAS
         if (responsable_user.rol === 4) {
-            if (need.institution_id !== responsable_user.id) {
+            if (need.institution_id !== (responsable_user.institution_id ?? responsable_user.id)) {
                 return res.status(403).json({ message: "No tiene permiso para ver esta necesidad." });
             }
         }
@@ -140,11 +145,13 @@ const getNeeds = async (req, res) => {
         if (responsable_user.rol === 4) {
             // Solo las suyas
             needs = await INSTITUTIONNEED.findAll({
-                where: { institution_id: responsable_user.id }
+                where: { institution_id: responsable_user.institution_id ?? responsable_user.id },
+                include: needIncludes,
+                order: [['createdAt', 'DESC']]
             });
         } else {
             // Admin ve todas
-            needs = await INSTITUTIONNEED.findAll();
+            needs = await INSTITUTIONNEED.findAll({ include: needIncludes, order: [['createdAt', 'DESC']] });
         }
 
         return res.status(200).json({ 
@@ -169,7 +176,7 @@ const getNeedByInstitution = async (req, res) => {
         id = Number(id);
 
         // Si ES institución → solo puede consultar SUS NECESIDADES
-        if (responsable_user.rol === 4 && responsable_user.id !== id) {
+        if (responsable_user.rol === 4 && (responsable_user.institution_id ?? responsable_user.id) !== id) {
             return res.status(403).json({ message: "No tiene permiso para ver necesidades de otra institución." });
         }
 
@@ -178,7 +185,7 @@ const getNeedByInstitution = async (req, res) => {
             return res.status(404).send({message: "El ID de la institucion no existe"});
         }
 
-        const needs = await INSTITUTIONNEED.findAll({ where: { institution_id:id } });
+        const needs = await INSTITUTIONNEED.findAll({ where: { institution_id:id }, include: needIncludes, order: [['createdAt', 'DESC']] });
 
         if (needs.length === 0) {
             return res.status(404).json({
@@ -215,7 +222,7 @@ const updateNeed = async (req, res) => {
 
         // SI ES INSTITUCIÓN → solo puede editar necesidades suyas
         if (responsable_user.rol === 4) {
-            if (need.institution_id !== responsable_user.id) {
+            if (need.institution_id !== (responsable_user.institution_id ?? responsable_user.id)) {
                 return res.status(403).json({ message: "No tiene permiso para modificar esta necesidad." });
             }
         }
@@ -333,7 +340,7 @@ const deleteNeed = async (req, res) => {
 
         // Si ES institución → solo puede borrar las suyas
         if (responsable_user.rol === 4) {
-            if (need.institution_id !== responsable_user.id) {
+            if (need.institution_id !== (responsable_user.institution_id ?? responsable_user.id)) {
                 return res.status(403).json({ message: "No tiene permiso para eliminar esta necesidad." });
             }
         }

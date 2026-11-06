@@ -29,15 +29,12 @@ const menuData = [
     { 
         label: "Donaciones", 
         children: [
+            { label: "Historial de donaciones", path: "/admin/donations/history" },
             { label: "Crear", path: "/admin/donations/create" }, 
-            { label: "Actualizar", path: "/admin/donations/update" }, 
-            { label: "Actualizar Estado", path: "/admin/donations/updateStatus" }, 
-            { label: "Eliminar", path: "/admin/donations/delete" }, 
             { label: "Items", 
                 children: [
+                    { label: "Administrar items", path: "/admin/donations/items" },
                     { label: "Crear Item", path: "/admin/donations/items/create" }, 
-                    { label: "Actualizar Item", path: "/admin/donations/items/update" }, 
-                    { label: "Eliminar Item", path: "/admin/donations/items/delete" },
                 ] 
             },
         ] 

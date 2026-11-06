@@ -1,59 +1,73 @@
 const DONATIONITEM = require('../models/donationItem');
 const DONATION = require('../models/donation');
 const ARTICLE = require('../models/article');
+const USER = require('../models/user');
+const INSTITUTION = require('../models/institution');
+const { Op } = require('sequelize');
 
-const { where } = require('sequelize');
 const isString = require('../utils/isString.util');
 const IsDate = require('../utils/isDate.util');
+
+const itemIncludes = [
+    { model: ARTICLE, attributes: ['id', 'name', 'category', 'variant', 'unit'] },
+    { model: DONATION, attributes: ['id', 'donation_date', 'status'], include: [
+        { model: USER, as: 'donor', attributes: ['first_name', 'last_name'] },
+        { model: INSTITUTION, as: 'receiver_institution', attributes: ['name'] }
+    ] }
+];
 
 const createItem = async (req,res) =>{
     try {
         const {quantity,expiration_date,note,donation_id,article_id} = req.body;
 
-        if(!quantity && !expiration_date && !note && !donation_id && !article_id)
-
-        if(!isString(expiration_date) && !isString(note)){
-            return res.status(404).send({message: "Los campos 'expiration_date' y 'note' tienen que ser validos"});
+        if(quantity === undefined || quantity === null || quantity === '' || !Number.isInteger(Number(quantity)) || Number(quantity) <= 0){
+            return res.status(400).send({message: "quantity debe ser un entero mayor que cero."});
         }
         if(!IsDate(expiration_date)){
-            return res.status(400).send({message: "donation_date debe tener formato YYYY-MM-DD."});
+            return res.status(400).send({message: "expiration_date debe tener formato YYYY-MM-DD."});
         }
-        if(isNaN(donation_id) && isNaN(article_id)){
-            return res.status(404).send({message: "los campos 'donation_Id' y 'article_id' tiene que ser un numero"});
+        if (new Date(expiration_date) < new Date(new Date().toDateString())) {
+            return res.status(400).send({ message: "La fecha de vencimiento no puede estar en el pasado." });
+        }
+        if(!donation_id || !article_id || !Number.isInteger(Number(donation_id)) || !Number.isInteger(Number(article_id)) || Number(donation_id) <= 0 || Number(article_id) <= 0){
+            return res.status(400).send({message: "Seleccione una donación y un artículo válidos."});
+        }
+        if(note !== undefined && !isString(note)){
+            return res.status(400).send({message: "note debe ser texto."});
         }
 
-        const existDonation = await DONATION.findByPk(donation_id);
+        const existDonation = await DONATION.findByPk(Number(donation_id));
         if(!existDonation){
             return res.status(404).send({message: "El ID de la donacion que introdujo no existe"});
         }
-        const existArticle = await ARTICLE.findByPk(article_id);
+        const existArticle = await ARTICLE.findByPk(Number(article_id));
         if(!existArticle){
             return res.status(404).send({message: "El ID del articulo que introdujo no existe"});
         }
 
         const duplicateItem = await DONATIONITEM.findOne({
             where:{
-                donation_id: donation_id,
-                article_id: article_id
+                donation_id: Number(donation_id),
+                article_id: Number(article_id)
             }
         });
         if(duplicateItem){
-            return res.status(404).send({message: "Ya existe una item que proviene de la misma donacion y tiene el mismo articulo, posiblemnete ya existe lo que queres ingresar"})
+            return res.status(409).send({message: "Ya existe ese artículo en la donación seleccionada."})
         }
         
         const newItem = await DONATIONITEM.create({
-            quantity,
+            quantity: Number(quantity),
             expiration_date,
             note,
-            donation_id,
-            article_id
+            donation_id: Number(donation_id),
+            article_id: Number(article_id)
         })
 
         if(!newItem){
             return res.status(404).send({message: "No se pudo crear el item de la donacion"})
         }
 
-        return res.status(200).json({
+        return res.status(201).json({
             message: "Se creo el item de la donacion",
             data:newItem
         })
@@ -71,7 +85,7 @@ const getItem = async (req,res) =>{
         }
         id = Number(id);
 
-        const item = await DONATIONITEM.findByPk(id);
+        const item = await DONATIONITEM.findByPk(id, { include: itemIncludes });
 
         if(!item){
             return res.status(404).send({message: "No se encontro ninguna dionacion con ese item"})
@@ -88,11 +102,7 @@ const getItem = async (req,res) =>{
 }
 const getItems = async (_req,res) =>{
     try {
-        const items = await DONATIONITEM.findAll();
-
-        if(!items){
-            return res.status(404).send({message: "No se entrarion items"});
-        }
+        const items = await DONATIONITEM.findAll({ include: itemIncludes, order: [['createdAt', 'DESC']] });
 
         return res.status(200).json({
             message:"Se encontraron items",
@@ -122,7 +132,7 @@ const getItemsByDonation = async (req,res) =>{
         const itemByDonation = await DONATIONITEM.findAll({
             where:{
                 donation_id: donation_id
-            }
+            }, include: itemIncludes
         })
 
         if(!itemByDonation){
@@ -157,7 +167,7 @@ const updateItem = async (req, res) => {
 
         // VALIDAR quantity
         if (quantity !== undefined) {
-            if (!isNaN(quantity)) {
+            if (quantity !== '' && Number.isInteger(Number(quantity)) && Number(quantity) > 0) {
                 updateFields.quantity = Number(quantity);
             } else {
                 return res.status(400).send({ message: "quantity debe ser un número válido." });
@@ -166,7 +176,7 @@ const updateItem = async (req, res) => {
 
         // VALIDAR expiration_date
         if (expiration_date !== undefined) {
-            if (IsDate(expiration_date)) {
+            if (IsDate(expiration_date) && new Date(expiration_date) >= new Date(new Date().toDateString())) {
                 updateFields.expiration_date = expiration_date;
             } else {
                 return res.status(400).send({ message: "expiration_date debe ser fecha válida YYYY-MM-DD." });
@@ -184,7 +194,7 @@ const updateItem = async (req, res) => {
 
         // VALIDAR donation_id
         if (donation_id !== undefined) {
-            if (!isNaN(donation_id)) {
+            if (Number.isInteger(Number(donation_id)) && Number(donation_id) > 0) {
                 updateFields.donation_id = Number(donation_id);
             } else {
                 return res.status(400).send({ message: "donation_id debe ser un número válido." });
@@ -193,22 +203,20 @@ const updateItem = async (req, res) => {
 
         // VALIDAR article_id
         if (article_id !== undefined) {
-            if (!isNaN(article_id)) {
+            if (Number.isInteger(Number(article_id)) && Number(article_id) > 0) {
                 updateFields.article_id = Number(article_id);
             } else {
                 return res.status(400).send({ message: "article_id debe ser un número válido." });
             }
         }
 
-        const isDuplicate = await DONATIONITEM.findOne({
-            where:{
-                quantity,
-                article_id,
-                donation_id
-            }
-        })
+        const finalDonationId = updateFields.donation_id ?? item.donation_id;
+        const finalArticleId = updateFields.article_id ?? item.article_id;
+        if ((updateFields.donation_id || updateFields.article_id) && !await DONATION.findByPk(finalDonationId)) return res.status(404).send({ message: "La donación no existe." });
+        if ((updateFields.donation_id || updateFields.article_id) && !await ARTICLE.findByPk(finalArticleId)) return res.status(404).send({ message: "El artículo no existe." });
+        const isDuplicate = await DONATIONITEM.findOne({ where: { donation_id: finalDonationId, article_id: finalArticleId, id: { [Op.ne]: id } } });
         if(isDuplicate){
-            return res.status(404).send({message: "Ya existe una item que proviene de la misma donacion y tiene el mismo articulo, y la misma cantidad, Es muy probable que este repitiendo la misma informacion"})
+            return res.status(409).send({message: "Ya existe ese artículo en la donación seleccionada."})
         }
 
         // Si no enviaron nada
@@ -231,6 +239,7 @@ const updateItem = async (req, res) => {
     }
 };
 const deleteItem = async (req,res) =>{
+  try {
     let { id } = req.params;
 
     if (!id || isNaN(Number(id))) {
@@ -249,6 +258,10 @@ const deleteItem = async (req,res) =>{
     return res.status(200).json({
         message: "Se elimino el Item correctamente"
     })
+  } catch (err) {
+    console.error('Error al eliminar ítem:', err.message);
+    return res.status(500).json({ message: 'No se pudo eliminar el ítem.' });
+  }
 }
 
 

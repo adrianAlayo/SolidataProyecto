@@ -1,125 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Notification from "../Notification";
-import './FormCreateItem.css'
+import Notification from "../Notification.jsx";
+import { createItem } from "../../services/donationItem.service.js";
+import { getDonations } from "../../services/donation.service.js";
+import { GetArticles } from "../../services/article.service.js";
+import "./FormCreateItem.css";
 
 export default function CreateItem() {
+  const [form, setForm] = useState({ quantity: "", expiration_date: "", donation_id: "", article_id: "", note: "" });
+  const [donations, setDonations] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
+  const navigate = useNavigate();
 
-    const [note, setNote] = useState("");
-    const [expiration_date, setExpirationDate] = useState("");
-    const [donation_id, setDonation] = useState("")
-    const [quantity, setQuantity] = useState("")
-    const [article_id, setArticle] = useState("")
-    const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    Promise.all([getDonations(), GetArticles()]).then(([donationResponse, articleResponse]) => {
+      setDonations(donationResponse.data || []);
+      setArticles(articleResponse.data || []);
+    }).catch(() => setNotice({ open: true, message: "No se pudieron cargar donaciones y artículos.", severity: "error" }));
+  }, []);
 
-    // Estados para notificación
-    const [notifOpen, setNotifOpen] = useState(false);
-    const [notifMsg, setNotifMsg] = useState("");
-    const [notifType, setNotifType] = useState("success");
-
-    const navigate = useNavigate();
-
-    const handleCreate = async (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      alert("Item creado con Exito!");
-      navigate("/admin/home");
-    } catch (err) {
-      console.error(err);
-      alert("Error al crear un item");
-    } finally {
-      setLoading(false);
-    }
+      await createItem({ ...form, quantity: Number(form.quantity), donation_id: Number(form.donation_id), article_id: Number(form.article_id) });
+      setNotice({ open: true, message: "Ítem guardado correctamente.", severity: "success" });
+      setTimeout(() => navigate("/admin/donations/items"), 500);
+    } catch (error) {
+      setNotice({ open: true, message: error.response?.data?.message || "No se pudo guardar el ítem.", severity: "error" });
+    } finally { setLoading(false); }
   };
 
-    return (
-        <>
-            <section className="formCreateItemBox animationFadeIn">
-                <form className="formlogin" onSubmit={handleCreate}>
-                    <h2 className="textWelcome">Crear Item</h2>
-                    <h5 className="textLogin">Registra un nuevo item en el sistema</h5>
-
-                    
-                    <div className="gridTwoCols">
-
-                        
-                        <input
-                            className="inputEmailLog inputAnim"
-                            type="number"
-                            min={1}
-                            step={1}
-                            placeholder="Cantidad"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
-                            required
-                        />
-
-                        <input
-                            className="inputEmailLog inputAnim"
-                            type="date"
-                            placeholder="Fecha de Expiración"
-                            value={expiration_date}
-                            onChange={(e) => setExpirationDate(e.target.value)}
-                            required
-                        />
-                        
-                        <input
-                            className="inputEmailLog inputAnim"
-                            type="number"
-                            min={1}
-                            step={1}
-                            placeholder="ID Articulo"
-                            value={article_id}
-                            onChange={(e) => setArticle(e.target.value)}
-                            required
-                        />
-
-                        <input
-                            className="inputEmailLog inputAnim"
-                            type="number"
-                            min={1}
-                            step={1}
-                            placeholder="ID Donacion"
-                            value={donation_id}
-                            onChange={(e) => setDonation(e.target.value)}
-                            required
-                        />
-
-                    </div>
-                    
-                    <input
-                            className="inputEmailLog5 inputAnim"
-                            type="text"
-                            placeholder="Nota"
-                            value={note}
-                            onChange={(e) => setNote(e.target.value)}
-                            required
-                    />
-
-                    <div className="linksLogin">
-                        <a className="linkBackLog" href="/admin/home">
-                            Volver Atrás
-                        </a>
-                    </div>
-
-                    <button
-                        className="buttonLogin buttonAnim"
-                        type="submit"
-                        disabled={loading}
-                    >
-                        {loading ? "Creando..." : "Crear Item"}
-                    </button>
-                </form>
-            </section>
-
-            <Notification
-                open={notifOpen}
-                message={notifMsg}
-                severity={notifType}
-                onClose={() => setNotifOpen(false)}
-            />
-        </>
-    );
+  const setField = (name, value) => setForm((current) => ({ ...current, [name]: value }));
+  return <>
+    <section className="formCreateItemBox animationFadeIn"><form className="formlogin" onSubmit={handleCreate}>
+      <h2 className="textWelcome">Agregar artículo a una donación</h2><h5 className="textLogin">Elegí registros existentes y completá cantidad y vencimiento.</h5>
+      <div className="gridTwoCols">
+        <input className="inputEmailLog inputAnim" type="number" min="1" step="1" placeholder="Cantidad" value={form.quantity} onChange={(e) => setField("quantity", e.target.value)} required />
+        <input className="inputEmailLog inputAnim" type="date" min={new Date().toISOString().slice(0, 10)} value={form.expiration_date} onChange={(e) => setField("expiration_date", e.target.value)} required />
+        <select className="inputEmailLog inputAnim" value={form.article_id} onChange={(e) => setField("article_id", e.target.value)} required><option value="">Seleccionar artículo</option>{articles.map((article) => <option key={article.id} value={article.id}>{article.name} · {article.variant}</option>)}</select>
+        <select className="inputEmailLog inputAnim" value={form.donation_id} onChange={(e) => setField("donation_id", e.target.value)} required><option value="">Seleccionar donación</option>{donations.map((donation) => <option key={donation.id} value={donation.id}>{new Date(donation.donation_date).toLocaleDateString("es-AR")} · {[donation.donor?.first_name, donation.donor?.last_name].filter(Boolean).join(" ")} → {donation.receiver_institution?.name || "Institución"}</option>)}</select>
+      </div>
+      <input className="inputEmailLog5 inputAnim" type="text" placeholder="Nota (opcional)" value={form.note} onChange={(e) => setField("note", e.target.value)} />
+      <div className="linksLogin"><a className="linkBackLog" href="/admin/donations/items">Ver artículos de donaciones</a></div>
+      <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>{loading ? "Guardando..." : "Agregar artículo"}</button>
+    </form></section>
+    <Notification open={notice.open} message={notice.message} severity={notice.severity} onClose={() => setNotice({ ...notice, open: false })} />
+  </>;
 }

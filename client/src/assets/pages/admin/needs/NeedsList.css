@@ -6,6 +6,9 @@
 .needsPanel { max-width: 1100px; margin: auto; overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px #18331a12; }
 .needsPanelTitle { display: flex; justify-content: space-between; padding: 18px 20px; font-size: 14px; font-weight: 600; }
 .needsPanelTitle span { color: #72808c; font-weight: 400; }
+.needsFilters { display: flex; gap: 10px; padding: 0 20px 16px; }
+.needsFilters input, .needsFilters select { min-height: 38px; border: 1px solid #e2e7e3; border-radius: 8px; padding: 0 12px; color: #39433e; background: #fff; font: inherit; font-size: 12px; }
+.needsFilters input { flex: 1; min-width: 180px; }
 .needsTableWrap { overflow-x: auto; }
 .needsTable { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
 .needsTable th { background: #f6f5f6; color: #8c98a5; font-size: 11px; font-weight: 600; }
@@ -16,3 +19,4 @@
 .needStatus.resolved { background: #ddf5e7; color: #318f5c; }
 .needsMessage { padding: 28px 20px; color: #7a8791; font-size: 13px; }
 @media (max-width: 600px) { .needsPage { padding: 16px; } .needsHeading h1 { font-size: 18px; } }
+@media (max-width: 600px) { .needsFilters { flex-direction: column; } }
