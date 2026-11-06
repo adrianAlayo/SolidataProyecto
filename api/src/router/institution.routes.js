@@ -9,7 +9,8 @@ const {
     getInstitutionsInactive,
     getInstitutionsActive,
     updateInstitution,
-    deleteInstitution
+    deleteInstitution,
+    geocodeMissingInstitutions,
 } = require('../controllers/institution.controller');
 
 // Middlewares
@@ -31,6 +32,14 @@ router.get(
     authorize("INSTITUTIONS", "READ"),
     getInstitutions
 ); // Testeado
+
+// Revisar una sola vez direcciones antiguas sin coordenadas (resultado guardado en BD)
+router.post(
+    '/geocode-missing',
+    verifyToken,
+    authorize("INSTITUTIONS", "UPDATE"),
+    geocodeMissingInstitutions
+);
 
 // Obtener todas las instituciones inactivas (READ)
 router.get(
