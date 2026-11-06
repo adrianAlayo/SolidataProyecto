@@ -70,16 +70,7 @@ const menuData = [
             { label: "Eliminar", path: "/admin/inventories/delete" },
         ] 
     }, 
-    { 
-        label: "Reportes", 
-        children: [
-            { label: "Donaciones", path: "#" }, 
-            { label: "Donaciones Realizadas", path: "#" }, 
-            { label: "Donaciones Hechas", path: "#" }, 
-            { label: "Stock", path: "#" }, 
-            { label: "Actividad Usuarios", path: "#" },
-        ] 
-    }, 
+    { label: "Reportes", path: "/admin/reports" },
     { label: "Altas/Bajas", path:"/admin/HighLow"}, 
     { 
         label: "Informacion", 
