@@ -39,7 +39,7 @@ function isPreciseMatch(result, institutionName, location) {
 
 function matchLocality(result, location) {
     const parts = String(location).split(',').map((part) => part.trim()).filter(Boolean);
-    const locality = normalize(parts[0] || '');
+    const locality = normalize((parts[0] || '').replace(/^caba\s*[-:–]\s*/i, '').trim());
     if (!locality || !result.address || result.address.country_code !== 'ar') return false;
     const localityFields = ['city', 'town', 'village', 'municipality', 'suburb', 'county', 'state_district'];
     return localityFields.some((field) => normalize(result.address[field]).replace(/^partido de /, '') === locality);
@@ -47,10 +47,12 @@ function matchLocality(result, location) {
 
 async function requestGeocode(institutionName, location) {
     const parts = location.split(',').map((part) => part.trim()).filter(Boolean);
-    const province = /ciudad autonoma de buenos aires/i.test(parts.at(-1)) ? 'Buenos Aires' : parts.at(-1);
+    const isCaba = /ciudad autonoma de buenos aires/i.test(location) || /^caba\s*[-:–]/i.test(location);
+    const province = isCaba ? 'Buenos Aires' : parts.at(-1);
     const hasStreetNumber = /\d/.test(location);
     const url = new URL('https://nominatim.openstreetmap.org/search');
-    url.searchParams.set('q', hasStreetNumber ? `${institutionName}, ${location}, Argentina` : `${parts[0]}, ${province}, Argentina`);
+    const locality = (parts[0] || '').replace(/^caba\s*[-:–]\s*/i, '').trim();
+    url.searchParams.set('q', hasStreetNumber ? `${institutionName}, ${location}, Argentina` : `${locality}, ${province}, Argentina`);
     url.searchParams.set('format', 'jsonv2');
     url.searchParams.set('addressdetails', '1');
     url.searchParams.set('limit', '5');
@@ -74,7 +76,10 @@ async function requestGeocode(institutionName, location) {
 
 function geocodeInstitution(institutionName, location) {
     if (typeof location !== 'string' || !location.trim()) return Promise.resolve(null);
-    const key = `${normalize(institutionName)}|${normalize(location)}`;
+    const locationKey = normalize(location);
+    const key = /\d/.test(location)
+        ? `${normalize(institutionName)}|${locationKey}`
+        : `locality|${locationKey}`;
     if (cache.has(key)) return Promise.resolve(cache.get(key));
 
     const request = requestQueue.then(async () => {
