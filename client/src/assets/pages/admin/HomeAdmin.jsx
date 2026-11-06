@@ -4,7 +4,7 @@ import { ArrowForwardRounded, BusinessRounded, Inventory2Rounded, LocalShippingR
 import { useAuth } from "../../context/AuthContext.jsx";
 import { getNeeds } from "../../services/institutionNeed.service.js";
 import { getDonations } from "../../services/donation.service.js";
-import { getInstitutions } from "../../services/institution.service.js";
+import { getInstitutions, geocodeMissingInstitutions } from "../../services/institution.service.js";
 import { getInventoriesOnlyArticles } from "../../services/inventory.service.js";
 import SideMenu from "../../components/SideMenu.jsx";
 import MapView from "../../components/MapView.jsx";
@@ -24,6 +24,9 @@ export default function HomeAdmin() {
   const { user } = useAuth();
   const [data, setData] = useState({ needs: null, donations: null, institutions: null, inventory: null });
   const [loading, setLoading] = useState(true);
+  const [institutionsLoading, setInstitutionsLoading] = useState(true);
+  const [locating, setLocating] = useState(false);
+  const [locateMessage, setLocateMessage] = useState("");
 
   useEffect(() => {
     Promise.allSettled([getNeeds(), getDonations(), getInstitutions(), getInventoriesOnlyArticles()]).then(([needs, donations, institutions, inventory]) => {
@@ -33,9 +36,25 @@ export default function HomeAdmin() {
         institutions: institutions.status === "fulfilled" ? institutions.value.institutions || [] : null,
         inventory: inventory.status === "fulfilled" ? inventory.value.data || [] : null,
       });
+      setInstitutionsLoading(false);
       setLoading(false);
     });
   }, []);
+
+  const locateMissing = async () => {
+    setLocating(true);
+    setLocateMessage("Estamos revisando las direcciones una por una. Puede tardar unos segundos por institución.");
+    try {
+      const result = await geocodeMissingInstitutions();
+      const updatedInstitutions = await getInstitutions();
+      setData((current) => ({ ...current, institutions: updatedInstitutions.institutions || [] }));
+      setLocateMessage(`Revisión lista: ${result.located} ubicadas y ${result.notLocated} sin coincidencia precisa.`);
+    } catch (error) {
+      setLocateMessage(error.response?.data?.message || "No se pudieron revisar las direcciones.");
+    } finally {
+      setLocating(false);
+    }
+  };
 
   const pendingNeeds = data.needs?.filter((need) => need.status === "Pending").length;
   const activeInstitutions = data.institutions?.filter((institution) => institution.status === "Active").length;
@@ -76,7 +95,7 @@ export default function HomeAdmin() {
       </div>
     </section>
 
-    <section className="dashboardMapSection"><MapView /></section>
+    <section className="dashboardMapSection"><MapView institutions={data.institutions} loading={institutionsLoading} onLocateMissing={locateMissing} locating={locating} locateMessage={locateMessage} /></section>
     <footer className="dashboardFooter">SOLIDATA · Gestión solidaria del Banco de Alimentos Buenos Aires</footer>
   </main>;
 }
