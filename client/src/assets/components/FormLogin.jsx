@@ -1,73 +1,53 @@
 import { useState } from "react";
-import "./FormLogin.css";
-import { useNavigate } from "react-router-dom";
+import { Visibility } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../context/AuthContext.jsx";
 import { login } from "../services/auth.service.js";
-import { jwtDecode } from "jwt-decode";
 import Notification from "./Notification.jsx";
+import loginHeart from "../img/login-heart.png";
+import loginEyeOff from "../img/login-eye.png";
+import "./FormLogin.css";
 
 export function FormLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { loginUser } = useAuth();
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [notification, setNotification] = useState({ open: false, message: "", type: "success" });
+    const { loginUser } = useAuth();
     const navigate = useNavigate();
 
-    // Notificaciones
-    const [notifOpen, setNotifOpen] = useState(false);
-    const [notifMsg, setNotifMsg] = useState("");
-    const [notifType, setNotifType] = useState("success");
-
     const showNotification = (message, type = "success") => {
-        setNotifMsg(message);
-        setNotifType(type);
-        setNotifOpen(true);
+        setNotification({ open: true, message, type });
     };
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (event) => {
+        event.preventDefault();
         setLoading(true);
 
         try {
-            const data = await login(email, password);
+            const data = await login(email.trim(), password);
             loginUser(data.token);
 
-            const payload = jwtDecode(data.token);
+            const { rol } = jwtDecode(data.token);
+            showNotification("Inicio de sesión exitoso", "success");
 
-            // Notificación exitosa
-            showNotification("Inicio de sesión exitoso ✔", "success");
-
-            setTimeout(() => {
-                switch (payload.rol) {
-                    case 1:
-                        navigate("/admin/home");
-                        break;
-                    case 2:
-                        navigate("/operator/home");
-                        break;
-                    case 3:
-                        navigate("/coordinator/home");
-                        break;
-                    case 4:
-                        navigate("/institution/home");
-                        break;
-                    default:
-                        navigate("/");
-                }
-            }, 800);
-
-        } catch (err) {
-            console.error(err);
-
-            const apiMessage = err.response?.data?.message;
-            const status = err.response?.status;
-
-            let finalMessage = "Error al iniciar sesión.";
-
-            if (status) finalMessage = `Error ${status}: `;
-            if (apiMessage) finalMessage += apiMessage;
-
-            showNotification(finalMessage, "error");
+            window.setTimeout(() => {
+                const destinations = {
+                    1: "/admin/home",
+                    2: "/operator/home",
+                    3: "/coordinator/home",
+                    4: "/institution/home",
+                };
+            navigate(destinations[rol] || "/", { replace: true });
+            }, 600);
+        } catch (error) {
+            showNotification(
+                error.response?.data?.message || "No se pudo iniciar sesión. Revisá el correo y la contraseña.",
+                "error"
+            );
         } finally {
             setLoading(false);
         }
@@ -75,47 +55,66 @@ export function FormLogin() {
 
     return (
         <>
-            <section className="formloginBox animationFadeIn">
-                <form className="formlogin" onSubmit={handleLogin}>
+            <section className="loginCard" aria-labelledby="loginTitle">
+                <form className="loginForm" onSubmit={handleLogin}>
+                    <h1 className="loginWelcome" id="loginTitle">
+                        Bienvenid<img src={loginHeart} alt="" />
+                    </h1>
+                    <p className="loginSubtitle">Inicia sesión en tu cuenta</p>
 
-                    <h2 className="textWelcome">Bienvenid❤️</h2>
-                    <h5 className="textLogin">Inicia sesión en tu cuenta</h5>
-
+                    <label className="visuallyHidden" htmlFor="loginEmail">Correo electrónico</label>
                     <input
-                        className="inputEmailLog inputAnim"
+                        className="loginInput loginEmail"
+                        id="loginEmail"
+                        name="email"
                         type="email"
-                        placeholder="Correo electrónico"
+                        autoComplete="email"
+                        placeholder="Ingresa tu gmail"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(event) => setEmail(event.target.value)}
                         required
                     />
 
-                    <input
-                        className="inputPasswordLog inputAnim"
-                        type="password"
-                        placeholder="Contraseña"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-
-                    <div className="linksLogin">
-                        <a className="linkBackLog" href="/">Volver atrás</a>
-                        <a className="linkRecoverLog" href="/recoverpass">¿Olvidaste tu contraseña?</a>
+                    <label className="visuallyHidden" htmlFor="loginPassword">Contraseña</label>
+                    <div className="loginPasswordField">
+                        <input
+                            className="loginInput"
+                            id="loginPassword"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            autoComplete="current-password"
+                            placeholder="Contraseña"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                            required
+                        />
+                        <IconButton
+                            className="passwordVisibilityButton"
+                            type="button"
+                            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                            onClick={() => setShowPassword((visible) => !visible)}
+                            size="small"
+                        >
+                            {showPassword ? <Visibility fontSize="small" /> : <img src={loginEyeOff} alt="" />}
+                        </IconButton>
                     </div>
 
-                    <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>
-                        {loading ? "Ingresando..." : "Iniciar Sesión"}
+                    <div className="loginLinks">
+                        <Link to="/" className="loginLink">Volver atrás</Link>
+                        <Link to="/recoverpass" className="loginLink">¿Olvidaste tu contraseña?</Link>
+                    </div>
+
+                    <button className="loginSubmit" type="submit" disabled={loading}>
+                        {loading ? "Ingresando..." : "Iniciar sesión"}
                     </button>
                 </form>
             </section>
 
-            {/* Componente de notificaciones */}
             <Notification
-                open={notifOpen}
-                message={notifMsg}
-                severity={notifType}
-                onClose={() => setNotifOpen(false)}
+                open={notification.open}
+                message={notification.message}
+                severity={notification.type}
+                onClose={() => setNotification((current) => ({ ...current, open: false }))}
             />
         </>
     );

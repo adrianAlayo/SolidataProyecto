@@ -11,6 +11,22 @@ const Institution = sequelize.define('Institutions', {
         type: DataTypes.STRING(254),
         allowNull: false,
     },
+    latitude: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+    },
+    longitude: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+    },
+    location_checked_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    location_accuracy: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+    },
     institutionType:{
         type: DataTypes.ENUM("Donor","Recipient","Both"),
         defaultValue: "Recipient",

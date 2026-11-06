@@ -1,6 +1,7 @@
 // menuData.js
 
 const menuData = [
+    { label: "Inicio", path: "/admin/home" },
     { 
         label: "Usuarios", 
         children: [
@@ -11,11 +12,11 @@ const menuData = [
         ], 
     }, 
     { 
-        label: "Articulo", 
+        label: "Artículos",
         children: [
+            { label: "Ver catálogo", path: "/admin/articles" },
             { label: "Crear", path: "/admin/articles/create" }, 
-            { label: "Actualizar", path: "/admin/articles/update" }, 
-            { label: "Eliminar", path: "/admin/articles/delete" },
+            { label: "Editar o eliminar", path: "/admin/articles" },
         ] 
     }, 
     { 
@@ -29,30 +30,26 @@ const menuData = [
     { 
         label: "Donaciones", 
         children: [
+            { label: "Historial de donaciones", path: "/admin/donations/history" },
+            { label: "Entregas", path: "/admin/deliveries" },
             { label: "Crear", path: "/admin/donations/create" }, 
-            { label: "Actualizar", path: "/admin/donations/update" }, 
-            { label: "Actualizar Estado", path: "/admin/donations/updateStatus" }, 
-            { label: "Eliminar", path: "/admin/donations/delete" }, 
             { label: "Items", 
                 children: [
+                    { label: "Administrar items", path: "/admin/donations/items" },
                     { label: "Crear Item", path: "/admin/donations/items/create" }, 
-                    { label: "Actualizar Item", path: "/admin/donations/items/update" }, 
-                    { label: "Eliminar Item", path: "/admin/donations/items/delete" },
                 ] 
             },
         ] 
     }, 
     { 
-        label: "Institucion", 
+        label: "Instituciones",
         children: [
-            { label: "Crear", path: "#" },
-            { label: "Eliminar", path: "#" }, 
+            { label: "Ver instituciones", path: "/admin/institutions" },
+            { label: "Registrar institución", path: "/register/institution" },
             { label: "Necesidades", 
                 children: [
-                    { label: "Crear Necesidad", path: "#" }, 
-                    { label: "Actualizar Necesidad", path: "#" }, 
-                    { label: "Actualizar Estado", path: "#" }, 
-                    { label: "Eliminar Necesidad", path: "#" },
+                    { label: "Ver Necesidades", path: "/admin/needs" },
+                    { label: "Administrar necesidades", path: "/admin/needs" },
                 ] 
             }, 
             { 
@@ -68,21 +65,13 @@ const menuData = [
     { 
         label: "Inventario", 
         children: [
+            { label: "Ver stock", path: "/admin/inventory" },
             { label: "Crear", path: "/admin/inventories/create" }, 
             { label: "Actualizar", path: "/admin/inventories/update" }, 
             { label: "Eliminar", path: "/admin/inventories/delete" },
         ] 
     }, 
-    { 
-        label: "Reportes", 
-        children: [
-            { label: "Donaciones", path: "#" }, 
-            { label: "Donaciones Realizadas", path: "#" }, 
-            { label: "Donaciones Hechas", path: "#" }, 
-            { label: "Stock", path: "#" }, 
-            { label: "Actividad Usuarios", path: "#" },
-        ] 
-    }, 
+    { label: "Reportes", path: "/admin/reports" },
     { label: "Altas/Bajas", path:"/admin/HighLow"}, 
     { 
         label: "Informacion", 

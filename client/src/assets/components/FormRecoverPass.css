@@ -1,0 +1,87 @@
+.recoverCard {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  width: min(432px, calc(100vw - 32px));
+  min-height: 371px;
+  flex-direction: column;
+  align-items: center;
+  padding: 39px 40px 66px;
+  border-radius: 50px;
+  background: #1f611f;
+  color: #ecece7;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  animation: loginFadeIn 0.45s ease-out;
+}
+
+.recoverLockBadge {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  display: grid;
+  width: 96px;
+  height: 96px;
+  place-items: center;
+  border-radius: 50%;
+  background: #1f611f;
+  transform: translateX(-50%);
+}
+
+.recoverLockBadge img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+}
+
+.recoverTitle {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.recoverSubtitle {
+  margin: 12px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.recoverDescription {
+  max-width: 280px;
+  margin: 22px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.recoverButton {
+  display: grid;
+  width: 210px;
+  min-height: 38px;
+  margin-top: auto;
+  place-items: center;
+  border-radius: 20px;
+  background: #d9d9d9;
+  color: #626161;
+  font-size: 10px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.recoverButton:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+  .recoverCard {
+    padding-right: 28px;
+    padding-left: 28px;
+    border-radius: 36px;
+  }
+
+  .recoverTitle {
+    font-size: 22px;
+  }
+}

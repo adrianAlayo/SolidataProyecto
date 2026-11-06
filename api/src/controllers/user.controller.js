@@ -85,7 +85,10 @@ const getUser = async (req,res) =>{
 }
 const getUsers = async (req,res) =>{
     try {
-        const user = await USER.findAll();
+        const user = await USER.findAll({
+            attributes: { exclude: ['password'] },
+            include: [{ model: INSTITUTION, attributes: ['id', 'name', 'institutionType'] }]
+        });
 
         if (!user) {
             return res.status(404).json({ message: "No se encontraron usuarios." });

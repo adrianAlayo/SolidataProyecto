@@ -8,6 +8,7 @@ const CreateTokenUser = require('../utils/createTokenUser.util');
 const isString = require("../utils/isString.util");
 const verificationPassword = require("../utils/verificationPassword.util");
 const VerificationEmail = require('../utils/verificationEmail.util');
+const geocodeInstitution = require('../utils/geocodeInstitution.util');
 
 const HelloURL = (_req,res) =>{
     res.status(200).send("La URL /auth funciona todo GOOOOOTI");
@@ -51,10 +52,15 @@ const RegisterInstitution = async(req,res) =>{
         }
 
         const password_hash_inCharge = await bcrypt.hash(password, 7);
+        const coordinates = await geocodeInstitution(name_inst, location_inst);
         
         const institution_create = await INSTITUTION.create({
             name: name_inst, 
             location: location_inst,
+            latitude: coordinates?.latitude ?? null,
+            longitude: coordinates?.longitude ?? null,
+            location_accuracy: coordinates?.accuracy ?? null,
+            location_checked_at: new Date(),
             institutionType: type_inst,
             type_id: type,
         });

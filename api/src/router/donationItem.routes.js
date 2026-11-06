@@ -59,7 +59,7 @@ router.put(
 router.delete(
     '/:id',
     verifyToken,
-    authorize("DONATIONS", "DELETE"),
+    authorize("DONATIONITEMS", "DELETE"),
     deleteItem
 ); // Testeado
 

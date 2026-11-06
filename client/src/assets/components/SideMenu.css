@@ -1,66 +1,32 @@
-.MuiDrawer-paper {
-  width: 300px !important;   
-  background: #0d1b2a !important;  
-  color: white !important;
-  overflow-y: auto !important;   /* 🔥 SCROLL VERTICAL */
-  overflow-x: hidden !important; /* Mantener oculto horizontal */
-  box-shadow: 3px 0 10px rgba(0,0,0,0.4);
-  padding-top: 10px;
-  border-right: none !important;
+.sidebarDrawer.MuiDrawer-docked { position: fixed !important; z-index: 1200 !important; top: 72px !important; left: 0 !important; bottom: 0 !important; width: 0 !important; }
+.sidebarDrawer .MuiDrawer-paper { top: 72px !important; bottom: 0 !important; height: auto !important; width: 276px !important; box-sizing: border-box; border: 0 !important; background: linear-gradient(165deg, #174b31, #103a29 72%) !important; color: #f5faf6 !important; box-shadow: 12px 12px 32px #153a2b26 !important; overflow: hidden !important; }
+.sidebarHeader { display: flex; align-items: center; gap: 11px; min-height: 78px; padding: 14px 14px 12px 18px; border-bottom: 1px solid #ffffff19; }
+.sidebarHeader img { width: 42px; height: 42px; flex: 0 0 42px; object-fit: contain; border-radius: 12px; background: white; }
+.sidebarHeader div { min-width: 0; flex: 1; }.sidebarHeader strong, .sidebarHeader span { display: block; }.sidebarHeader strong { font-size: 14px; letter-spacing: .12em; }.sidebarHeader span { margin-top: 3px; color: #bfd5c5; font-size: 10px; }
+.sidebarHeader .MuiIconButton-root { color: #e6f1e9; }.sidebarHeader .MuiIconButton-root:hover { background: #ffffff17; }
+.sidebarSectionLabel { padding: 18px 20px 9px; color: #a9c5b1; font-size: 9px; font-weight: 700; letter-spacing: .14em; }
+.sidebarMenuContent { flex: 1; overflow-y: auto; padding: 0 10px 14px; scrollbar-width: thin; scrollbar-color: #47765b transparent; }
+.sidebarList { padding: 0 !important; }
+.sidebarMenuItem.MuiListItemButton-root { min-height: 43px; margin: 3px 0; padding: 8px 12px !important; border-radius: 10px !important; color: #e4eee6 !important; transition: background .18s ease, color .18s ease, transform .18s ease; }
+.sidebarMenuItem.MuiListItemButton-root:hover { background: #ffffff12 !important; color: #fff !important; transform: translateX(2px); }
+.sidebarMenuItem.MuiListItemButton-root.selected { background: #e2f1e5 !important; color: #194e31 !important; font-weight: 700; }
+.sidebarMenuItem .MuiListItemIcon-root { min-width: 34px; color: inherit; }.sidebarMenuItem .MuiListItemText-primary { font-size: 12px !important; font-weight: 500; }.sidebarMenuItem.selected .MuiListItemText-primary { font-weight: 700; }
+.sidebarMenuItem > svg { font-size: 18px; color: #a8c9b2; }.sidebarMenuItem.selected > svg { color: #39724c; }
+.sidebarMenuItem.nested.MuiListItemButton-root { min-height: 36px; margin: 2px 0 2px 12px; padding-top: 6px !important; padding-bottom: 6px !important; color: #cee0d2 !important; }
+.sidebarMenuItem.nested .MuiListItemText-primary { font-size: 11px !important; }
+.sidebarFooter { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-top: 1px solid #ffffff19; color: #bdd3c3; font-size: 10px; }
+.sidebarOnlineDot { width: 7px; height: 7px; border-radius: 50%; background: #81d29a; box-shadow: 0 0 0 4px #81d29a22; }
+.sidebarRail { position: fixed; z-index: 1190; top: 72px; bottom: 0; left: 0; display: flex; width: 58px; flex-direction: column; align-items: center; gap: 7px; padding: 12px 5px; border-right: 1px solid #e4eae5; background: #f9fbf9; box-shadow: 4px 0 20px #173e2710; }
+.sidebarRail .MuiIconButton-root { width: 42px; height: 42px; border-radius: 12px; color: #577161; }.sidebarRail .MuiIconButton-root:hover, .sidebarRail .MuiIconButton-root.selected { background: #dfefe3; color: #1b6038; }
+.sidebarRailToggle.MuiIconButton-root { margin-bottom: 7px; background: #1b6038; color: #fff; }.sidebarRailToggle.MuiIconButton-root:hover { background: #154d2d; color: #fff; }
+@media (min-width: 761px) {
+  body .needsPage, body .institutionsPage, body .articlesPage, body .itemsPage, body .inventoryPage, body .donationHistoryPage, body .accountPage { padding-left: calc(clamp(16px, 5vw, 72px) + var(--solidata-sidebar-offset, 58px)); }
+  body .adminDashboard { padding-left: calc(clamp(16px, 4vw, 60px) + var(--solidata-sidebar-offset, 58px)); }
 }
-.MuiDrawer-paper::-webkit-scrollbar {
-  width: 8px;
-}
-
-.MuiDrawer-paper::-webkit-scrollbar-thumb {
-  background: #415a77;
-  border-radius: 4px;
-}
-
-.MuiDrawer-paper::-webkit-scrollbar-thumb:hover {
-  background: #627d98;
-}
-
-
-.sidebar-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-toggle {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  z-index: 900;
-  background: white;
-  border-radius: 50%;
-}
-
-/* ITEMS PRINCIPALES */
-.MuiListItemButton-root {
-  border-radius: 8px;
-  margin: 4px 10px;
-  padding: 12px 18px !important;
-  color: white !important;
-}
-
-.MuiListItemButton-root:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* ITEMS DEL SUBMENÚ */
-.MuiCollapse-root .MuiListItemButton-root {
-  margin: 3px 25px !important;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.MuiCollapse-root .MuiListItemButton-root:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-/* TEXTO */
-.MuiListItemText-primary {
-  font-size: 16px !important;
+@media (max-width: 760px) {
+  body { --solidata-sidebar-offset: 48px !important; }
+  .sidebarDrawer .MuiDrawer-paper { top: 64px !important; height: calc(100% - 64px) !important; }
+  .sidebarRail { top: 64px; width: 48px; padding: 9px 3px; gap: 4px; }
+  .sidebarRail .MuiIconButton-root { width: 39px; height: 39px; }
+  body .needsPage, body .institutionsPage, body .articlesPage, body .itemsPage, body .inventoryPage, body .donationHistoryPage, body .accountPage, body .adminDashboard { padding-left: calc(12px + var(--solidata-sidebar-offset, 48px)); }
 }

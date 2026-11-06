@@ -5,7 +5,9 @@ function CreateTokenInsti(user) {
         userRelation: user.id,
         id: user.Institution.id,
         name: user.Institution.name,
-        email: user.Institution.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
         typeID: user.Institution.type_id,
         rol: user.Role ? user.Role.id : null, 
     };

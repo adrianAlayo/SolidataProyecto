@@ -52,7 +52,7 @@ router.get(
 router.put(
     '/:id',
     verifyToken,
-    authorize("INSTITUTIONS", "UPDATE"),
+    authorize("INSTITUTIONNEEDS", "UPDATE"),
     updateNeed
 ); // Testeado
 

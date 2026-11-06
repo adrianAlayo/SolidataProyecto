@@ -1,7 +1,12 @@
-const { where, Op } = require('sequelize');const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 const INSTITUTION = require('../models/institution');
 const USER = require('../models/user');
+const TYPE = require('../models/type');
+const geocodeInstitution = require('../utils/geocodeInstitution.util');
+
+const institutionIncludes = [{ model: TYPE, attributes: ['id', 'name'] }];
 
 const createInstitution = async(req,res) =>{
     try{
@@ -13,10 +18,15 @@ const createInstitution = async(req,res) =>{
         }
 
         const password_hash_inCharge = await bcrypt.hash(password, 7);
+        const coordinates = await geocodeInstitution(name_inst, location_inst);
         
         const institution_create = await INSTITUTION.create({
             name: name_inst, 
             location: location_inst,
+            latitude: coordinates?.latitude ?? null,
+            longitude: coordinates?.longitude ?? null,
+            location_accuracy: coordinates?.accuracy ?? null,
+            location_checked_at: new Date(),
             institutionType: type_inst,
             type_id: type,
         });
@@ -40,18 +50,43 @@ const createInstitution = async(req,res) =>{
         return res.status(500).json({message: "Error al intentar crear una institucion."});
     }
 }
-const getInstitutions = async(_req,res) =>{
-    try{
+const geocodeMissingInstitutions = async (_req, res) => {
+    try {
         const institutions = await INSTITUTION.findAll({
-            attributes:{
-                exclude: "password"
-            }
-        })
-        if(!institutions || institutions.length === 0){
-            res.status(404).send({message: "No hay instituciones por el momento"});
+            where: { location_checked_at: null },
+            order: [['id', 'ASC']],
+        });
+
+        let located = 0;
+        let notLocated = 0;
+        for (const institution of institutions) {
+            const coordinates = await geocodeInstitution(institution.name, institution.location);
+            await institution.update({
+                latitude: coordinates?.latitude ?? null,
+                longitude: coordinates?.longitude ?? null,
+                location_accuracy: coordinates?.accuracy ?? null,
+                location_checked_at: new Date(),
+            });
+            if (coordinates) located += 1;
+            else notLocated += 1;
         }
 
-        res.status(201).json({
+        return res.status(200).json({
+            message: 'Se revisaron las ubicaciones pendientes.',
+            checked: institutions.length,
+            located,
+            notLocated,
+        });
+    } catch (err) {
+        console.error('Error al geocodificar instituciones:', err.message);
+        return res.status(500).json({ message: 'No se pudieron revisar las ubicaciones.' });
+    }
+};
+const getInstitutions = async(_req,res) =>{
+    try{
+        const institutions = await INSTITUTION.findAll({ include: institutionIncludes, order: [['name', 'ASC']] });
+
+        res.status(200).json({
             message: "Liista de instituciones exitosamente",
             institutions
         });
@@ -71,7 +106,7 @@ const getInstitution = async(req,res) =>{
 
         id = Number(id);
 
-        const institution = await INSTITUTION.findByPk(id);
+        const institution = await INSTITUTION.findByPk(id, { include: institutionIncludes });
 
         if (!institution) {
             return res.status(404).json({ message: "No se encontro la institucion." });
@@ -93,15 +128,11 @@ const getInstitutionsInactive = async(_req,res) =>{
             where:{
                 status: "Inactive",
             },
-            attributes:{
-                exclude: "password"
-            }
+            include: institutionIncludes,
+            order: [['name', 'ASC']]
         })
-        if(!institutions || institutions.length === 0){
-            res.status(404).send({message: "No hay instituciones Inactivas por el momento"});
-        }
 
-        res.status(201).json({
+        res.status(200).json({
             message: "Liista de instituciones Inactiva exitosamente",
             institutions
         });
@@ -116,15 +147,11 @@ const getInstitutionsActive = async(_req,res) =>{
             where:{
                 status: "Active",
             },
-            attributes:{
-                exclude: "password"
-            }
+            include: institutionIncludes,
+            order: [['name', 'ASC']]
         })
-        if(!institutions || institutions.length === 0){
-            res.status(404).send({message: "No hay instituciones Activas por el momento"});
-        }
 
-        res.status(201).json({
+        res.status(200).json({
             message: "Liista de instituciones activas exitosamente",
             institutions
         });
@@ -134,6 +161,60 @@ const getInstitutionsActive = async(_req,res) =>{
         return res.status(500).json({message: "Error al intentar obtener la lista de las institciones activas."});
     }
 }
+const updateInstitution = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'ID inválido.' });
+        const institution = await INSTITUTION.findByPk(id);
+        if (!institution) return res.status(404).json({ message: 'La institución no existe.' });
+
+        const { name, location, institutionType, status, type_id } = req.body;
+        const changes = {};
+        if (name !== undefined) {
+            if (typeof name !== 'string' || !name.trim()) return res.status(400).json({ message: 'El nombre es obligatorio.' });
+            changes.name = name.trim();
+        }
+        if (location !== undefined) {
+            if (typeof location !== 'string' || !location.trim()) return res.status(400).json({ message: 'La ubicación es obligatoria.' });
+            changes.location = location.trim();
+        }
+        if (institutionType !== undefined) {
+            if (!['Donor', 'Recipient', 'Both'].includes(institutionType)) return res.status(400).json({ message: 'Tipo de institución inválido.' });
+            changes.institutionType = institutionType;
+        }
+        if (status !== undefined) {
+            if (!['Active', 'Inactive', 'Pending'].includes(status)) return res.status(400).json({ message: 'Estado inválido.' });
+            changes.status = status;
+        }
+        if (type_id !== undefined) {
+            const type = await TYPE.findByPk(Number(type_id));
+            if (!type) return res.status(400).json({ message: 'Seleccione una categoría válida.' });
+            changes.type_id = type.id;
+        }
+        if (!Object.keys(changes).length) return res.status(400).json({ message: 'No hay cambios para guardar.' });
+
+        const locationChanged = changes.location && changes.location !== institution.location;
+        const nameChanged = changes.name && changes.name !== institution.name;
+        if (locationChanged || nameChanged) {
+            const coordinates = await geocodeInstitution(changes.name || institution.name, changes.location || institution.location);
+            changes.latitude = coordinates?.latitude ?? null;
+            changes.longitude = coordinates?.longitude ?? null;
+            changes.location_accuracy = coordinates?.accuracy ?? null;
+            changes.location_checked_at = new Date();
+        }
+
+        if (changes.name) {
+            const duplicate = await INSTITUTION.findOne({ where: { name: changes.name, id: { [Op.ne]: id } } });
+            if (duplicate) return res.status(409).json({ message: 'Ya existe una institución con ese nombre.' });
+        }
+        await institution.update(changes);
+        await institution.reload({ include: institutionIncludes });
+        return res.status(200).json({ message: 'Institución actualizada.', data: institution });
+    } catch (err) {
+        console.error('Error al actualizar institución:', err.message);
+        return res.status(500).json({ message: 'No se pudo actualizar la institución.' });
+    }
+};
 const deleteInstitution = async (req,res)=>{
     try{
        let { id } = req.params;
@@ -154,6 +235,9 @@ const deleteInstitution = async (req,res)=>{
         res.status(200).send({ message: "La Institucion eliminado correctamente" });
     }catch(err){
         console.error("Error:", err.message);
+        if (err.name === 'SequelizeForeignKeyConstraintError' || err.original?.code === '23503') {
+            return res.status(409).json({ message: 'No se puede eliminar porque tiene usuarios, necesidades o donaciones asociadas.' });
+        }
         return res.status(500).json({ message: "Error al intentar eliminar la institucion." });
     }
 };
@@ -164,5 +248,7 @@ module.exports = {
     getInstitutionsActive, // 
     getInstitutionsInactive, // 
     getInstitution, // params
-    deleteInstitution //params
+    deleteInstitution, //params
+    updateInstitution,
+    geocodeMissingInstitutions,
 }

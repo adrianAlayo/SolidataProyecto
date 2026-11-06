@@ -9,8 +9,6 @@ const verifyToken = (req, res, next ) =>{
 
     try{
         const CODE_DECRIPTATION = jwt.verify(token,process.env.JWT_SECRET);
-        console.log(req.user_find)
-        
         //* Guardamos los datos desencriptados en req.user para que otros ENDPOINTS puedan usarlo
         req.user_find = CODE_DECRIPTATION;
 

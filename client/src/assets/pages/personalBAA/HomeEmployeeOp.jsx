@@ -12,7 +12,7 @@ export function HomeEmployeeOp () {
         <>
             <SideMenu mode="Employee"/>
             <div>
-                <MapView />
+                <MapView showInstitutionLayer={false} showDistanceStats={false} />
                 <OptionsEmployeeOp />
             </div>
             

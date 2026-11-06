@@ -1,0 +1,236 @@
+/* Acabado visual compartido para los formularios SOLIDATA. */
+:root {
+  --solidata-green: #216b35;
+  --solidata-green-dark: #174d29;
+  --solidata-green-soft: #eaf4ec;
+  --solidata-ink: #203126;
+  --solidata-muted: #6b7b70;
+  --solidata-border: #d8e4da;
+}
+
+.formCreateBox,
+.formCreateDonationBox,
+.formCreateItemBox,
+.formCreateArticleBox,
+.formCreateInventoryBox {
+  box-sizing: border-box;
+  width: min(620px, calc(100% - 32px));
+  padding: clamp(22px, 4vw, 36px);
+  margin: 28px auto;
+  border: 1px solid var(--solidata-border);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgb(24 70 39 / 10%);
+}
+
+.formCreateBox .formlogin,
+.formCreateDonationBox .formlogin,
+.formCreateItemBox .formlogin,
+.formCreateArticleBox .formlogin,
+.formCreateInventoryBox .formlogin {
+  box-sizing: border-box;
+  width: 100%;
+  align-items: stretch;
+  gap: 16px;
+  padding: 0;
+}
+
+.formCreateBox .textWelcome,
+.formCreateDonationBox .textWelcome,
+.formCreateItemBox .textWelcome,
+.formCreateArticleBox .textWelcome,
+.formCreateInventoryBox .textWelcome {
+  margin: 0;
+  color: var(--solidata-ink);
+  font-size: clamp(21px, 3vw, 27px);
+  font-weight: 700;
+  text-align: left;
+}
+
+.formCreateBox .textLogin,
+.formCreateDonationBox .textLogin,
+.formCreateItemBox .textLogin,
+.formCreateArticleBox .textLogin,
+.formCreateInventoryBox .textLogin {
+  margin: -10px 0 4px;
+  color: var(--solidata-muted);
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+}
+
+.formCreateBox .gridTwoCols,
+.formCreateDonationBox .gridTwoCols,
+.formCreateItemBox .gridTwoCols,
+.formCreateArticleBox .gridTwoCols,
+.formCreateInventoryBox .gridTwoCols {
+  box-sizing: border-box;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  justify-items: stretch;
+}
+
+.formCreateBox input,
+.formCreateBox select,
+.formCreateBox textarea,
+.formCreateDonationBox input,
+.formCreateDonationBox select,
+.formCreateDonationBox textarea,
+.formCreateItemBox input,
+.formCreateItemBox select,
+.formCreateItemBox textarea,
+.formCreateArticleBox input,
+.formCreateArticleBox select,
+.formCreateArticleBox textarea,
+.formCreateInventoryBox input,
+.formCreateInventoryBox select,
+.formCreateInventoryBox textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--solidata-border);
+  border-radius: 11px;
+  background: #fbfdfb;
+  color: var(--solidata-ink);
+  font: 14px "IBM Plex Sans", "Poppins", sans-serif;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.formCreateBox input::placeholder,
+.formCreateDonationBox input::placeholder,
+.formCreateItemBox input::placeholder,
+.formCreateArticleBox input::placeholder,
+.formCreateInventoryBox input::placeholder {
+  color: #89958c;
+}
+
+.formCreateBox input:focus,
+.formCreateBox select:focus,
+.formCreateBox textarea:focus,
+.formCreateDonationBox input:focus,
+.formCreateDonationBox select:focus,
+.formCreateDonationBox textarea:focus,
+.formCreateItemBox input:focus,
+.formCreateItemBox select:focus,
+.formCreateItemBox textarea:focus,
+.formCreateArticleBox input:focus,
+.formCreateArticleBox select:focus,
+.formCreateArticleBox textarea:focus,
+.formCreateInventoryBox input:focus,
+.formCreateInventoryBox select:focus,
+.formCreateInventoryBox textarea:focus {
+  border-color: var(--solidata-green);
+  outline: 0;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(33 107 53 / 13%);
+  transform: none;
+}
+
+.formCreateBox .linksLogin,
+.formCreateDonationBox .linksLogin,
+.formCreateItemBox .linksLogin,
+.formCreateArticleBox .linksLogin,
+.formCreateInventoryBox .linksLogin {
+  justify-content: flex-start;
+  font-size: 13px;
+}
+
+.formCreateBox .linkBackLog,
+.formCreateDonationBox .linkBackLog,
+.formCreateItemBox .linkBackLog,
+.formCreateArticleBox .linkBackLog,
+.formCreateInventoryBox .linkBackLog {
+  padding: 0;
+  margin: 0;
+  color: var(--solidata-green);
+  text-decoration: none;
+}
+
+.formCreateBox .linkBackLog:hover,
+.formCreateDonationBox .linkBackLog:hover,
+.formCreateItemBox .linkBackLog:hover,
+.formCreateArticleBox .linkBackLog:hover,
+.formCreateInventoryBox .linkBackLog:hover {
+  color: var(--solidata-green-dark);
+  text-decoration: underline;
+}
+
+.formCreateBox .buttonLogin,
+.formCreateDonationBox .buttonLogin,
+.formCreateItemBox .buttonLogin,
+.formCreateArticleBox .buttonLogin,
+.formCreateInventoryBox .buttonLogin {
+  min-height: 46px;
+  align-self: flex-start;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--solidata-green);
+  color: #fff;
+  font: 600 14px "IBM Plex Sans", "Poppins", sans-serif;
+}
+
+.formCreateBox .buttonLogin:hover:not(:disabled),
+.formCreateDonationBox .buttonLogin:hover:not(:disabled),
+.formCreateItemBox .buttonLogin:hover:not(:disabled),
+.formCreateArticleBox .buttonLogin:hover:not(:disabled),
+.formCreateInventoryBox .buttonLogin:hover:not(:disabled) {
+  background: var(--solidata-green-dark);
+}
+
+.loginCard,
+.recoverCard,
+.registerInstitutionCard {
+  box-shadow: 0 20px 55px rgb(13 51 25 / 23%);
+}
+
+.loginInput:focus-visible,
+.registerInstitutionGrid input:focus,
+.registerInstitutionGrid select:focus {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 32%);
+}
+
+@media (max-width: 560px) {
+  .formCreateBox,
+  .formCreateDonationBox,
+  .formCreateItemBox,
+  .formCreateArticleBox,
+  .formCreateInventoryBox {
+    width: calc(100% - 24px);
+    padding: 22px 18px;
+    margin: 16px auto;
+    border-radius: 18px;
+  }
+
+  .formCreateBox .gridTwoCols,
+  .formCreateDonationBox .gridTwoCols,
+  .formCreateItemBox .gridTwoCols,
+  .formCreateArticleBox .gridTwoCols,
+  .formCreateInventoryBox .gridTwoCols {
+    grid-template-columns: 1fr;
+  }
+
+  .formCreateBox .buttonLogin,
+  .formCreateDonationBox .buttonLogin,
+  .formCreateItemBox .buttonLogin,
+  .formCreateArticleBox .buttonLogin,
+  .formCreateInventoryBox .buttonLogin {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formCreateBox *,
+  .formCreateDonationBox *,
+  .formCreateItemBox *,
+  .formCreateArticleBox *,
+  .formCreateInventoryBox * {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+

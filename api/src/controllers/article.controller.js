@@ -10,18 +10,16 @@ const createArticle = async (req, res) => {
             return res.status(404).send({message: "Todos los compos son obligatorios y deben ser texto valido."})
         }
 
+        const articleData = { name: name.trim(), category: category.trim(), variant: variant.trim(), unit: unit.trim() };
         const existArticle = await ARTICLE.findOne({ 
-            where: { name,category,variant,unit }
+            where: articleData
          });
         if (existArticle) {
             return res.status(400).send({ message: "El article ya existe." });
         }
 
         const newArticle = await ARTICLE.create({
-            name,
-            category,
-            variant,
-            unit
+            ...articleData
         });
 
         return res.status(201).send({
@@ -57,6 +55,9 @@ const deleteArticle = async (req, res) => {
 
     } catch (err) {
         console.error("Error:", err.message);
+        if (err.name === 'SequelizeForeignKeyConstraintError' || err.original?.code === '23503') {
+            return res.status(409).json({ message: "No se puede eliminar: el artículo está asociado a necesidades, donaciones o inventario." });
+        }
         return res.status(500).json({ message: "Error al intentar eliminar el articulo" });
     }
 };
@@ -109,10 +110,17 @@ const putArticle = async (req, res) => {
             return res.status(400).json({ message: "Debe enviar al menos un campo para actualizar." });
         }
 
-        // Validar si ya existe otro artículo con esos valores
+        const completeData = {
+            name: updateData.name ?? article.name,
+            category: updateData.category ?? article.category,
+            variant: updateData.variant ?? article.variant,
+            unit: updateData.unit ?? article.unit
+        };
+
+        // Comparar la combinación completa aunque solo se haya editado un campo.
         const existArticle = await ARTICLE.findOne({
             where: {
-                ...updateData,
+                ...completeData,
                 id: { [Op.ne]: id }   // Excluir el artículo actual
             }
         });
@@ -137,11 +145,7 @@ const putArticle = async (req, res) => {
 };
 const getArticles = async (_req, res) => {
     try {
-        const articles = await ARTICLE.findAll();
-
-        if (!articles || articles.length === 0) {
-            return res.status(404).json({ message: "No hay artículos registrados." });
-        }
+        const articles = await ARTICLE.findAll({ order: [['name', 'ASC']] });
 
         return res.status(200).json({
             message: "Listado de artículos.",

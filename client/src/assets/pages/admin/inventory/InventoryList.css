@@ -1,0 +1,10 @@
+.inventoryPage { min-height: calc(100vh - 64px); padding: 28px clamp(16px, 5vw, 72px); background: #ecece7; color: #242a2d; font-family: "Poppins", sans-serif; }
+.inventoryHeading { display: flex; align-items: center; gap: 14px; max-width: 1100px; margin: 18px auto 24px; }
+.inventoryHeading > span { display: grid; width: 48px; height: 48px; place-items: center; background: #d7e8dc; color: #1f611f; font-size: 28px; }
+.inventoryHeading h1 { margin: 0; font-size: 22px; }.inventoryHeading p { margin: 4px 0 0; color: #8995a2; font-size: 12px; }
+.inventoryPanel { max-width: 1100px; margin: auto; overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px #18331a12; }
+.inventoryPanelTitle { display: flex; justify-content: space-between; padding: 18px 20px; font-size: 14px; font-weight: 600; }.inventoryPanelTitle span { color: #72808c; font-weight: 400; }
+.inventoryTableWrap { overflow-x: auto; }.inventoryTable { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+.inventoryTable th { background: #f6f5f6; color: #8c98a5; font-size: 11px; font-weight: 600; }.inventoryTable th, .inventoryTable td { padding: 14px 18px; border-bottom: 1px solid #eceef0; white-space: nowrap; }
+.inventoryMessage { padding: 28px 20px; color: #7a8791; font-size: 13px; }
+@media (max-width: 600px) { .inventoryPage { padding: 16px; } .inventoryHeading h1 { font-size: 18px; } }

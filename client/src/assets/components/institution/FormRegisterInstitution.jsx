@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RegisterInstitution } from "../../services/auth.service";
 import Notification from "../../components/Notification";
 import "./FormRegisterInstitution.css";
@@ -65,15 +65,13 @@ export default function RegisterInstitutionF() {
   return (
 
     <>
-      <section className="formRegisterInstitutionBox animationFadeIn" style={{ width: 480 }}>
-        <form className="formlogin" onSubmit={handleRegister}>
+      <section className="registerInstitutionCard animationFadeIn">
+        <form className="registerInstitutionForm" onSubmit={handleRegister}>
+          <h1 className="registerInstitutionTitle">Sumá tu institución</h1>
+          <p className="registerInstitutionSubtitle">Completá los datos para crear la cuenta</p>
 
-          <h2 className="textWelcome">Registrar Institución y Usuario</h2>
-          <h5 className="textLogin">Todos los campos son obligatorios</h5>
-
-          <div className="gridTwoCols">
-
-            {/* ---- DATOS DEL USUARIO ---- */}
+          <div className="registerInstitutionGrid">
+            <h2 className="registerGroupTitle">Datos de contacto</h2>
             <input className="inputEmailLog inputAnim" type="text" required placeholder="Nombre del usuario *"
               value={first_name} onChange={(e) => setFirstName(e.target.value)} />
 
@@ -89,7 +87,7 @@ export default function RegisterInstitutionF() {
             <input className="inputPasswordLog inputAnim" type="password" required placeholder="Contraseña *"
               value={password} onChange={(e) => setPassword(e.target.value)} />
 
-            {/* ---- DATOS INSTITUCIÓN ---- */}
+            <h2 className="registerGroupTitle">Datos de la institución</h2>
             <input className="inputEmailLog inputAnim" type="text" required placeholder="Nombre de la institución *"
               value={name_inst} onChange={(e) => setInstName(e.target.value)} />
 
@@ -123,13 +121,12 @@ export default function RegisterInstitutionF() {
 
           </div>
 
-          <div className="linksLogin">
-            <a className="linkBackLog" href="/">Volver atrás</a>
+          <div className="registerInstitutionActions">
+            <Link to="/login" className="registerInstitutionBack">Ya tengo una cuenta</Link>
+            <button className="registerInstitutionSubmit" type="submit" disabled={loading}>
+              {loading ? "Registrando..." : "Registrar institución"}
+            </button>
           </div>
-
-          <button className="buttonLogin buttonAnim" type="submit" disabled={loading}>
-            {loading ? "Registrando..." : "Registrar Institución"}
-          </button>
         </form>
       </section>
 
