@@ -14,8 +14,6 @@ import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
 import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
 import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
 import CreateArticles from "./assets/pages/admin/article/CreateArticle.jsx";
-import UpdateArticles from "./assets/pages/admin/article/UpdateArticle.jsx";
-import DeleteArticles from "./assets/pages/admin/article/DeleteArticle.jsx";
 import CreateRoles from "./assets/pages/admin/rol/CreateRol.jsx";
 import UpdateRoles from "./assets/pages/admin/rol/UpdateRol.jsx";
 import DeleteRoles from "./assets/pages/admin/rol/DeleteRol.jsx";
@@ -29,6 +27,7 @@ import NeedsList from "./assets/pages/admin/needs/NeedsList.jsx";
 import InventoryList from "./assets/pages/admin/inventory/InventoryList.jsx";
 import ItemsList from "./assets/pages/admin/item/ItemsList.jsx";
 import Account from "./assets/pages/auth/Account.jsx";
+import ArticlesList from "./assets/pages/admin/article/ArticlesList.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -68,10 +67,10 @@ function App() {
 
 
                 <Route path="/admin/articles/create" element={<div className="#"> <CreateArticles/> </div>} />  {/* POST */}
-                <Route path="/admin/articles/" element={<div className="#"> </div>} /> {/* GET*/}
-                <Route path="/admin/articles/:id" element={<div className="#"> </div>} /> {/* GET id */}
-                <Route path="/admin/articles/update" element={<div className="#"> <UpdateArticles/> </div>} />  {/* PUT */}
-                <Route path="/admin/articles/delete" element={<div className="#"> <DeleteArticles/> </div>} />  {/* DELTE */}
+                <Route path="/admin/articles" element={<ArticlesList />} />
+                <Route path="/admin/articles/" element={<ArticlesList />} />
+                <Route path="/admin/articles/update" element={<ArticlesList />} />
+                <Route path="/admin/articles/delete" element={<ArticlesList />} />
 
                 <Route path="/admin/inventories/create" element={<div className="#"> <CreateInventories/> </div>} /> {/* GET*/}
                 <Route path="/admin/inventories/update" element={<div className="#"> <UpdateInventories/> </div>} /> {/* GET*/}

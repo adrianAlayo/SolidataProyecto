@@ -11,11 +11,11 @@ const menuData = [
         ], 
     }, 
     { 
-        label: "Articulo", 
+        label: "Artículos",
         children: [
+            { label: "Ver catálogo", path: "/admin/articles" },
             { label: "Crear", path: "/admin/articles/create" }, 
-            { label: "Actualizar", path: "/admin/articles/update" }, 
-            { label: "Eliminar", path: "/admin/articles/delete" },
+            { label: "Editar o eliminar", path: "/admin/articles" },
         ] 
     }, 
     { 

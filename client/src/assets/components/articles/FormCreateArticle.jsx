@@ -39,7 +39,7 @@ export default function CreateArticleF() {
             showNotification(result.message, "success");
 
             setTimeout(() => {
-                navigate("/admin/home");
+                navigate("/admin/articles");
             }, 1000);
         } catch (err) {
             console.log(err.message);
