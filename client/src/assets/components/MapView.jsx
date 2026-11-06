@@ -36,13 +36,14 @@ export default function MapView({ institutions, showInstitutionLayer = true, sho
   }), [institutionRows]);
   const points = useMemo(() => [[ORIGIN.latitude, ORIGIN.longitude], ...located.map((item) => [item.latitude, item.longitude])], [located]);
   const unlocatedCount = institutionRows.filter((institution) => !hasCoordinates(institution)).length;
-  const pendingGeocodeCount = institutionRows.filter((institution) => !institution.location_checked_at).length;
+  const unlocatedCount = institutionRows.filter((institution) => !hasCoordinates(institution)).length;
+  const retryingGeocode = institutionRows.some((institution) => !hasCoordinates(institution) && institution.location_checked_at);
   const approximateCount = located.filter((item) => item.institution.location_accuracy === "locality").length;
   const counts = located.reduce((total, item) => ({ ...total, [item.category]: total[item.category] + 1 }), { near: 0, medium: 0, far: 0 });
 
   return <section className="mapCard">
     <header className="mapCardHeader"><div><span className="mapEyebrow">DISTRIBUCIÓN GEOGRÁFICA</span><h2>{showInstitutionLayer ? "Instituciones y distancias" : "Mapa de referencia"}</h2><p>{showInstitutionLayer ? "Distancia en línea recta desde Jujuy 255 · Colegio Confederación Suiza." : "Punto de referencia: Jujuy 255 · Colegio Confederación Suiza."}</p></div>
-      <div className="mapHeaderActions">{showInstitutionLayer && onLocateMissing && pendingGeocodeCount > 0 && <button type="button" onClick={onLocateMissing} disabled={locating}>{locating ? "Buscando ubicaciones…" : `Revisar ${pendingGeocodeCount} direcciones`}</button>}<a href={`https://www.openstreetmap.org/?mlat=${ORIGIN.latitude}&mlon=${ORIGIN.longitude}#map=12/${ORIGIN.latitude}/${ORIGIN.longitude}`} target="_blank" rel="noreferrer">Abrir mapa completo ↗</a></div>
+      <div className="mapHeaderActions">{showInstitutionLayer && onLocateMissing && unlocatedCount > 0 && <button type="button" onClick={onLocateMissing} disabled={locating}>{locating ? "Buscando ubicaciones…" : retryingGeocode ? `Reintentar ${unlocatedCount} ubicaciones` : `Ubicar ${unlocatedCount} instituciones`}</button>}<a href={`https://www.openstreetmap.org/?mlat=${ORIGIN.latitude}&mlon=${ORIGIN.longitude}#map=12/${ORIGIN.latitude}/${ORIGIN.longitude}`} target="_blank" rel="noreferrer">Abrir mapa completo ↗</a></div>
     </header>
     {locateMessage && <p className="mapLocateMessage" role="status">{locateMessage}</p>}
     <div className="map-wrapper">
