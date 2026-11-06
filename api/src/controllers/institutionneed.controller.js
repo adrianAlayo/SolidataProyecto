@@ -43,11 +43,11 @@ const createNeeds = async (req, res) => {
 
         // VALIDAR tipos
         if (
-            isNaN(Number(available)) ||
+            !Number.isInteger(Number(available)) || Number(available) <= 0 ||
             isNaN(Number(institution_id)) ||
             isNaN(Number(article_id))
         ) {
-            return res.status(400).json({ message: "Todos los campos deben ser números." });
+            return res.status(400).json({ message: "La cantidad debe ser un entero mayor a cero y los identificadores deben ser números." });
         }
 
         // Validar existencia de institución
@@ -187,12 +187,6 @@ const getNeedByInstitution = async (req, res) => {
 
         const needs = await INSTITUTIONNEED.findAll({ where: { institution_id:id }, include: needIncludes, order: [['createdAt', 'DESC']] });
 
-        if (needs.length === 0) {
-            return res.status(404).json({
-                message: "Esta institución no tiene necesidades registradas."
-            });
-        }
-
         return res.status(200).json({ 
             message: "Se listaron las necesidades correctamente",
             data: needs });
@@ -231,10 +225,10 @@ const updateNeed = async (req, res) => {
         const updateFields = {};
 
         if (available !== undefined) {
-            if (!isNaN(Number(available))) {
+            if (Number.isInteger(Number(available)) && Number(available) > 0) {
                 updateFields.available = Number(available);
             } else {
-                return res.status(400).json({ message: "available debe ser un número válido." });
+                return res.status(400).json({ message: "available debe ser un entero mayor a cero." });
             }
         }
 
@@ -286,6 +280,7 @@ const updateNeed = async (req, res) => {
 };
 const updateStatusNeed = async (req,res) =>{
     try {
+        const responsable_user = req.user_find;
         let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
@@ -294,27 +289,30 @@ const updateStatusNeed = async (req,res) =>{
 
         id = Number(id);
 
-        const existInstitution = await INSTITUTIONNEED.findByPk(id);
-        if(!existInstitution){
+        const need = await INSTITUTIONNEED.findByPk(id);
+        if(!need){
             return res.status(404).send({message: "El ID que puso no existe"})
+        }
+
+        if (responsable_user.rol === 4 && need.institution_id !== (responsable_user.institution_id ?? responsable_user.id)) {
+            return res.status(403).json({ message: "No tiene permiso para cambiar esta necesidad." });
         }
 
         const {status} = req.body;
 
         if(!IsString(status) || !status){
-            return res.status(404).send({message: "El campo es obligatorio y tiene que introducir un valor valido"})
+            return res.status(400).send({message: "El campo es obligatorio y tiene que introducir un valor valido"})
         }
 
         if(status !== "Pending" && status !== "Resolved"){
-            return res.status(404).send({message: "Tiene que elegir un estado valido, ya sea 'Pending' o 'Resolved'. "})
+            return res.status(400).send({message: "Tiene que elegir un estado valido, ya sea 'Pending' o 'Resolved'. "})
         }
 
-        existInstitution.update(
-            {status: status}
-        )
+        await need.update({ status });
 
         return res.status(200).json({
             message: "Se actualizo correctamente",
+            data: need
         })
     } catch (err) {
         console.error("Error:", err.message);
