@@ -10,14 +10,20 @@ export default function PasswordResetRequests() {
   const [loading, setLoading] = useState(true);
   const [workingId, setWorkingId] = useState(null);
   const [message, setMessage] = useState("");
+  const [refreshError, setRefreshError] = useState("");
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   const loadRequests = useCallback(async ({ silent = false } = {}) => {
     if (!silent) setLoading(true);
     try {
       const result = await getPasswordResetRequests();
       setRequests(result.data || []);
+      setLastUpdated(new Date());
+      setRefreshError("");
     } catch (error) {
-      if (!silent) setMessage(error.response?.data?.message || "No se pudieron cargar las solicitudes.");
+      const errorMessage = error.response?.data?.message || "No se pudieron actualizar las solicitudes.";
+      setRefreshError(errorMessage);
+      if (!silent) setMessage(errorMessage);
     } finally {
       if (!silent) setLoading(false);
     }
@@ -49,7 +55,9 @@ export default function PasswordResetRequests() {
     <section className="passwordResetRequestsCard">
       <span className="passwordResetEyebrow">ADMINISTRACIÓN</span>
       <h1>Solicitudes de contraseña</h1>
-      <p>Revisá las solicitudes y habilitá al usuario para elegir una contraseña nueva. La lista se actualiza automáticamente.</p>
+      <p>Revisá las solicitudes y habilitá al usuario para elegir una contraseña nueva. La lista se actualiza automáticamente cada 5 segundos.</p>
+      {Number(user?.rol) === 1 && <div className="passwordResetRefreshInfo"><span>{requests.length} solicitud{requests.length === 1 ? "" : "es"}</span><span>{lastUpdated ? `Actualizada ${lastUpdated.toLocaleTimeString("es-AR")}` : "Aún no se actualizó"}</span></div>}
+      {refreshError && <p className="passwordResetRefreshError" role="alert">{refreshError}</p>}
       {Number(user?.rol) === 1 && <button className="passwordResetRefresh" type="button" onClick={() => loadRequests()} disabled={loading}>Actualizar lista</button>}
       {Number(user?.rol) !== 1
         ? <p className="passwordResetMessage">Solo el administrador puede administrar estas solicitudes.</p>

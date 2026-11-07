@@ -73,7 +73,10 @@ export async function updateUser(id, fieldsToUpdate) {
 
 
 export async function getPasswordResetRequests() {
-    const res = await axios.get(`${API_URL}/password-reset-requests`, getAuthHeaders());
+    const res = await axios.get(`${API_URL}/password-reset-requests?t=${Date.now()}`, {
+        ...getAuthHeaders(),
+        headers: { ...getAuthHeaders().headers, "Cache-Control": "no-cache" },
+    });
     return res.data;
 }
 

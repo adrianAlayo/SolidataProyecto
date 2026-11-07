@@ -362,9 +362,10 @@ const getPasswordResetRequests = async (req, res) => {
             where: { password_reset_requested: true },
             attributes: ['id', 'first_name', 'last_name', 'email', 'updatedAt', 'password_reset_approved'],
             include: [{ model: ROLE, attributes: ['name'] }],
-            order: [['updatedAt', 'ASC']]
+            order: [['updatedAt', 'DESC']]
         });
-        return res.status(200).json({ data: requests });
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        return res.status(200).json({ data: requests, refreshed_at: new Date().toISOString() });
     } catch (error) {
         console.error('Error al listar solicitudes de cambio:', error.message);
         return res.status(500).json({ message: 'No se pudieron cargar las solicitudes.' });
