@@ -6,6 +6,8 @@ import HistoryD from "./assets/pages/admin/donation/historial.jsx";
 //import Login from "./assets/components/FormLogin.jsx"; 
 import "./App.css"; import HomeAdmin from "./assets/pages/admin/HomeAdmin.jsx";
 import HomeEmployeeOp from "./assets/pages/personalBAA/HomeEmployeeOp.jsx";
+import HomeInstitution from "./assets/pages/institution/HomeInstitution.jsx";
+import PasswordResetRequests from "./assets/pages/admin/PasswordResetRequests.jsx";
 import "leaflet/dist/leaflet.css";
 import RecoverPassword from "./assets/components/FormRecoverPass.jsx";
 import RegisterUser from "./assets/components/user/FormRegisterUser.jsx";
@@ -104,6 +106,8 @@ function App() {
 
                 {/* PAGINA ROL OPERADOR*/}
                 <Route path="/operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
+                <Route path="/institution/home" element={<HomeInstitution />} />
+                <Route path="/admin/password-reset-requests" element={<PasswordResetRequests />} />
                 <Route path="/Operator/home" element={<div className="pageContainer"> <HomeEmployeeOp /></div>} />
 
                 {/* PAGINA ROL VOLUNTARIO*/}

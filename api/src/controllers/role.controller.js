@@ -1,8 +1,33 @@
-const { where, Model, Op } = require('sequelize');
+const { where, Model, Op, QueryTypes } = require('sequelize');
+const sequelize = require('../db/conexion');
 const USER = require('../models/user');
 const ROLE = require('../models/role');
 const IsString = require ('../utils/isString.util');
 const isString = require('../utils/isString.util');
+
+const getMyPermissions = async (req, res) => {
+    try {
+        const roleId = Number(req.user_find?.rol);
+        if (!Number.isSafeInteger(roleId) || roleId <= 0) {
+            return res.status(401).json({ message: 'No se pudo identificar el rol.' });
+        }
+
+        const data = await sequelize.query(
+            `SELECT entity.name AS entity, action.name AS action
+             FROM "RolePermissions" AS role_permission
+             JOIN "Permissions" AS permission ON permission.id = role_permission.permission_id
+             JOIN "Entities" AS entity ON entity.id = permission.entity_id
+             JOIN "Actions" AS action ON action.id = permission.action_id
+             WHERE role_permission.role_id = :roleId
+             ORDER BY entity.name, action.name`,
+            { replacements: { roleId }, type: QueryTypes.SELECT }
+        );
+        return res.status(200).json({ data });
+    } catch (error) {
+        console.error('Error al consultar permisos del usuario:', error.message);
+        return res.status(500).json({ message: 'No se pudieron cargar tus permisos.' });
+    }
+};
 
 const createRole = async (req, res) => {
     try {
@@ -198,6 +223,7 @@ const getRole = async (req,res) =>{
 }
 
 module.exports = {
+    getMyPermissions,
     getRoles, // 
     getRole, //params
     createRole, // body

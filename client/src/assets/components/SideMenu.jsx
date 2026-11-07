@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Collapse, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Tooltip, useMediaQuery } from "@mui/material";
 import {
   AccountBalanceRounded, AssessmentRounded, BusinessRounded, ChevronLeftRounded,
@@ -7,6 +7,8 @@ import {
   VolunteerActivismRounded
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
+import { canAccessPath, filterMenuByPermissions, homeForRole } from "../utils/rolePermissions.js";
 import menuData from "./SideMenuData.js";
 import solidataLogo from "../img/solidata-logo.png";
 import "./SideMenu.css";
@@ -25,7 +27,7 @@ const iconFor = (label) => {
 };
 
 const sidebarQuickLinks = [
-  { label: "Inicio", path: "/admin/home" },
+  { label: "Inicio", path: "/admin/home", always: true },
   { label: "Necesidades", path: "/admin/needs" },
   { label: "Donaciones", path: "/admin/donations/history" },
   { label: "Artículos", path: "/admin/articles" },
@@ -38,12 +40,32 @@ const hasCurrentPath = (items, pathname) => items.some((item) => {
   return item.children ? hasCurrentPath(item.children, pathname) : false;
 });
 
+const replaceHomePath = (items, homePath) => items.map((item) => {
+  if (item.always && item.label === "Inicio") return { ...item, path: homePath };
+  return item.children ? { ...item, children: replaceHomePath(item.children, homePath) } : item;
+});
+
 export default function SideMenu() {
   const [open, setOpen] = useState(false);
   const [openMap, setOpenMap] = useState({});
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user, permissions = [], permissionsLoaded = true, permissionsError } = useAuth();
   const mobile = useMediaQuery("(max-width:760px)");
+  const roleId = Number(user?.rol);
+  const homePath = homeForRole(roleId);
+
+  const visibleMenu = useMemo(() => {
+    if (roleId !== 1 && !permissionsLoaded) return [];
+    const allowed = roleId === 1 ? menuData : filterMenuByPermissions(menuData, permissions, roleId);
+    return replaceHomePath(allowed, homePath);
+  }, [homePath, permissions, permissionsLoaded, roleId]);
+
+  const quickLinks = useMemo(() => {
+    if (roleId !== 1 && !permissionsLoaded) return [];
+    return sidebarQuickLinks.filter((item) => item.always || roleId === 1 || canAccessPath(permissions, item.path))
+      .map((item) => item.always ? { ...item, path: homePath } : item);
+  }, [homePath, permissions, permissionsLoaded, roleId]);
 
   useEffect(() => {
     document.body.style.setProperty("--solidata-sidebar-offset", `${open && !mobile ? 276 : 58}px`);
@@ -59,14 +81,11 @@ export default function SideMenu() {
         collectActiveGroups(item.children, itemId);
       }
     });
-    collectActiveGroups(menuData);
+    collectActiveGroups(visibleMenu);
     setOpenMap((current) => ({ ...current, ...next }));
-  }, [pathname]);
+  }, [pathname, visibleMenu]);
 
-  const setDrawerOpen = (value) => {
-    setOpen(value);
-  };
-
+  const setDrawerOpen = (value) => setOpen(value);
   const itemPath = (item) => item.path === "#" ? `/en-desarrollo/${encodeURIComponent(item.label)}` : item.path;
   const renderItems = (items, parentId = "", depth = 0) => <List component="div" disablePadding className="sidebarList">
     {items.map((item) => {
@@ -93,7 +112,7 @@ export default function SideMenu() {
   return <>
     {!open && <nav className="sidebarRail" aria-label="Accesos rápidos">
       <Tooltip title="Abrir menú" placement="right"><IconButton className="sidebarRailToggle" onClick={() => setDrawerOpen(true)} aria-label="Abrir menú lateral"><MenuRounded /></IconButton></Tooltip>
-      {sidebarQuickLinks.map((item) => <Tooltip key={item.label} title={item.label} placement="right"><IconButton className={`sidebarRailLink${pathname === item.path || pathname.startsWith(`${item.path}/`) ? " selected" : ""}`} onClick={() => navigate(item.path)} aria-label={item.label}>{iconFor(item.label)}</IconButton></Tooltip>)}
+      {quickLinks.map((item) => <Tooltip key={item.label} title={item.label} placement="right"><IconButton className={`sidebarRailLink${pathname === item.path || pathname.startsWith(`${item.path}/`) ? " selected" : ""}`} onClick={() => navigate(item.path)} aria-label={item.label}>{iconFor(item.label)}</IconButton></Tooltip>)}
     </nav>}
     <Drawer
       anchor="left"
@@ -109,7 +128,11 @@ export default function SideMenu() {
         <IconButton onClick={() => setDrawerOpen(false)} aria-label="Contraer menú"><ChevronLeftRounded /></IconButton>
       </div>
       <div className="sidebarSectionLabel">MENÚ PRINCIPAL</div>
-      <div className="sidebarMenuContent">{renderItems(menuData)}</div>
+      <div className="sidebarMenuContent">
+        {!permissionsLoaded && roleId !== 1 ? <p className="sidebarPermissionMessage">Cargando accesos permitidos…</p>
+          : visibleMenu.length ? renderItems(visibleMenu)
+          : <p className="sidebarPermissionMessage">{permissionsError ? "No se pudieron cargar los permisos." : "No tenés operaciones habilitadas."}</p>}
+      </div>
       <div className="sidebarFooter"><span className="sidebarOnlineDot" /> Banco de Alimentos Buenos Aires</div>
     </Drawer>
   </>;

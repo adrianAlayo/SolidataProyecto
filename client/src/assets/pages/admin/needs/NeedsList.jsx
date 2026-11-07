@@ -3,6 +3,7 @@ import SideMenu from "../../../components/SideMenu.jsx";
 import Notification from "../../../components/Notification.jsx";
 import TablePager from "../../../components/TablePager.jsx";
 import { useAuth } from "../../../context/AuthContext.jsx";
+import { hasPermission } from "../../../utils/rolePermissions.js";
 import { GetArticles } from "../../../services/article.service.js";
 import { getInstitutions } from "../../../services/institution.service.js";
 import { createNeed, deleteNeed, getNeeds, updateNeed, updateNeedStatus } from "../../../services/institutionNeed.service.js";
@@ -11,8 +12,14 @@ import "./NeedsList.css";
 const emptyForm = { institution_id: "", article_id: "", available: "" };
 
 export default function NeedsList() {
-  const { user } = useAuth();
+  const { user, permissions = [] } = useAuth();
+  const isAdmin = Number(user?.rol) === 1;
   const isInstitution = Number(user?.rol) === 4;
+  const canReadNeed = isAdmin || hasPermission(permissions, "INSTITUTIONNEEDS", "READ");
+  const canCreateNeed = isAdmin || hasPermission(permissions, "INSTITUTIONNEEDS", "CREATE");
+  const canUpdateNeed = isAdmin || hasPermission(permissions, "INSTITUTIONNEEDS", "UPDATE");
+  const canApproveNeed = isAdmin || hasPermission(permissions, "INSTITUTIONNEEDS", "APPROVE");
+  const canDeleteNeed = isAdmin || hasPermission(permissions, "INSTITUTIONNEEDS", "DELETE");
   const [needs, setNeeds] = useState([]);
   const [institutions, setInstitutions] = useState([]);
   const [articles, setArticles] = useState([]);
@@ -28,6 +35,7 @@ export default function NeedsList() {
   const [notice, setNotice] = useState({ open: false, message: "", severity: "success" });
 
   const loadData = useCallback(async () => {
+    if (!canReadNeed) { setNeeds([]); setLoading(false); return; }
     setLoading(true);
     try {
       const response = await getNeeds();
@@ -37,7 +45,7 @@ export default function NeedsList() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [canReadNeed]);
 
   useEffect(() => {
     loadData();
@@ -45,7 +53,7 @@ export default function NeedsList() {
       if (articleResult.status === "fulfilled") setArticles(articleResult.value.data || []);
       if (institutionResult?.status === "fulfilled" && institutionResult.value) setInstitutions(institutionResult.value.institutions || []);
     });
-  }, [loadData, isInstitution]);
+  }, [loadData, isInstitution, canCreateNeed, canUpdateNeed]);
 
   const filtered = useMemo(() => needs.filter((need) => {
     const text = `${need.Institution?.name || ""} ${need.Article?.name || ""} ${need.Article?.category || ""} ${need.Article?.variant || ""}`.toLowerCase();
@@ -59,6 +67,10 @@ export default function NeedsList() {
 
   const save = async (event) => {
     event.preventDefault();
+    if (editingId ? !canUpdateNeed : !canCreateNeed) {
+      setNotice({ open: true, message: "No tenés permiso para realizar esta operación.", severity: "error" });
+      return;
+    }
     if (!Number.isInteger(Number(form.available)) || Number(form.available) <= 0 || !form.article_id || (!isInstitution && !form.institution_id)) {
       setNotice({ open: true, message: "Elegí una institución y un artículo, e ingresá una cantidad mayor a cero.", severity: "warning" });
       return;
@@ -111,25 +123,25 @@ export default function NeedsList() {
     <header className="needsHeading"><span aria-hidden="true">▤</span><div><h1>Gestión de necesidades</h1><p>Registrá y consultá los productos que solicitan las instituciones.</p></div></header>
     <section className="needsPanel">
       <div className="needsPanelTitle">Necesidades registradas <span>{filtered.length} de {needs.length}</span></div>
-      <form className="needsForm" onSubmit={save}>
+      {(canCreateNeed || (canUpdateNeed && editingId)) && <form className="needsForm" onSubmit={save}>
         {!isInstitution && <select aria-label="Institución" value={form.institution_id} onChange={(e) => setForm({ ...form, institution_id: e.target.value })} required disabled={Boolean(editingId)}><option value="">Seleccionar institución</option>{institutions.filter((item) => item.institutionType === "Recipient" || item.institutionType === "Both").map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}
         <select aria-label="Artículo" value={form.article_id} onChange={(e) => setForm({ ...form, article_id: e.target.value })} required><option value="">Seleccionar artículo</option>{articles.map((article) => <option key={article.id} value={article.id}>{article.name}{article.variant ? ` · ${article.variant}` : ""}</option>)}</select>
         <input aria-label="Cantidad solicitada" type="number" min="1" step="1" placeholder="Cantidad" value={form.available} onChange={(e) => setForm({ ...form, available: e.target.value })} required />
         <button className="needsPrimaryAction" type="submit" disabled={saving}>{saving ? "Guardando..." : editingId ? "Guardar cambios" : "Registrar necesidad"}</button>
         {editingId && <button className="needsCancelAction" type="button" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancelar</button>}
-      </form>
-      <div className="needsFilters">
+      </form>}
+      {canReadNeed && <div className="needsFilters">
         <input aria-label="Buscar necesidad" placeholder="Buscar por institución o artículo" value={query} onChange={(e) => setQuery(e.target.value)} />
         <select aria-label="Filtrar por estado" value={status} onChange={(e) => setStatus(e.target.value)}><option value="all">Todos los estados</option><option value="Pending">Pendientes</option><option value="Resolved">Resueltas</option></select>
         <select aria-label="Ordenar por fecha" value={sort} onChange={(e) => setSort(e.target.value)}><option value="newest">Más recientes</option><option value="oldest">Más antiguas</option></select>
-      </div>
-      {loading ? <p className="needsMessage">Cargando necesidades...</p> : filtered.length === 0 ? <p className="needsMessage">{needs.length ? "No hay resultados para la búsqueda." : "Todavía no hay necesidades registradas."}</p> : <>
-        <div className="needsTableWrap"><table className="needsTable"><thead><tr><th>Institución</th><th>Artículo</th><th>Categoría</th><th>Cantidad</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+      </div>}
+      {!canReadNeed ? <p className="needsMessage">No tenés permiso para consultar las necesidades.</p> : loading ? <p className="needsMessage">Cargando necesidades...</p> : filtered.length === 0 ? <p className="needsMessage">{needs.length ? "No hay resultados para la búsqueda." : "Todavía no hay necesidades registradas."}</p> : <>
+        <div className="needsTableWrap"><table className="needsTable"><thead><tr><th>Institución</th><th>Artículo</th><th>Categoría</th><th>Cantidad</th><th>Fecha</th><th>Estado</th>{(canUpdateNeed || canApproveNeed || canDeleteNeed) && <th>Acciones</th>}</tr></thead><tbody>
           {pageRows.map((need) => <tr key={need.id}>
             <td>{need.Institution?.name || "Institución"}</td><td>{need.Article?.name || "Artículo"}{need.Article?.variant ? ` · ${need.Article.variant}` : ""}</td><td>{need.Article?.category || "—"}</td><td>{need.available} {need.Article?.unit || ""}</td>
             <td>{need.createdAt ? new Date(need.createdAt).toLocaleDateString("es-AR") : "—"}</td>
             <td><span className={`needStatus ${need.status === "Resolved" ? "resolved" : "pending"}`}>{need.status === "Resolved" ? "Resuelta" : "Pendiente"}</span></td>
-            <td className="needsActions"><button type="button" onClick={() => startEdit(need)}>Editar</button>{!isInstitution && <button type="button" onClick={() => changeStatus(need)}>{need.status === "Resolved" ? "Reabrir" : "Resolver"}</button>}<button className="needsDeleteAction" type="button" onClick={() => remove(need)}>Eliminar</button></td>
+            {(canUpdateNeed || canApproveNeed || canDeleteNeed) && <td className="needsActions">{canUpdateNeed && <button type="button" onClick={() => startEdit(need)}>Editar</button>}{canApproveNeed && !isInstitution && <button type="button" onClick={() => changeStatus(need)}>{need.status === "Resolved" ? "Reabrir" : "Resolver"}</button>}{canDeleteNeed && <button className="needsDeleteAction" type="button" onClick={() => remove(need)}>Eliminar</button>}</td>}
           </tr>)}
         </tbody></table></div><TablePager count={filtered.length} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(0); }} /></>}
     </section>

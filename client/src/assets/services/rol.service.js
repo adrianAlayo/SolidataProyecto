@@ -56,3 +56,9 @@ export async function deleteRole(id) {
     );
     return res.data;
 }
+
+
+export async function getMyPermissions() {
+    const res = await axios.get(`${API_URL}/my-permissions`, getAuthHeaders());
+    return res.data;
+}

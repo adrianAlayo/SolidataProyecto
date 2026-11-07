@@ -70,3 +70,14 @@ export async function updateUser(id, fieldsToUpdate) {
     );
     return res.data;
 }
+
+
+export async function getPasswordResetRequests() {
+    const res = await axios.get(`${API_URL}/password-reset-requests`, getAuthHeaders());
+    return res.data;
+}
+
+export async function approvePasswordReset(id) {
+    const res = await axios.patch(`${API_URL}/password-reset-requests/${id}/approve`, {}, getAuthHeaders());
+    return res.data;
+}

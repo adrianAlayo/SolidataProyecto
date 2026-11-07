@@ -463,6 +463,8 @@ CREATE TABLE public."Users" (
     password character varying(100) NOT NULL,
     phone character varying(20) NOT NULL,
     is_active boolean DEFAULT false,
+    password_reset_requested boolean DEFAULT false NOT NULL,
+    password_reset_approved boolean DEFAULT false NOT NULL,
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL,
     role_id integer,

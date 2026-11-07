@@ -11,13 +11,18 @@ const {
     updateUser,
     deleteUsers,
     createUser,
-    AcceptUser
+    AcceptUser,
+    getPasswordResetRequests,
+    approvePasswordReset
 } = require('../controllers/user.controller');
 
 // Middlewares
 const verifyToken = require('../middlewares/VerifyToken.middleware');
 const authorize = require('../middlewares/AuthorizationRole.middleware');
 
+
+router.get('/password-reset-requests', verifyToken, getPasswordResetRequests);
+router.patch('/password-reset-requests/:id/approve', verifyToken, approvePasswordReset);
 
 // Crear un usuario (CREATE)
 router.post(

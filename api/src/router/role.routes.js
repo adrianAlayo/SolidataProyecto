@@ -9,11 +9,14 @@ const {
     deleteRole,
     getRoles,
     getRole,
+    getMyPermissions,
     } = require('../controllers/role.controller');
 
 // Middlewares
 const verifyToken = require('../middlewares/VerifyToken.middleware');
 const authorize = require('../middlewares/AuthorizationRole.middleware');
+
+router.get('/my-permissions', verifyToken, getMyPermissions);
 
 // Crear un nuevo ROl (CREATE)
 router.post(

@@ -353,6 +353,41 @@ const AcceptUser = async (req, res) => {
 
 
 
+const getPasswordResetRequests = async (req, res) => {
+    if (Number(req.user_find?.rol) !== 1) {
+        return res.status(403).json({ message: 'Solo el administrador puede ver estas solicitudes.' });
+    }
+    try {
+        const requests = await USER.findAll({
+            where: { password_reset_requested: true, password_reset_approved: false },
+            attributes: ['id', 'first_name', 'last_name', 'email', 'updatedAt'],
+            include: [{ model: ROLE, attributes: ['name'] }],
+            order: [['updatedAt', 'ASC']]
+        });
+        return res.status(200).json({ data: requests });
+    } catch (error) {
+        console.error('Error al listar solicitudes de cambio:', error.message);
+        return res.status(500).json({ message: 'No se pudieron cargar las solicitudes.' });
+    }
+};
+
+const approvePasswordReset = async (req, res) => {
+    if (Number(req.user_find?.rol) !== 1) {
+        return res.status(403).json({ message: 'Solo el administrador puede habilitar el cambio.' });
+    }
+    try {
+        const user = await USER.findByPk(Number(req.params.id));
+        if (!user || !user.password_reset_requested) {
+            return res.status(404).json({ message: 'La solicitud ya no está pendiente.' });
+        }
+        await user.update({ password_reset_approved: true });
+        return res.status(200).json({ message: 'Cambio de contraseña habilitado.' });
+    } catch (error) {
+        console.error('Error al habilitar cambio de contraseña:', error.message);
+        return res.status(500).json({ message: 'No se pudo habilitar el cambio.' });
+    }
+};
+
 module.exports = {
     AcceptUser,
     getUsersActive, //

@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import solidataLogo from "../img/solidata-logo.png";
 import "./Navbar.css";
 
-const dashboardForRole = (role) => ({ 1: "/admin/home", 2: "/operator/home", 3: "/admin/home", 4: "/en-desarrollo/Inicio de institución" }[role] || "/");
+const dashboardForRole = (role) => ({ 1: "/admin/home", 2: "/operator/home", 3: "/admin/home", 4: "/institution/home" }[role] || "/");
 
 export default function Navbar() {
   const { user, logoutUser } = useAuth();

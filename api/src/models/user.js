@@ -29,6 +29,16 @@ const User = sequelize.define('Users',{
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    password_reset_requested: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    password_reset_approved: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
 },{
     timestamps: true
 });
