@@ -398,4 +398,6 @@ module.exports = {
     deleteUsers, // params
     createUser, //body
     updateUser,
+    getPasswordResetRequests,
+    approvePasswordReset,
 }
