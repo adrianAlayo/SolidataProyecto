@@ -125,7 +125,7 @@ const RecoverPassword = async (req, res) => {
                 message: 'El administrador todavía no habilitó el cambio para este email.'
             });
         }
-        if (!VerificationPassword(password) || !VerificationPassword(confirmPassword)) {
+        if (!verificationPassword(password) || !verificationPassword(confirmPassword)) {
             return res.status(400).json({
                 message: 'La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula y número.'
             });
