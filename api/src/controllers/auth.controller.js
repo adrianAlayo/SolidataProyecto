@@ -98,26 +98,28 @@ const RecoverPassword = async (req, res) => {
             where: where(fn('LOWER', col('email')), normalizedEmail)
         });
 
-        // Primer paso: registrar la solicitud o informar si ya fue habilitada.
+        // Primer paso: crear una solicitud nueva o continuar una ya habilitada.
         if (password === undefined && confirmPassword === undefined) {
             if (!user) {
-                return res.status(200).json({
-                    status: 'PENDING',
-                    message: 'Si el email está registrado, la solicitud quedó enviada al administrador.'
+                return res.status(404).json({
+                    status: 'NOT_FOUND',
+                    message: 'No existe una cuenta registrada con ese email. Revisá la dirección e intentá de nuevo.'
                 });
             }
-            if (user.password_reset_approved) {
+            if (user.password_reset_requested && user.password_reset_approved) {
                 return res.status(200).json({
                     status: 'APPROVED',
                     message: 'El administrador habilitó el cambio. Ya podés elegir una contraseña nueva.'
                 });
             }
-            if (!user.password_reset_requested) {
+            // Si quedó una aprobación vieja sin solicitud activa, crear una solicitud
+            // nueva y exigir que el administrador la vuelva a habilitar.
+            if (!user.password_reset_requested || user.password_reset_approved) {
                 await user.update({ password_reset_requested: true, password_reset_approved: false });
             }
             return res.status(200).json({
                 status: 'PENDING',
-                message: 'La solicitud quedó enviada al administrador. Volvé a ingresar tu email cuando la habilite.'
+                message: 'La solicitud quedó enviada al administrador. Volvé a consultar cuando la habilite.'
             });
         }
 
