@@ -72,12 +72,12 @@ const RegisterInstitution = async(req,res) =>{
             password: password_hash_inCharge, 
             phone: phone,  
             institution_id: institution_create.id,
-            is_active: true,
+            is_active: false,
             role_id: 4 // rol por defecto para instituciones 
         });
 
         res.status(201).json({
-            message: "Registro exitoso, ya esta activo para su uso \n ",
+            message: "Registro exitoso. La cuenta quedará pendiente hasta que el administrador la active.",
             user_create,
             institution_create,
         });

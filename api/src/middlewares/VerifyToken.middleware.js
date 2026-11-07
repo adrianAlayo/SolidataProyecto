@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const USER = require('../models/user');
+const INSTITUTION = require('../models/institution');
 
 const verifyToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -15,9 +16,15 @@ const verifyToken = async (req, res, next) => {
             return res.status(403).json({ message: 'Token inválido.' });
         }
 
-        const account = await USER.findByPk(accountId, { attributes: ['id', 'is_active'] });
+        const account = await USER.findByPk(accountId, {
+            attributes: ['id', 'is_active', 'institution_id'],
+            include: [{ model: INSTITUTION, attributes: ['id', 'status'] }]
+        });
         if (!account || account.is_active !== true) {
             return res.status(403).json({ message: 'La cuenta está inactiva. Contactá al administrador para habilitarla.' });
+        }
+        if (account.institution_id && account.Institution?.status !== 'Active') {
+            return res.status(403).json({ message: 'La institución está pendiente de aprobación o inactiva.' });
         }
 
         req.user_find = payload;
