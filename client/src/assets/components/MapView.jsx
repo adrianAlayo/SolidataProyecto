@@ -36,7 +36,6 @@ export default function MapView({ institutions, showInstitutionLayer = true, sho
   }), [institutionRows]);
   const points = useMemo(() => [[ORIGIN.latitude, ORIGIN.longitude], ...located.map((item) => [item.latitude, item.longitude])], [located]);
   const unlocatedCount = institutionRows.filter((institution) => !hasCoordinates(institution)).length;
-  const unlocatedCount = institutionRows.filter((institution) => !hasCoordinates(institution)).length;
   const retryingGeocode = institutionRows.some((institution) => !hasCoordinates(institution) && institution.location_checked_at);
   const approximateCount = located.filter((item) => item.institution.location_accuracy === "locality").length;
   const counts = located.reduce((total, item) => ({ ...total, [item.category]: total[item.category] + 1 }), { near: 0, medium: 0, far: 0 });
