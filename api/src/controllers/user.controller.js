@@ -359,8 +359,8 @@ const getPasswordResetRequests = async (req, res) => {
     }
     try {
         const requests = await USER.findAll({
-            where: { password_reset_requested: true, password_reset_approved: false },
-            attributes: ['id', 'first_name', 'last_name', 'email', 'updatedAt'],
+            where: { password_reset_requested: true },
+            attributes: ['id', 'first_name', 'last_name', 'email', 'updatedAt', 'password_reset_approved'],
             include: [{ model: ROLE, attributes: ['name'] }],
             order: [['updatedAt', 'ASC']]
         });

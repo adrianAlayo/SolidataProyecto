@@ -23,6 +23,9 @@ async function ValidateLogin(req, res, next) {
         if(!user_search){
             return res.status(404).send({message: "No se enconttro el usuario"})
         }
+        if (!user_search.is_active) {
+            return res.status(403).json({ message: "La cuenta está inactiva. Contactá al administrador para habilitarla." });
+        }
         if(user_search.institution_id){
             const comparePassword = await bcrypt.compare(password, user_search.password);
             if (!comparePassword) {

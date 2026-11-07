@@ -72,6 +72,7 @@ const RegisterInstitution = async(req,res) =>{
             password: password_hash_inCharge, 
             phone: phone,  
             institution_id: institution_create.id,
+            is_active: true,
             role_id: 4 // rol por defecto para instituciones 
         });
 
