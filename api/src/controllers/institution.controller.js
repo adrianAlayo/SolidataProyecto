@@ -8,8 +8,17 @@ const geocodeInstitution = require('../utils/geocodeInstitution.util');
 
 const institutionIncludes = [{ model: TYPE, attributes: ['id', 'name'] }];
 
+const isInstitutionAccount = (req) => Number(req.user_find?.rol) === 4;
+const institutionScope = (req) => isInstitutionAccount(req)
+    ? { id: Number(req.user_find.institution_id ?? req.user_find.id) }
+    : {};
+const denyInstitutionWrite = (req, res) => isInstitutionAccount(req)
+    ? (res.status(403).json({ message: "La cuenta de institución solo puede consultar sus datos." }), true)
+    : false;
+
 const createInstitution = async(req,res) =>{
     try{
+        if (denyInstitutionWrite(req, res)) return;
         let {first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type} = req.body;
 
         const existUser = await USER.findOne({ where: { email } });
@@ -50,8 +59,9 @@ const createInstitution = async(req,res) =>{
         return res.status(500).json({message: "Error al intentar crear una institucion."});
     }
 }
-const geocodeMissingInstitutions = async (_req, res) => {
+const geocodeMissingInstitutions = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         const institutions = await INSTITUTION.findAll({
             where: {
                 [Op.or]: [
@@ -87,9 +97,9 @@ const geocodeMissingInstitutions = async (_req, res) => {
         return res.status(500).json({ message: 'No se pudieron revisar las ubicaciones.' });
     }
 };
-const getInstitutions = async(_req,res) =>{
+const getInstitutions = async(req,res) =>{
     try{
-        const institutions = await INSTITUTION.findAll({ include: institutionIncludes, order: [['name', 'ASC']] });
+        const institutions = await INSTITUTION.findAll({ where: institutionScope(req), include: institutionIncludes, order: [['name', 'ASC']] });
 
         res.status(200).json({
             message: "Liista de instituciones exitosamente",
@@ -111,7 +121,11 @@ const getInstitution = async(req,res) =>{
 
         id = Number(id);
 
-        const institution = await INSTITUTION.findByPk(id, { include: institutionIncludes });
+        if (isInstitutionAccount(req) && id !== Number(req.user_find.institution_id ?? req.user_find.id)) {
+            return res.status(403).json({ message: "No tiene permiso para consultar otra institución." });
+        }
+
+        const institution = await INSTITUTION.findOne({ where: { id, ...institutionScope(req) }, include: institutionIncludes });
 
         if (!institution) {
             return res.status(404).json({ message: "No se encontro la institucion." });
@@ -127,11 +141,12 @@ const getInstitution = async(req,res) =>{
         return res.status(500).json({message: "Error al intentar obtener una institucion."});
     }
 }
-const getInstitutionsInactive = async(_req,res) =>{
+const getInstitutionsInactive = async(req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({
             where:{
                 status: "Inactive",
+                ...institutionScope(req)
             },
             include: institutionIncludes,
             order: [['name', 'ASC']]
@@ -146,11 +161,12 @@ const getInstitutionsInactive = async(_req,res) =>{
         return res.status(500).json({message: "Error al intentar obtener la lista de las instituciones inactivas."});
     }
 }
-const getInstitutionsActive = async(_req,res) =>{
+const getInstitutionsActive = async(req,res) =>{
     try{
         const institutions = await INSTITUTION.findAll({
             where:{
                 status: "Active",
+                ...institutionScope(req)
             },
             include: institutionIncludes,
             order: [['name', 'ASC']]
@@ -168,6 +184,7 @@ const getInstitutionsActive = async(_req,res) =>{
 }
 const updateInstitution = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         const id = Number(req.params.id);
         if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'ID inválido.' });
         const institution = await INSTITUTION.findByPk(id);
@@ -222,6 +239,7 @@ const updateInstitution = async (req, res) => {
 };
 const deleteInstitution = async (req,res)=>{
     try{
+        if (denyInstitutionWrite(req, res)) return;
        let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {

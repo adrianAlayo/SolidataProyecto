@@ -8,9 +8,18 @@ const IsDate = require('../utils/isDate.util')
 const TransformDate = require('../utils/transformDate.util');
 const { where, Op } = require('sequelize');
 
+const isInstitutionAccount = (req) => Number(req.user_find?.rol) === 4;
+const institutionDonationScope = (req) => isInstitutionAccount(req)
+    ? { receiver_institution_id: Number(req.user_find.institution_id ?? req.user_find.id) }
+    : {};
+const denyInstitutionWrite = (req, res) => isInstitutionAccount(req)
+    ? (res.status(403).json({ message: "La cuenta de institución solo puede consultar sus datos." }), true)
+    : false;
+
 
 const createDonation = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         // responsables lo saco del token
         const responsable_user = req.user_find;
         if (!responsable_user || !responsable_user.id) {
@@ -73,7 +82,8 @@ const getDonation = async (req, res) => {
 
         id = Number(id);
 
-        const donation = await DONATION.findByPk(id, {
+        const donation = await DONATION.findOne({
+            where: { id, ...institutionDonationScope(req) },
             include: [
                 { model: 
                     USER, as: "responsable", 
@@ -102,9 +112,10 @@ const getDonation = async (req, res) => {
         res.status(500).send({ message: "Error al obtener donación." });
     }
 };
-const getDonations = async (_req, res) => {
+const getDonations = async (req, res) => {
     try {
         const list = await DONATION.findAll({
+            where: institutionDonationScope(req),
             include: [
                 { 
                     model: 
@@ -142,7 +153,8 @@ const getDonationsByResponsable = async (req, res) => {
 
         const list = await DONATION.findAll({
             where: { 
-                responsable_user_id: id 
+                responsable_user_id: id,
+                ...institutionDonationScope(req)
             }
 
         });
@@ -167,7 +179,8 @@ const getDonationsByDonor = async (req, res) => {
 
         const list = await DONATION.findAll({
             where: { 
-                donor_id: id 
+                donor_id: id,
+                ...institutionDonationScope(req)
             }
         });
 
@@ -198,7 +211,8 @@ const getDonationsByVolunteerDonor = async (req, res) => {
 
         const list = await DONATION.findAll({
             where: { 
-                donor_id: id 
+                donor_id: id,
+                ...institutionDonationScope(req)
             }
         }); 
 
@@ -231,7 +245,8 @@ const getDonationsByInstitutionDonor = async (req, res) => {
 
         const list = await DONATION.findAll({
             where: { 
-                donor_id: id 
+                donor_id: id,
+                ...institutionDonationScope(req)
             }
         });
 
@@ -253,10 +268,14 @@ const getDonationsByReceiver = async (req, res) => {
             return res.status(400).json({ message: "ID inválido." });
         }
         id = Number(id);
+        if (isInstitutionAccount(req) && id !== Number(req.user_find.institution_id ?? req.user_find.id)) {
+            return res.status(403).json({ message: "No tiene permiso para consultar otra institución." });
+        }
 
         const list = await DONATION.findAll({
             where: { 
-                receiver_institution_id: id 
+                receiver_institution_id: id,
+                ...institutionDonationScope(req)
             }
         });
 
@@ -273,6 +292,7 @@ const getDonationsByReceiver = async (req, res) => {
 };
 const updateDonation = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         let { donation_id } = req.params;
 
         if (!donation_id || isNaN(Number(donation_id))) {
@@ -408,6 +428,7 @@ const updateDonation = async (req, res) => {
 };
 const updateDonationStatus = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         const { id } = req.params;
         const { status } = req.body;
 
@@ -436,6 +457,7 @@ const updateDonationStatus = async (req, res) => {
 };
 const deleteDonation = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {

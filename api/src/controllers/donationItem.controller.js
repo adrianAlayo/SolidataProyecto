@@ -8,6 +8,14 @@ const { Op } = require('sequelize');
 const isString = require('../utils/isString.util');
 const IsDate = require('../utils/isDate.util');
 
+const isInstitutionAccount = (req) => Number(req.user_find?.rol) === 4;
+const institutionDonationScope = (req) => isInstitutionAccount(req)
+    ? { receiver_institution_id: Number(req.user_find.institution_id ?? req.user_find.id) }
+    : {};
+const denyInstitutionWrite = (req, res) => isInstitutionAccount(req)
+    ? (res.status(403).json({ message: "La cuenta de institución solo puede consultar sus datos." }), true)
+    : false;
+
 const itemIncludes = [
     { model: ARTICLE, attributes: ['id', 'name', 'category', 'variant', 'unit'] },
     { model: DONATION, attributes: ['id', 'donation_date', 'status'], include: [
@@ -18,6 +26,7 @@ const itemIncludes = [
 
 const createItem = async (req,res) =>{
     try {
+        if (denyInstitutionWrite(req, res)) return;
         const {quantity,expiration_date,note,donation_id,article_id} = req.body;
 
         if(quantity === undefined || quantity === null || quantity === '' || !Number.isInteger(Number(quantity)) || Number(quantity) <= 0){
@@ -90,6 +99,10 @@ const getItem = async (req,res) =>{
         if(!item){
             return res.status(404).send({message: "No se encontro ninguna dionacion con ese item"})
         }
+        if (isInstitutionAccount(req)) {
+            const donation = await DONATION.findOne({ where: { id: item.donation_id, ...institutionDonationScope(req) } });
+            if (!donation) return res.status(404).json({ message: "El ítem no pertenece a una donación de esta institución." });
+        }
 
         return res.status(200).json({
             message:"Se encontro una donacion Item",
@@ -100,9 +113,18 @@ const getItem = async (req,res) =>{
         res.status(500).send({ message: "Error al intentar buscar una donacion que tenga ese item como ID." });
     }
 }
-const getItems = async (_req,res) =>{
+const getItems = async (req,res) =>{
     try {
-        const items = await DONATIONITEM.findAll({ include: itemIncludes, order: [['createdAt', 'DESC']] });
+        let donationIds;
+        if (isInstitutionAccount(req)) {
+            const donations = await DONATION.findAll({ where: institutionDonationScope(req), attributes: ['id'] });
+            donationIds = donations.map((donation) => donation.id);
+        }
+        const items = await DONATIONITEM.findAll({
+            where: donationIds ? { donation_id: { [Op.in]: donationIds } } : {},
+            include: itemIncludes,
+            order: [['createdAt', 'DESC']]
+        });
 
         return res.status(200).json({
             message:"Se encontraron items",
@@ -124,7 +146,7 @@ const getItemsByDonation = async (req,res) =>{
 
         donation_id = Number(donation_id);
         
-        const existDonation = await DONATION.findByPk(donation_id);
+        const existDonation = await DONATION.findOne({ where: { id: donation_id, ...institutionDonationScope(req) } });
         if(!existDonation){
             return res.status(404).send({message: "No existe ese ID de la donacion"})
         }
@@ -150,6 +172,7 @@ const getItemsByDonation = async (req,res) =>{
 }
 const updateItem = async (req, res) => {
     try {
+        if (denyInstitutionWrite(req, res)) return;
         let { id } = req.params;
 
         if (!id || isNaN(Number(id))) {
@@ -240,6 +263,7 @@ const updateItem = async (req, res) => {
 };
 const deleteItem = async (req,res) =>{
   try {
+    if (denyInstitutionWrite(req, res)) return;
     let { id } = req.params;
 
     if (!id || isNaN(Number(id))) {
