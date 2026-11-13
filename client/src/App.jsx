@@ -15,6 +15,7 @@ import RegisterInstitution from "./assets/components/institution/FormRegisterIns
 import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
 import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
 import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
+import AssignRole from "./assets/pages/admin/user/AssignRole.jsx";
 import CreateArticles from "./assets/pages/admin/article/CreateArticle.jsx";
 import CreateRoles from "./assets/pages/admin/rol/CreateRol.jsx";
 import UpdateRoles from "./assets/pages/admin/rol/UpdateRol.jsx";
@@ -63,6 +64,7 @@ function App() {
                 <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
                 <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>
                 <Route path="/admin/users/update" element={<div className="#"> <UpdateUsers/> </div>}/>
+                <Route path="/admin/users/assignRol" element={<AssignRole />} />
 
 
                 <Route path="/admin/donations/history" element={<div className="#"> <HistoryD/> </div>} />  {/* POST */}

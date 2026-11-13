@@ -75,20 +75,6 @@ const menuData = [
     }, 
     { label: "Reportes", path: "/admin/reports", requiredPermissions: [{ entity: "DONATIONS", action: "READ" }, { entity: "INVENTORIES", action: "READ" }, { entity: "USERS", action: "READ" }] },
     { label: "Altas/Bajas", path: "/admin/HighLow", requiredPermissions: [{ entity: "USERS", action: "APPROVE" }] }, 
-    { 
-        label: "Informacion", 
-        children: [
-            { label: "Articulo/s", path: "#" }, 
-            { label: "Donacion/es", path: "#" }, 
-            { label: "Donacion/es Item/s", path: "#" }, 
-            { label: "Institucion/es", path: "#" }, 
-            { label: "Institucion/es Necesidad/es", path: "#" }, 
-            { label: "Inventario/s", path: "#" }, 
-            { label: "Rol/es", path: "#" }, 
-            { label: "Tipo/s", path: "#" }, 
-            { label: "Usuario/s", path: "#" },
-        ] 
-    },
 ];
 
 export default menuData;
