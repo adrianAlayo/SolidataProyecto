@@ -177,7 +177,9 @@ export default function RecordManagement({ entity, mode }) {
                     {loading ? (
                         <div className="recordManagementNotice">Cargando {config.plural}…</div>
                     ) : records.length === 0 ? (
-                        <div className="recordManagementNotice">No hay {config.plural} disponibles.</div>
+                        error
+                            ? <div className="recordManagementAlert error" role="alert">{error}</div>
+                            : <div className="recordManagementNotice">No hay {config.plural} disponibles.</div>
                     ) : (
                         <form className="recordManagementForm" onSubmit={handleSubmit}>
                             <label htmlFor="record-select">{config.singular}</label>
@@ -236,8 +238,7 @@ export default function RecordManagement({ entity, mode }) {
                             </button>
                         </form>
                     )}
-                    {error && loading && <div className="recordManagementAlert error" role="alert">{error}</div>}
-                </section>
+                 </section>
             </main>
         </>
     );
