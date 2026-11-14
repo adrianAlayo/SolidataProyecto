@@ -16,6 +16,7 @@ import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
 import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
 import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
 import AssignRole from "./assets/pages/admin/user/AssignRole.jsx";
+import TypeManagement from "./assets/pages/admin/institution/TypeManagement.jsx";
 import CreateArticles from "./assets/pages/admin/article/CreateArticle.jsx";
 import CreateRoles from "./assets/pages/admin/rol/CreateRol.jsx";
 import UpdateRoles from "./assets/pages/admin/rol/UpdateRol.jsx";
@@ -99,6 +100,9 @@ function App() {
                 <Route path="/admin/needs" element={<NeedsList />} />
                 <Route path="/admin/inventory" element={<InventoryList />} />
                 <Route path="/admin/institutions" element={<InstitutionsList />} />
+                <Route path="/admin/institutions/types/create" element={<TypeManagement mode="create" />} />
+                <Route path="/admin/institutions/types/update" element={<TypeManagement mode="update" />} />
+                <Route path="/admin/institutions/types/delete" element={<TypeManagement mode="delete" />} />
                 <Route path="/admin/reports" element={<ReportsPage />} />
                 <Route path="/admin/deliveries" element={<DeliveryBoard />} />
                 <Route path="/en-desarrollo/:section" element={<PendingPage />} />

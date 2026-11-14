@@ -57,9 +57,9 @@ const menuData = [
             { 
                 label: "Tipos", 
                 children: [
-                    { label: "Crear Tipo", path: "#" }, 
-                    { label: "Actualizar Tipo", path: "#" }, 
-                    { label: "Eliminar Tipo", path: "#" },
+                    { label: "Crear Tipo", path: "/admin/institutions/types/create", requiredPermissions: [{ entity: "TYPES", action: "CREATE" }] }, 
+                    { label: "Actualizar Tipo", path: "/admin/institutions/types/update", requiredPermissions: [{ entity: "TYPES", action: "UPDATE" }] }, 
+                    { label: "Eliminar Tipo", path: "/admin/institutions/types/delete", requiredPermissions: [{ entity: "TYPES", action: "DELETE" }] },
                 ] 
             }
         ] 
