@@ -87,7 +87,10 @@ const getUsers = async (req,res) =>{
     try {
         const user = await USER.findAll({
             attributes: { exclude: ['password'] },
-            include: [{ model: INSTITUTION, attributes: ['id', 'name', 'institutionType'] }]
+            include: [
+                { model: INSTITUTION, attributes: ['id', 'name', 'institutionType'] },
+                { model: ROLE, attributes: ['id', 'name'] }
+            ]
         });
 
         if (!user) {

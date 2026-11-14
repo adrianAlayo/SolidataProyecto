@@ -38,7 +38,7 @@ export function FormLogin() {
                 const destinations = {
                     1: "/admin/home",
                     2: "/operator/home",
-                    3: "/coordinator/home",
+                    3: "/admin/home",
                     4: "/institution/home",
                 };
             navigate(destinations[rol] || "/", { replace: true });

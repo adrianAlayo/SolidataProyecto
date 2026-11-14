@@ -60,7 +60,7 @@ router.put(
 router.patch(
     '/:id',
     verifyToken,
-    authorize("INSTITUTIONNEEDS", "CHANGE_STATUS"),
+    authorize("INSTITUTIONNEEDS", "APPROVE"),
     updateStatusNeed
 ); // Testeado
 
