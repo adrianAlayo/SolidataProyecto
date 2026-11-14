@@ -275,7 +275,7 @@ const updateUser = async (req, res) => {
 
         if (password !== undefined) {
             if (IsString(password) && VerificationPassword(password)) {
-                updateFields.password = password;
+                updateFields.password = await bcrypt.hash(password, 7);
             } else {
                 return res.status(400).send({ message: "password inválido." });
             }

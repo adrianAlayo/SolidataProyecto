@@ -1,0 +1,110 @@
+.recordManagementPage {
+    min-height: calc(100vh - 72px);
+    box-sizing: border-box;
+    padding: 48px 32px 56px 104px;
+    background: #f3f6f3;
+    color: #183b2a;
+}
+.recordManagementCard {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: 36px;
+    box-sizing: border-box;
+    border: 1px solid #dfe8df;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 18px 45px #173b2b12;
+}
+.recordManagementEyebrow {
+    margin: 0 0 8px;
+    color: #39724c;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.recordManagementCard h1 {
+    margin: 0;
+    color: #173b2b;
+    font-size: clamp(26px, 4vw, 36px);
+}
+.recordManagementDescription {
+    margin: 10px 0 28px;
+    color: #63756a;
+    line-height: 1.55;
+}
+.recordManagementForm, .recordManagementFields {
+    display: grid;
+    gap: 11px;
+}
+.recordManagementFields { margin-top: 10px; }
+.recordManagementForm label, .recordManagementFields label {
+    margin-top: 8px;
+    color: #294b37;
+    font-size: 14px;
+    font-weight: 700;
+}
+.recordManagementForm label span {
+    color: #77887c;
+    font-size: 12px;
+    font-weight: 400;
+}
+.recordManagementForm input, .recordManagementForm select, .recordManagementForm textarea {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border: 1px solid #d4dfd5;
+    border-radius: 10px;
+    background: #fbfdfb;
+    color: #203a2b;
+    font: inherit;
+}
+.recordManagementForm textarea { resize: vertical; }
+.recordManagementForm input:focus, .recordManagementForm select:focus, .recordManagementForm textarea:focus {
+    outline: 3px solid #d9eadc;
+    border-color: #43845a;
+}
+.recordManagementSummary {
+    display: grid;
+    gap: 5px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    background: #f2f7f2;
+    color: #53685a;
+    font-size: 13px;
+}
+.recordManagementSummary strong { color: #1b5934; font-size: 14px; font-weight: 600; }
+.recordManagementSummary.danger { background: #fff5f4; color: #76504b; }
+.recordManagementSummary.danger strong { color: #9d2d26; }
+.recordManagementForm button {
+    justify-self: start;
+    min-height: 46px;
+    margin-top: 12px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 10px;
+    background: #216637;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease;
+}
+.recordManagementForm button:hover:not(:disabled) { background: #174d2a; transform: translateY(-1px); }
+.recordManagementForm button.danger { background: #a6322b; }
+.recordManagementForm button.danger:hover:not(:disabled) { background: #84251f; }
+.recordManagementForm button:disabled { opacity: .6; cursor: not-allowed; }
+.recordManagementNotice, .recordManagementAlert {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+.recordManagementNotice { background: #f2f7f2; color: #53685a; }
+.recordManagementAlert.error { background: #fff0ef; color: #9d2d26; }
+.recordManagementAlert.success { background: #edf7ef; color: #216637; }
+@media (max-width: 640px) {
+    .recordManagementPage { padding: 28px 16px 40px 78px; }
+    .recordManagementCard { padding: 24px 20px; border-radius: 16px; }
+}

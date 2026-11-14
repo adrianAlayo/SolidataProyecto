@@ -34,3 +34,17 @@
   .registerGroupTitle, .registerInstitutionGrid input[type="password"] { grid-column: 1; }
   .registerInstitutionActions { align-items: stretch; flex-direction: column-reverse; }
 }
+
+.adminInstitutionRegistration {
+  width: min(720px, calc(100vw - var(--solidata-sidebar-offset, 58px) - 32px));
+  margin-left: calc(var(--solidata-sidebar-offset, 58px) + max(16px, (100vw - var(--solidata-sidebar-offset, 58px) - 720px) / 2));
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+@media (max-width: 760px) {
+  .adminInstitutionRegistration {
+    width: calc(100vw - var(--solidata-sidebar-offset, 48px) - 24px);
+    margin-left: calc(var(--solidata-sidebar-offset, 48px) + 12px);
+    padding: 24px 18px;
+  }
+}

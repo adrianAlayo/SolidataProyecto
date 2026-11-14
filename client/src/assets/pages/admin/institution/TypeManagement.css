@@ -1,0 +1,157 @@
+.typeManagementPage {
+    min-height: calc(100vh - 72px);
+    box-sizing: border-box;
+    padding: 48px 32px 56px 104px;
+    background: #f3f6f3;
+    color: #183b2a;
+}
+
+.typeManagementCard {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: 36px;
+    box-sizing: border-box;
+    border: 1px solid #dfe8df;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 18px 45px #173b2b12;
+}
+
+.typeManagementEyebrow {
+    margin: 0 0 8px;
+    color: #39724c;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.typeManagementCard h1 {
+    margin: 0;
+    color: #173b2b;
+    font-size: clamp(26px, 4vw, 36px);
+}
+
+.typeManagementDescription {
+    margin: 10px 0 28px;
+    color: #63756a;
+    line-height: 1.55;
+}
+
+.typeManagementForm {
+    display: grid;
+    gap: 11px;
+}
+
+.typeManagementForm label {
+    margin-top: 8px;
+    color: #294b37;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.typeManagementForm input,
+.typeManagementForm select {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    border: 1px solid #d4dfd5;
+    border-radius: 10px;
+    background: #fbfdfb;
+    color: #203a2b;
+    font: inherit;
+}
+
+.typeManagementForm input:focus,
+.typeManagementForm select:focus {
+    outline: 3px solid #d9eadc;
+    border-color: #43845a;
+}
+
+.typeManagementSelected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    background: #fff5f4;
+    color: #76504b;
+    font-size: 14px;
+}
+
+.typeManagementSelected strong {
+    color: #9d2d26;
+}
+
+.typeManagementForm button {
+    justify-self: start;
+    min-height: 46px;
+    margin-top: 12px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 10px;
+    background: #216637;
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.typeManagementForm button:hover:not(:disabled) {
+    background: #174d2a;
+}
+
+.typeManagementForm button.danger {
+    background: #a6322b;
+}
+
+.typeManagementForm button.danger:hover:not(:disabled) {
+    background: #84251f;
+}
+
+.typeManagementForm button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.typeManagementNotice,
+.typeManagementAlert {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.typeManagementNotice {
+    background: #f2f7f2;
+    color: #53685a;
+}
+
+.typeManagementAlert.error {
+    background: #fff0ef;
+    color: #9d2d26;
+}
+
+.typeManagementAlert.success {
+    background: #edf7ef;
+    color: #216637;
+}
+
+@media (max-width: 640px) {
+    .typeManagementPage {
+        padding: 28px 16px 40px 78px;
+    }
+
+    .typeManagementCard {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+
+    .typeManagementSelected {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+}

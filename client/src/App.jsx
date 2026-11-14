@@ -15,6 +15,8 @@ import RegisterInstitution from "./assets/components/institution/FormRegisterIns
 import CreateUsers from "./assets/pages/admin/user/CreateUser.jsx";
 import DeleteUsers from "./assets/pages/admin/user/DeleteUser.jsx";
 import UpdateUsers from "./assets/pages/admin/user/UpdateUser.jsx";
+import AssignRole from "./assets/pages/admin/user/AssignRole.jsx";
+import TypeManagement from "./assets/pages/admin/institution/TypeManagement.jsx";
 import CreateArticles from "./assets/pages/admin/article/CreateArticle.jsx";
 import CreateRoles from "./assets/pages/admin/rol/CreateRol.jsx";
 import UpdateRoles from "./assets/pages/admin/rol/UpdateRol.jsx";
@@ -58,11 +60,12 @@ function App() {
                 <Route path="/admin/home" element={<div className="#"> <HomeAdmin /></div>} />
                 <Route path="/admin/" element={<div className="#"> <HomeAdmin /></div>} />
                 <Route path="/admin/register/user" element={<PendingPage title="Alta de usuarios" />} />
-                <Route path="/admin/register/institution" element={<PendingPage title="Alta de instituciones" />} />
+                <Route path="/admin/register/institution" element={<RegisterInstitution adminMode />} />
 
                 <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
                 <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>
                 <Route path="/admin/users/update" element={<div className="#"> <UpdateUsers/> </div>}/>
+                <Route path="/admin/users/assignRol" element={<AssignRole />} />
 
 
                 <Route path="/admin/donations/history" element={<div className="#"> <HistoryD/> </div>} />  {/* POST */}
@@ -97,6 +100,9 @@ function App() {
                 <Route path="/admin/needs" element={<NeedsList />} />
                 <Route path="/admin/inventory" element={<InventoryList />} />
                 <Route path="/admin/institutions" element={<InstitutionsList />} />
+                <Route path="/admin/institutions/types/create" element={<TypeManagement mode="create" />} />
+                <Route path="/admin/institutions/types/update" element={<TypeManagement mode="update" />} />
+                <Route path="/admin/institutions/types/delete" element={<TypeManagement mode="delete" />} />
                 <Route path="/admin/reports" element={<ReportsPage />} />
                 <Route path="/admin/deliveries" element={<DeliveryBoard />} />
                 <Route path="/en-desarrollo/:section" element={<PendingPage />} />

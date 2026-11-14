@@ -1,15 +1,7 @@
-import FormDeleteUser from '../../../components/users/FormDeleteUser.jsx'
-import '../../../components/users/FormDeleteUser.css'
-import SideMenu from '../../../components/SideMenu.jsx'
+import RecordManagement from "../RecordManagement.jsx";
 
-export function DeleteUsers () {
-
-    return (
-        <>
-            <SideMenu/>
-            <FormDeleteUser/>
-        </>
-    )
+export function DeleteUsers() {
+    return <RecordManagement entity="user" mode="delete" />;
 }
 
-export default DeleteUsers
+export default DeleteUsers;

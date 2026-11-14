@@ -1,16 +1,7 @@
-import FormDeleteInventory from '../../../components/inventory/FormDeleteInventory.jsx'
-import '../../../components/inventory/FormDeleteInventory.css'
-import SideMenu from '../../../components/SideMenu.jsx'
-import '../../../components/SideMenu.css'
+import RecordManagement from "../RecordManagement.jsx";
 
-export function DeleteInventories () {
-
-    return (
-        <>
-            <SideMenu/>
-            <FormDeleteInventory/>
-        </>
-    )
+export function DeleteInventories() {
+    return <RecordManagement entity="inventory" mode="delete" />;
 }
 
-export default DeleteInventories
+export default DeleteInventories;

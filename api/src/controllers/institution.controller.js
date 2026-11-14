@@ -38,6 +38,7 @@ const createInstitution = async(req,res) =>{
             location_checked_at: new Date(),
             institutionType: type_inst,
             type_id: type,
+            status: "Active",
         });
         const user_create = await USER.create({
             first_name: first_name, 
@@ -46,6 +47,7 @@ const createInstitution = async(req,res) =>{
             password: password_hash_inCharge, 
             phone: phone,  
             institution_id: institution_create.id,
+            is_active: true,
             role_id: 4 // rol por defecto para instituciones 
         });
 
