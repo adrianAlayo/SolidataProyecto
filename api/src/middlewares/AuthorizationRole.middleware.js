@@ -14,9 +14,14 @@ function authorize(entityName, actionName) {
                 return res.status(401).json({ message: "No autenticado" });
             }
 
-            const roleId = user.rol;
+            const roleId = Number(user.rol);
             if (!roleId) {
                 return res.status(403).json({ message: "No tiene rol asignado" });
+            }
+
+            // El administrador (rol 1) tiene acceso completo al panel.
+            if (roleId === 1) {
+                return next();
             }
 
             // 2. Buscar entidad
