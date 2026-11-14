@@ -1,15 +1,7 @@
-import FormUpdateUser from '../../../components/users/FormUpdateUser.jsx'
-import '../../../components/users/FormUpdateUser.css'
-import SideMenu from '../../../components/SideMenu.jsx'
+import RecordManagement from "../RecordManagement.jsx";
 
-export function UpdateUsers () {
-
-    return (
-        <>
-            <SideMenu/>
-            <FormUpdateUser/>
-        </>
-    )
+export function UpdateUsers() {
+    return <RecordManagement entity="user" mode="update" />;
 }
 
-export default UpdateUsers
+export default UpdateUsers;

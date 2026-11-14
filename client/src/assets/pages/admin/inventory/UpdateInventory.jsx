@@ -1,16 +1,7 @@
-import FormUpdateInventory from '../../../components/inventory/FormUpdateInventory.jsx'
-import '../../../components/inventory/FormUpdateInventory.css'
-import SideMenu from '../../../components/SideMenu.jsx'
-import '../../../components/SideMenu.css'
+import RecordManagement from "../RecordManagement.jsx";
 
-export function UpdateInventories () {
-
-    return (
-        <>
-            <SideMenu/>
-            <FormUpdateInventory/>
-        </>
-    )
+export function UpdateInventories() {
+    return <RecordManagement entity="inventory" mode="update" />;
 }
 
-export default UpdateInventories
+export default UpdateInventories;

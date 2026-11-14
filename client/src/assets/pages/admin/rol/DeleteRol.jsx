@@ -1,15 +1,7 @@
-import FormDeleteRol from '../../../components/rol/FormDeleteRol.jsx'
-import '../../../components/rol/FormDeleteRol.css'
-import SideMenu from '../../../components/SideMenu.jsx'
+import RecordManagement from "../RecordManagement.jsx";
 
-export function DeleteRoles () {
-
-    return (
-        <>
-            <SideMenu/>
-            <FormDeleteRol/>
-        </>
-    )
+export function DeleteRoles() {
+    return <RecordManagement entity="role" mode="delete" />;
 }
 
-export default DeleteRoles
+export default DeleteRoles;

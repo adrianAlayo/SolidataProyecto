@@ -1,15 +1,7 @@
-import FormUpdateRol from '../../../components/rol/FormUpdateRol.jsx'
-import '../../../components/rol/FormUpdateRol.css'
-import SideMenu from '../../../components/SideMenu.jsx'
+import RecordManagement from "../RecordManagement.jsx";
 
-export function UpdateRoles () {
-
-    return (
-        <>
-            <SideMenu/>
-            <FormUpdateRol/>
-        </>
-    )
+export function UpdateRoles() {
+    return <RecordManagement entity="role" mode="update" />;
 }
 
-export default UpdateRoles
+export default UpdateRoles;
