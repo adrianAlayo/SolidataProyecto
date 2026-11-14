@@ -433,7 +433,7 @@ const updateDonationStatus = async (req, res) => {
         const { status } = req.body;
 
         if (!Number.isInteger(Number(id)) || Number(id) <= 0) return res.status(400).json({ message: "ID inválido." });
-        if (req.user_find?.rol !== 1 && req.user_find?.rol !== 3) return res.status(403).json({ message: "No tiene permisos para actualizar donaciones." });
+        if (![1, 2, 3].includes(Number(req.user_find?.rol))) return res.status(403).json({ message: "No tiene permisos para actualizar donaciones." });
 
         const donation = await DONATION.findByPk(Number(id));
         if (!donation) {

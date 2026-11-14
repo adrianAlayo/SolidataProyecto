@@ -71,7 +71,7 @@ router.get(
 router.get(
     '/OnlyArticlesArea',
     verifyToken,
-    authorize("INVENTORIES", "APPROVE"),
+    authorize("INVENTORIES", "READ"),
     getInventoriesOnlyArticlesArea
 ); // Testeado
 
@@ -79,7 +79,7 @@ router.get(
 router.get(
     '/OnlyArticleArea',
     verifyToken,
-    authorize("INVENTORIES", "DELETE"),
+    authorize("INVENTORIES", "READ"),
     getInventoryOnlyArticleArea
 ); // Testeado
 

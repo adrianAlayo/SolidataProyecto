@@ -99,7 +99,7 @@ router.put(
 router.patch(
     '/:id',
     verifyToken,
-    authorize("DONATIONS", "UPDATE"),
+    authorize("DONATIONS", "CHANGE_STATUS"),
     updateDonationStatus
 ); // Testeado
 

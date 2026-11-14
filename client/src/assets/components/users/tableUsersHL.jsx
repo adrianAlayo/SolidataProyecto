@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import TablePager from "../TablePager.jsx";
 import { getUsers, activeUser, disableUser } from "../../services/user.service.js";
-import { getRoles } from "../../services/rol.service.js";
 import "./tableUsersHL.css";
 
 export default function UsersTable() {
@@ -16,12 +15,11 @@ export default function UsersTable() {
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        Promise.all([getUsers(), getRoles()])
-            .then(([usersResponse, rolesResponse]) => {
-                const roles = rolesResponse.data || [];
+        getUsers()
+            .then((usersResponse) => {
                 setUsers((usersResponse.data || []).map((user) => ({
                     ...user,
-                    roleName: roles.find((role) => Number(role.id) === Number(user.role_id))?.name || "—",
+                    roleName: user.Role?.name || "—",
                 })));
             })
             .catch((err) => setError(err.response?.data?.message || "No se pudieron cargar los usuarios."))

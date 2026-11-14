@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SideMenu from "../../../components/SideMenu.jsx";
+import { useAuth } from "../../../context/AuthContext.jsx";
 import Notification from "../../../components/Notification.jsx";
 import TablePager from "../../../components/TablePager.jsx";
 import { deleteDonation, getDonations, updateDonation, updateDonationStatus } from "../../../services/donation.service.js";
@@ -8,6 +9,8 @@ import "./DonationHistory.css";
 const personName = (person) => [person?.first_name, person?.last_name].filter(Boolean).join(" ") || "—";
 
 export default function DonationHistory() {
+  const { user } = useAuth();
+  const isInstitution = Number(user?.rol) === 4;
   const [donations, setDonations] = useState([]);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
@@ -61,7 +64,7 @@ export default function DonationHistory() {
   return (
     <main className="donationHistoryPage">
       <SideMenu />
-      <header className="donationHistoryHeading"><span>♡</span><div><h1>Historial de donaciones</h1><p>Buscá y administrá las donaciones registradas.</p></div></header>
+      <header className="donationHistoryHeading"><span>♡</span><div><h1>{isInstitution ? "Mis donaciones recibidas" : "Historial de donaciones"}</h1><p>{isInstitution ? "Consultá las entregas recibidas y las que están pendientes para tu institución." : "Buscá y administrá las donaciones registradas."}</p></div></header>
       <section className="donationHistoryPanel">
         <div className="donationHistoryTitle">Donaciones <span>{filtered.length} de {donations.length} registros</span></div>
         <div className="donationHistoryFilters">
@@ -71,13 +74,13 @@ export default function DonationHistory() {
         </div>
         {message && donations.length === 0 ? <p className="donationHistoryMessage">{message}</p> : filtered.length === 0 ? <p className="donationHistoryMessage">No hay resultados para la búsqueda.</p> : (
           <>
-          <div className="donationHistoryTableWrap"><table className="donationHistoryTable"><thead><tr><th>Donante</th><th>Institución receptora</th><th>Fecha</th><th>Nota</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <div className="donationHistoryTableWrap"><table className="donationHistoryTable"><thead><tr><th>Donante</th><th>Institución receptora</th><th>Fecha</th><th>Nota</th><th>Estado</th>{!isInstitution && <th>Acciones</th>}</tr></thead>
             <tbody>{pageRows.map((donation) => <tr key={donation.id}>
               <td>{personName(donation.donor)}</td><td>{donation.receiver_institution?.name || "—"}</td>
               <td>{editingId === donation.id ? <input type="date" value={edit.donation_date} onChange={(e) => setEdit({ ...edit, donation_date: e.target.value })} /> : new Date(donation.donation_date).toLocaleDateString("es-AR")}</td>
               <td>{editingId === donation.id ? <input value={edit.note} onChange={(e) => setEdit({ ...edit, note: e.target.value })} placeholder="Nota opcional" /> : donation.note || "—"}</td>
-              <td><span className={`donationHistoryStatus ${donation.status === "Delivered" ? "delivered" : "scheduled"}`}>{donation.status === "Delivered" ? "Entregada" : donation.status === "Not Delivered" ? "No entregada" : "Programada"}</span><select aria-label={`Estado de donación ${donation.id}`} value={donation.status} onChange={(e) => runAction(() => updateDonationStatus(donation.id, e.target.value), "Estado actualizado.")}><option value="Scheduled">Programada</option><option value="Delivered">Entregada</option><option value="Not Delivered">No entregada</option></select></td>
-        <td className="donationActions">{editingId === donation.id ? <><button onClick={() => runAction(() => updateDonation(donation.id, edit), "Donación actualizada.")}>Guardar</button><button className="quietAction" onClick={() => setEditingId(null)}>Cancelar</button></> : <button onClick={() => beginEdit(donation)}>Editar</button>}<button className="deleteAction" onClick={() => window.confirm("¿Eliminar esta donación y sus artículos asociados?") && runAction(() => deleteDonation(donation.id), "Donación eliminada.")}>Eliminar</button></td>
+              <td><span className={`donationHistoryStatus ${donation.status === "Delivered" ? "delivered" : "scheduled"}`}>{donation.status === "Delivered" ? "Entregada" : donation.status === "Not Delivered" ? "No entregada" : isInstitution ? "Pendiente" : "Programada"}</span>{!isInstitution && <select aria-label={`Estado de donación ${donation.id}`} value={donation.status} onChange={(e) => runAction(() => updateDonationStatus(donation.id, e.target.value), "Estado actualizado.")}><option value="Scheduled">Programada</option><option value="Delivered">Entregada</option><option value="Not Delivered">No entregada</option></select>}</td>
+        {!isInstitution && <td className="donationActions">{editingId === donation.id ? <><button onClick={() => runAction(() => updateDonation(donation.id, edit), "Donación actualizada.")}>Guardar</button><button className="quietAction" onClick={() => setEditingId(null)}>Cancelar</button></> : <button onClick={() => beginEdit(donation)}>Editar</button>}<button className="deleteAction" onClick={() => window.confirm("¿Eliminar esta donación y sus artículos asociados?") && runAction(() => deleteDonation(donation.id), "Donación eliminada.")}>Eliminar</button></td>}
             </tr>)}</tbody>
           </table></div><TablePager count={filtered.length} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(0); }} />
           </>

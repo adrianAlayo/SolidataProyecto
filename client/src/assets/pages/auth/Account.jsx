@@ -5,7 +5,7 @@ import SideMenu from "../../components/SideMenu.jsx";
 import "./Account.css";
 
 const roleNames = { 1: "Administrador", 2: "Operador", 3: "Coordinador", 4: "Institución", 5: "Voluntario" };
-const dashboardForRole = (role) => ({ 1: "/admin/home", 2: "/operator/home", 3: "/admin/home", 4: "/en-desarrollo/Inicio de institución", 5: "/en-desarrollo/Inicio de voluntario" }[role] || "/");
+const dashboardForRole = (role) => ({ 1: "/admin/home", 2: "/operator/home", 3: "/admin/home", 4: "/institution/home", 5: "/en-desarrollo/Inicio de voluntario" }[role] || "/");
 
 export default function Account() {
   const { user } = useAuth();

@@ -295,9 +295,14 @@ const getInventoriesOnlyArticlesArea = async (req, res) => {
 };
 const getInventoryOnlyArticleArea = async (req, res) => {
   try {
-    const { article_id, area } = req.body;
-    
-    if (isString(area)) return res.status(400).json({ message: 'area inválida' });
+    const { article_id, area } = req.query;
+
+    if (!Number.isInteger(Number(article_id)) || Number(article_id) <= 0) {
+      return res.status(400).json({ message: 'article_id inválido' });
+    }
+    if (!isString(area) || !area.trim()) {
+      return res.status(400).json({ message: 'area inválida' });
+    }
 
     // obtener donationItems del article
     const donationItems = await DONATIONITEM.findAll({
