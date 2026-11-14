@@ -6,3 +6,21 @@
 .deliveryMetrics article { justify-content: center; }
 .deliveryTable th:nth-child(4), .deliveryTable td:nth-child(4) { text-align: center; }
 .deliveryTable td:nth-child(4) .deliveryStatus { justify-content: center; }
+
+/* Use a compact icon-and-label group so every metric card aligns the same. */
+.deliveryMetrics article {
+  display: grid;
+  grid-template-columns: 39px max-content;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+.deliveryMetrics article > div {
+  width: max-content;
+  min-width: 0;
+  text-align: left !important;
+}
+.deliveryMetrics article > div > small,
+.deliveryMetrics article > div > strong {
+  text-align: left !important;
+}
