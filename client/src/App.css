@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
 .pageContainerLog {
   display: flex;
   justify-content: center;
@@ -36,4 +38,10 @@
 
 body {
   margin: 0px;
+}
+
+
+/* SOLIDATA uses one consistent interface font. */
+#root, #root *:not(svg):not(path):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded) {
+  font-family: "Poppins", "Segoe UI", sans-serif !important;
 }

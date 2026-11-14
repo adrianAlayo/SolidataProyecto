@@ -26,7 +26,7 @@ export const PATH_PERMISSIONS = {
   "/admin/donations/items": [permission("DONATIONITEMS", "READ")],
   "/admin/donations/items/create": [permission("DONATIONITEMS", "CREATE")],
   "/admin/institutions": [permission("INSTITUTIONS", "READ")],
-  "/register/institution": [permission("INSTITUTIONS", "CREATE")],
+  "/admin/register/institution": [permission("INSTITUTIONS", "CREATE")],
   "/admin/needs": [
     permission("INSTITUTIONNEEDS", "READ"),
     permission("INSTITUTIONNEEDS", "CREATE"),

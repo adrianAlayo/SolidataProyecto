@@ -60,7 +60,7 @@ function App() {
                 <Route path="/admin/home" element={<div className="#"> <HomeAdmin /></div>} />
                 <Route path="/admin/" element={<div className="#"> <HomeAdmin /></div>} />
                 <Route path="/admin/register/user" element={<PendingPage title="Alta de usuarios" />} />
-                <Route path="/admin/register/institution" element={<PendingPage title="Alta de instituciones" />} />
+                <Route path="/admin/register/institution" element={<RegisterInstitution adminMode />} />
 
                 <Route path="/admin/users/create" element={<div className="#"> <CreateUsers/> </div>}/>
                 <Route path="/admin/users/delete" element={<div className="#"> <DeleteUsers/> </div>}/>

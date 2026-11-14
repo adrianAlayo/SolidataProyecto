@@ -16,8 +16,7 @@ const menuData = [
         label: "Artículos",
         children: [
             { label: "Ver catálogo", path: "/admin/articles", requiredPermissions: [{ entity: "ARTICLES", action: "READ" }] },
-            { label: "Crear", path: "/admin/articles/create", requiredPermissions: [{ entity: "ARTICLES", action: "CREATE" }] }, 
-            { label: "Editar o eliminar", path: "/admin/articles", requiredPermissions: [{ entity: "ARTICLES", action: "UPDATE" }, { entity: "ARTICLES", action: "DELETE" }] },
+            { label: "Crear", path: "/admin/articles/create", requiredPermissions: [{ entity: "ARTICLES", action: "CREATE" }] },
         ] 
     }, 
     { 
@@ -46,12 +45,16 @@ const menuData = [
         label: "Instituciones",
         children: [
             { label: "Ver instituciones", path: "/admin/institutions", requiredPermissions: [{ entity: "INSTITUTIONS", action: "READ" }] },
-            { label: "Registrar institución", path: "/register/institution", requiredPermissions: [{ entity: "INSTITUTIONS", action: "CREATE" }] },
+            { label: "Registrar institución", path: "/admin/register/institution", requiredPermissions: [{ entity: "INSTITUTIONS", action: "CREATE" }] },
             { label: "Necesidades", 
                 children: [
-                    { label: "Ver Necesidades", path: "/admin/needs", requiredPermissions: [{ entity: "INSTITUTIONNEEDS", action: "READ" }] },
-                    { label: "Crear necesidad", path: "/admin/needs", requiredPermissions: [{ entity: "INSTITUTIONNEEDS", action: "CREATE" }] },
-                    { label: "Administrar necesidades", path: "/admin/needs", requiredPermissions: [{ entity: "INSTITUTIONNEEDS", action: "UPDATE" }, { entity: "INSTITUTIONNEEDS", action: "APPROVE" }, { entity: "INSTITUTIONNEEDS", action: "DELETE" }] },
+                    { label: "Gestión de necesidades", path: "/admin/needs", requiredPermissions: [
+                        { entity: "INSTITUTIONNEEDS", action: "READ" },
+                        { entity: "INSTITUTIONNEEDS", action: "CREATE" },
+                        { entity: "INSTITUTIONNEEDS", action: "UPDATE" },
+                        { entity: "INSTITUTIONNEEDS", action: "APPROVE" },
+                        { entity: "INSTITUTIONNEEDS", action: "DELETE" },
+                    ] },
                 ] 
             }, 
             { 
@@ -74,7 +77,7 @@ const menuData = [
         ] 
     }, 
     { label: "Reportes", path: "/admin/reports", requiredPermissions: [{ entity: "DONATIONS", action: "READ" }, { entity: "INVENTORIES", action: "READ" }, { entity: "USERS", action: "READ" }] },
-    { label: "Altas/Bajas", path: "/admin/HighLow", requiredPermissions: [{ entity: "USERS", action: "APPROVE" }] }, 
+    { label: "Estado de usuarios", path: "/admin/HighLow", requiredPermissions: [{ entity: "USERS", action: "APPROVE" }] }, 
 ];
 
 export default menuData;

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RegisterInstitution } from "../../services/auth.service";
+import { createInstitution } from "../../services/institution.service.js";
+import SideMenu from "../SideMenu.jsx";
 import Notification from "../../components/Notification";
 import "./FormRegisterInstitution.css";
 
-export default function RegisterInstitutionF() {
+export default function RegisterInstitutionF({ adminMode = false }) {
   
   // -------------------- Estados del usuario --------------------
   const [first_name, setFirstName] = useState("");
@@ -42,11 +44,14 @@ export default function RegisterInstitutionF() {
 
     try {
       
-      const result = await RegisterInstitution(first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type);
+      const payload = { first_name, last_name, email, phone, password, name_inst, location_inst, type_inst, type: Number(type) };
+      const result = adminMode
+        ? await createInstitution(payload)
+        : await RegisterInstitution(first_name,last_name,email,phone,password,name_inst,location_inst,type_inst,type);
 
       showNotification(result.message, "success");
 
-      setTimeout(() => navigate("/"), 1200);
+      setTimeout(() => navigate(adminMode ? "/admin/institutions" : "/"), 1200);
 
     } catch (err) {
       const apiMsg = err.response?.data?.message;
@@ -122,9 +127,9 @@ export default function RegisterInstitutionF() {
           </div>
 
           <div className="registerInstitutionActions">
-            <Link to="/login" className="registerInstitutionBack">Ya tengo una cuenta</Link>
+            {!adminMode && <Link to="/login" className="registerInstitutionBack">Ya tengo una cuenta</Link>}
             <button className="registerInstitutionSubmit" type="submit" disabled={loading}>
-              {loading ? "Registrando..." : "Registrar institución"}
+              {loading ? "Registrando..." : adminMode ? "Crear institución activa" : "Registrar institución"}
             </button>
           </div>
         </form>

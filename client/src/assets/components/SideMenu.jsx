@@ -82,7 +82,7 @@ export default function SideMenu() {
       }
     });
     collectActiveGroups(visibleMenu);
-    setOpenMap((current) => ({ ...current, ...next }));
+    setOpenMap(next);
   }, [pathname, visibleMenu]);
 
   const setDrawerOpen = (value) => setOpen(value);
@@ -91,7 +91,7 @@ export default function SideMenu() {
     {items.map((item) => {
       const hasChildren = Array.isArray(item.children);
       const itemId = parentId ? `${parentId}/${item.label}` : item.label;
-      const active = hasChildren ? hasCurrentPath(item.children, pathname) : item.path && item.path !== "#" && (pathname === item.path || pathname.startsWith(`${item.path}/`));
+      const active = !hasChildren && item.path && item.path !== "#" && pathname === item.path;
       return <div key={itemId}>
         <ListItemButton className={`sidebarMenuItem${active ? " selected" : ""}${depth ? " nested" : ""}`} sx={{ pl: depth ? 4 : 2 }} onClick={() => {
           if (hasChildren) setOpenMap((prev) => ({ ...prev, [itemId]: !prev[itemId] }));

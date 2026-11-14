@@ -1,0 +1,30 @@
+.userStatePage { min-height: calc(100vh - 72px); margin-left: var(--solidata-sidebar-offset, 58px); padding: 100px 34px 36px; box-sizing: border-box; background: #f3f6f3; color: #263b2d; }
+.userStateHeading { display: flex; align-items: center; gap: 14px; max-width: 1120px; margin: 0 auto 22px; }
+.userStateHeading > span { display: grid; width: 48px; height: 48px; flex: 0 0 48px; place-items: center; border-radius: 14px; background: #e2f0e5; color: #216637; font-size: 26px; }
+.userStateHeading small { color: #678675; font-size: 10px; font-weight: 700; letter-spacing: .14em; }
+.userStateHeading h1 { margin: 3px 0; color: #193b2a; font-size: 23px; }
+.userStateHeading p { margin: 0; color: #829087; font-size: 12px; }
+.userStatePanel { max-width: 1120px; margin: auto; overflow: hidden; border: 1px solid #e2eae3; border-radius: 16px; background: #fff; box-shadow: 0 10px 28px #143d2509; }
+.userStatePanelTitle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 19px 21px 14px; color: #304639; font-size: 14px; }
+.userStatePanelTitle span { color: #849188; font-size: 11px; font-weight: 400; }
+.userStateFilters { display: flex; gap: 10px; padding: 0 20px 14px; }
+.userStateFilters input, .userStateFilters select { min-height: 40px; box-sizing: border-box; border: 1px solid #e1e8e2; border-radius: 9px; padding: 0 12px; background: #fff; color: #405247; font: inherit; font-size: 12px; }
+.userStateFilters input { flex: 1; min-width: 180px; }
+.userStateTableWrap { width: 100%; overflow-x: auto; }
+.userStateTable { width: 100%; border-collapse: collapse; text-align: left; }
+.userStateTable th { padding: 12px 15px; background: #f6f9f6; color: #748379; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.userStateTable td { padding: 13px 15px; border-top: 1px solid #edf1ed; color: #516055; font-size: 11px; white-space: nowrap; }
+.userStateTable td strong { color: #34483a; font-size: 11px; font-weight: 600; }
+.userStateBadge { display: inline-flex; border-radius: 20px; padding: 5px 10px; font-size: 10px; }
+.userStateBadge.active { background: #e7f4eb; color: #287045; }
+.userStateBadge.inactive { background: #f1f2f1; color: #7b8580; }
+.userStateAction { min-height: 32px; border: 0; border-radius: 8px; padding: 0 12px; background: #e7f3e9; color: #276941; font: inherit; font-size: 10px; font-weight: 600; cursor: pointer; }
+.userStateAction:hover:not(:disabled) { background: #d9ecdd; }
+.userStateAction.deactivate { background: #fbefed; color: #a54a41; }
+.userStateAction.deactivate:hover:not(:disabled) { background: #f8e2df; }
+.userStateAction:disabled { opacity: .6; cursor: wait; }
+.userStateEmpty, .userStateFeedback { margin: 0; padding: 18px 20px; color: #7d8981; font-size: 12px; }
+.userStateFeedback { padding: 11px 14px; margin: 0 20px 12px; border-radius: 8px; }
+.userStateFeedback.error { background: #fff0ef; color: #9d2d26; }
+.userStateFeedback.success { background: #edf7ef; color: #216637; }
+@media (max-width: 760px) { .userStatePage { margin-left: 0; padding: 78px 12px 24px; } .userStateHeading h1 { font-size: 19px; } .userStateFilters { flex-direction: column; padding: 0 12px 12px; } .userStatePanelTitle { padding: 15px 12px 12px; } }
