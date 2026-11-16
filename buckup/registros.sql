@@ -963,4 +963,23 @@ WHERE role_permission.role_id = role_row.id
   AND entity_row.name = 'ARTICLES'
   AND action_row.name IN ('CREATE', 'UPDATE', 'DELETE');
 
+-- Mantener las restricciones definidas para los roles internos.
+DELETE FROM public."RolePermissions" role_permission
+USING public."Roles" role_row, public."Permissions" permission_row,
+      public."Entities" entity_row, public."Actions" action_row
+WHERE role_permission.role_id = role_row.id
+  AND role_permission.permission_id = permission_row.id
+  AND permission_row.entity_id = entity_row.id
+  AND permission_row.action_id = action_row.id
+  AND (
+    (role_row.name = 'Operador' AND (
+      (entity_row.name = 'DONATIONS' AND action_row.name = 'CHANGE_STATUS')
+      OR (entity_row.name = 'INSTITUTIONNEEDS' AND action_row.name = 'APPROVE')
+    ))
+    OR (role_row.name = 'Coordinador' AND (
+      (entity_row.name = 'DONATIONS' AND action_row.name = 'CREATE')
+      OR (entity_row.name = 'DONATIONITEMS' AND action_row.name = 'CREATE')
+    ))
+  );
+
 COMMIT;
