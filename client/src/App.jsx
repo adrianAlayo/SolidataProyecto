@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./assets/components/Navbar.jsx";
 import Index from "./assets/pages/auth/Index.jsx";
 import Login from "./assets/pages/auth/Login.jsx";
@@ -36,6 +36,12 @@ import PendingPage from "./assets/pages/PendingPage.jsx";
 import InstitutionsList from "./assets/pages/admin/institution/InstitutionsList.jsx";
 import ReportsPage from "./assets/pages/admin/ReportsPage.jsx";
 import DeliveryBoard from "./assets/pages/admin/DeliveryBoard.jsx";
+import { useAuth } from "./assets/context/AuthContext.jsx";
+
+function InstitutionArticleAdminGuard({ children }) {
+    const { user } = useAuth();
+    return Number(user?.rol) === 4 ? <Navigate to="/institution/home" replace /> : children;
+}
 
 function App() {
     const { pathname } = useLocation();
@@ -75,11 +81,11 @@ function App() {
                 <Route path="/admin/donations/delete" element={<HistoryD />} />
 
 
-                <Route path="/admin/articles/create" element={<div className="#"> <CreateArticles/> </div>} />  {/* POST */}
-                <Route path="/admin/articles" element={<ArticlesList />} />
-                <Route path="/admin/articles/" element={<ArticlesList />} />
-                <Route path="/admin/articles/update" element={<ArticlesList />} />
-                <Route path="/admin/articles/delete" element={<ArticlesList />} />
+                <Route path="/admin/articles/create" element={<InstitutionArticleAdminGuard><div className="#"> <CreateArticles/> </div></InstitutionArticleAdminGuard>} />  {/* POST */}
+                <Route path="/admin/articles" element={<InstitutionArticleAdminGuard><ArticlesList /></InstitutionArticleAdminGuard>} />
+                <Route path="/admin/articles/" element={<InstitutionArticleAdminGuard><ArticlesList /></InstitutionArticleAdminGuard>} />
+                <Route path="/admin/articles/update" element={<InstitutionArticleAdminGuard><ArticlesList /></InstitutionArticleAdminGuard>} />
+                <Route path="/admin/articles/delete" element={<InstitutionArticleAdminGuard><ArticlesList /></InstitutionArticleAdminGuard>} />
 
                 <Route path="/admin/inventories/create" element={<div className="#"> <CreateInventories/> </div>} /> {/* GET*/}
                 <Route path="/admin/inventories/update" element={<div className="#"> <UpdateInventories/> </div>} /> {/* GET*/}
