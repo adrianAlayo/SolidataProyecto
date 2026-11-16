@@ -895,9 +895,7 @@ SELECT setval('public."Roles_id_seq"', (SELECT MAX(id) FROM public."Roles"), tru
 SELECT setval('public."Types_id_seq"', (SELECT MAX(id) FROM public."Types"), true);
 SELECT setval('public."Users_id_seq"', (SELECT MAX(id) FROM public."Users"), true);
 
--- Reconciliar permisos por nombre para evitar errores cuando los IDs existentes difieren.
--- El Operador necesita consultar opciones y registrar donaciones e ítems.
--- Las instituciones pueden administrar solo el inventario asociado a donaciones recibidas.
+-- Reconciliar el mapa de permisos por nombre, sin depender de IDs fijos.
 WITH required_permissions(entity_name, action_name) AS (
     VALUES
       ('USERS', 'READ'),
@@ -907,6 +905,12 @@ WITH required_permissions(entity_name, action_name) AS (
       ('DONATIONS', 'CREATE'),
       ('DONATIONITEMS', 'READ'),
       ('DONATIONITEMS', 'CREATE'),
+      ('INSTITUTIONNEEDS', 'CREATE'),
+      ('INSTITUTIONNEEDS', 'READ'),
+      ('INSTITUTIONNEEDS', 'UPDATE'),
+      ('INSTITUTIONNEEDS', 'DELETE'),
+      ('INSTITUTIONNEEDS', 'LIST'),
+      ('DONATIONS', 'LIST'),
       ('INVENTORIES', 'READ'),
       ('INVENTORIES', 'CREATE'),
       ('INVENTORIES', 'UPDATE'),
@@ -923,63 +927,62 @@ WHERE NOT EXISTS (
 )
 ON CONFLICT DO NOTHING;
 
+-- Restablecer solo los dos mapas afectados y recrearlos por nombres.
+DELETE FROM public."RolePermissions" rp
+USING public."Roles" role_row
+WHERE rp.role_id = role_row.id
+  AND role_row.name IN ('Operador', 'Institución');
+
+WITH role_permissions(role_name, entity_name, action_name) AS (
+    VALUES
+      ('Operador', 'USERS', 'READ'),
+      ('Operador', 'INSTITUTIONS', 'READ'),
+      ('Operador', 'ARTICLES', 'READ'),
+      ('Operador', 'DONATIONS', 'READ'),
+      ('Operador', 'DONATIONS', 'CREATE'),
+      ('Operador', 'DONATIONITEMS', 'READ'),
+      ('Operador', 'DONATIONITEMS', 'CREATE'),
+      ('Operador', 'INSTITUTIONNEEDS', 'CREATE'),
+      ('Operador', 'INSTITUTIONNEEDS', 'READ'),
+      ('Operador', 'INSTITUTIONNEEDS', 'UPDATE'),
+      ('Operador', 'INVENTORIES', 'READ'),
+      ('Institución', 'ARTICLES', 'READ'),
+      ('Institución', 'DONATIONS', 'READ'),
+      ('Institución', 'DONATIONS', 'LIST'),
+      ('Institución', 'DONATIONITEMS', 'READ'),
+      ('Institución', 'INSTITUTIONNEEDS', 'CREATE'),
+      ('Institución', 'INSTITUTIONNEEDS', 'READ'),
+      ('Institución', 'INSTITUTIONNEEDS', 'UPDATE'),
+      ('Institución', 'INSTITUTIONNEEDS', 'DELETE'),
+      ('Institución', 'INSTITUTIONNEEDS', 'LIST'),
+      ('Institución', 'INVENTORIES', 'READ'),
+      ('Institución', 'INVENTORIES', 'CREATE'),
+      ('Institución', 'INVENTORIES', 'UPDATE'),
+      ('Institución', 'INVENTORIES', 'DELETE')
+)
 INSERT INTO public."RolePermissions" (role_id, permission_id)
 SELECT role_row.id, permission_row.id
-FROM public."Roles" role_row
-JOIN public."Permissions" permission_row ON TRUE
-JOIN public."Entities" entity_row ON entity_row.id = permission_row.entity_id
-JOIN public."Actions" action_row ON action_row.id = permission_row.action_id
-WHERE role_row.name = 'Operador'
-  AND (
-    (entity_row.name = 'USERS' AND action_row.name = 'READ')
-    OR (entity_row.name = 'INSTITUTIONS' AND action_row.name = 'READ')
-    OR (entity_row.name = 'ARTICLES' AND action_row.name = 'READ')
-    OR (entity_row.name = 'DONATIONS' AND action_row.name IN ('READ', 'CREATE'))
-    OR (entity_row.name = 'DONATIONITEMS' AND action_row.name IN ('READ', 'CREATE'))
-  )
+FROM role_permissions required
+JOIN public."Roles" role_row ON role_row.name = required.role_name
+JOIN public."Entities" entity_row ON entity_row.name = required.entity_name
+JOIN public."Actions" action_row ON action_row.name = required.action_name
+JOIN public."Permissions" permission_row
+  ON permission_row.entity_id = entity_row.id
+ AND permission_row.action_id = action_row.id
 ON CONFLICT DO NOTHING;
 
-INSERT INTO public."RolePermissions" (role_id, permission_id)
-SELECT role_row.id, permission_row.id
-FROM public."Roles" role_row
-JOIN public."Permissions" permission_row ON TRUE
-JOIN public."Entities" entity_row ON entity_row.id = permission_row.entity_id
-JOIN public."Actions" action_row ON action_row.id = permission_row.action_id
-WHERE role_row.name = 'Institución'
-  AND entity_row.name = 'INVENTORIES'
-  AND action_row.name IN ('READ', 'CREATE', 'UPDATE', 'DELETE')
-ON CONFLICT DO NOTHING;
-
--- Mantener la lectura del catálogo para formularios de necesidades/entregas,
--- pero quitar permisos de administración de artículos a las instituciones.
-DELETE FROM public."RolePermissions" role_permission
+-- El Coordinador mantiene supervisión y aprobación, no registra donaciones/ítems.
+DELETE FROM public."RolePermissions" rp
 USING public."Roles" role_row, public."Permissions" permission_row,
       public."Entities" entity_row, public."Actions" action_row
-WHERE role_permission.role_id = role_row.id
-  AND role_permission.permission_id = permission_row.id
+WHERE rp.role_id = role_row.id
+  AND rp.permission_id = permission_row.id
   AND permission_row.entity_id = entity_row.id
   AND permission_row.action_id = action_row.id
-  AND role_row.name = 'Institución'
-  AND entity_row.name = 'ARTICLES'
-  AND action_row.name IN ('CREATE', 'UPDATE', 'DELETE');
-
--- Mantener las restricciones definidas para los roles internos.
-DELETE FROM public."RolePermissions" role_permission
-USING public."Roles" role_row, public."Permissions" permission_row,
-      public."Entities" entity_row, public."Actions" action_row
-WHERE role_permission.role_id = role_row.id
-  AND role_permission.permission_id = permission_row.id
-  AND permission_row.entity_id = entity_row.id
-  AND permission_row.action_id = action_row.id
+  AND role_row.name = 'Coordinador'
   AND (
-    (role_row.name = 'Operador' AND (
-      (entity_row.name = 'DONATIONS' AND action_row.name = 'CHANGE_STATUS')
-      OR (entity_row.name = 'INSTITUTIONNEEDS' AND action_row.name = 'APPROVE')
-    ))
-    OR (role_row.name = 'Coordinador' AND (
-      (entity_row.name = 'DONATIONS' AND action_row.name = 'CREATE')
-      OR (entity_row.name = 'DONATIONITEMS' AND action_row.name = 'CREATE')
-    ))
+    (entity_row.name = 'DONATIONS' AND action_row.name = 'CREATE')
+    OR (entity_row.name = 'DONATIONITEMS' AND action_row.name = 'CREATE')
   );
 
 COMMIT;
