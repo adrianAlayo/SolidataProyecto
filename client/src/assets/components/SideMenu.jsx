@@ -63,7 +63,7 @@ export default function SideMenu() {
 
   const quickLinks = useMemo(() => {
     if (roleId !== 1 && !permissionsLoaded) return [];
-    return sidebarQuickLinks.filter((item) => item.always || roleId === 1 || canAccessPath(permissions, item.path))
+    return sidebarQuickLinks.filter((item) => !(roleId === 4 && item.label === "Artículos") && (item.always || roleId === 1 || canAccessPath(permissions, item.path)))
       .map((item) => item.always ? { ...item, path: homePath } : item);
   }, [homePath, permissions, permissionsLoaded, roleId]);
 
