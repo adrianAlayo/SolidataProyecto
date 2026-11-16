@@ -882,6 +882,73 @@ VALUES
   (54, 'Asociación Solidaria Parque Patricios', 'Parque Patricios, Ciudad Autónoma de Buenos Aires', 'Recipient', 'Active'),
   (55, 'Centro Comunitario Los Aromos de Mataderos', 'Mataderos, Ciudad Autónoma de Buenos Aires', 'Recipient', 'Active')
 ON CONFLICT DO NOTHING;
+-- Coordenadas iniciales aproximadas por localidad para los registros de prueba.
+-- No son domicilios exactos; se marca la precisión como localidad para no presentar una ubicación inventada.
+UPDATE public."Institutions" AS institution
+SET latitude = seed.latitude,
+    longitude = seed.longitude,
+    location_checked_at = NOW(),
+    location_accuracy = 'locality'
+FROM (VALUES
+    (1, 'Comedor Comunitario Los Aromos', -34.64966, -58.38341),
+    (2, 'Merendero Rayito de Sol', -34.6625, -58.36777778),
+    (3, 'Centro Comunitario La Esperanza', -34.7, -58.4),
+    (4, 'Comedor Puertas Abiertas', -34.71666667, -58.26666667),
+    (5, 'Merendero Pequeños Pasos', -34.76334394, -58.20780839),
+    (6, 'Asociación Civil Manos del Sur', -34.817, -58.283),
+    (7, 'Comedor Nuestra Señora del Camino', -34.7574, -58.40279),
+    (8, 'Centro Barrial El Encuentro', -34.7974, -58.3885),
+    (9, 'Comedor San Cayetano', -34.92145, -57.95444),
+    (10, 'Merendero Estrellita', -34.8715, -57.88328),
+    (11, 'Fundación Puente Verde', -34.86444, -57.91028),
+    (12, 'Comedor La Nueva Familia', -34.6774, -58.5608),
+    (13, 'Centro Comunitario 9 de Julio', -34.65, -58.56666667),
+    (14, 'Merendero Rincón Feliz', -34.65118, -58.62205),
+    (15, 'Comedor Unidos por el Barrio', -34.6654, -58.7274),
+    (16, 'Asociación Vecinal El Ombú', -34.63662, -58.79397),
+    (17, 'Comedor María Auxiliadora', -34.54335, -58.71229),
+    (18, 'Centro de Día Horizonte', -34.51541, -58.76813),
+    (19, 'Merendero Semillitas', -34.42569107, -58.58104727),
+    (20, 'Comedor Las Tunas', -34.44028, -58.55778),
+    (21, 'Fundación Un Plato Más', -34.34602, -58.79442),
+    (22, 'Comedor Comunitario El Progreso', -34.57717508, -58.53764178),
+    (23, 'Centro Solidario Barracas', -34.6035, -58.5632),
+    (24, 'Merendero Abrigo y Pan', -34.59260495, -58.63345846),
+    (25, 'Asociación Comunitaria La Ribera', -34.638865, -58.408204),
+    (26, 'Distribuidora del Plata', -34.64966, -58.38341),
+    (27, 'Alimentos del Parque', -34.6625, -58.36777778),
+    (28, 'Cooperativa La Unión', -34.7, -58.4),
+    (29, 'Mercado Central del Sur', -34.71666667, -58.26666667),
+    (30, 'Panificadora San Martín', -34.76334394, -58.20780839),
+    (31, 'Lácteos La Estancia', -34.817, -58.283),
+    (32, 'Molino La Pampa', -34.7574, -58.40279),
+    (33, 'Supermercado Punto Norte', -34.7974, -58.3885),
+    (34, 'Comercial Buenos Aires', -34.92145, -57.95444),
+    (35, 'Distribuidora Rivadavia', -34.8715, -57.88328),
+    (36, 'Frigorífico Los Álamos', -34.86444, -57.91028),
+    (37, 'Almacenes del Oeste', -34.6774, -58.5608),
+    (38, 'Cooperativa Horizonte', -34.65, -58.56666667),
+    (39, 'Productores de la Ribera', -34.65118, -58.62205),
+    (40, 'Mayorista San Jorge', -34.6654, -58.7274),
+    (41, 'Supermercado El Puente', -34.63662, -58.79397),
+    (42, 'Alimentos El Trigal', -34.54335, -58.71229),
+    (43, 'Panificados del Sur', -34.51541, -58.76813),
+    (44, 'Lácteos Don Ernesto', -34.42569107, -58.58104727),
+    (45, 'Distribuidora La Plata', -34.44028, -58.55778),
+    (46, 'Cooperativa 25 de Mayo', -34.34602, -58.79442),
+    (47, 'Mercado San Justo', -34.57717508, -58.53764178),
+    (48, 'Mayorista La Estrella', -34.6035, -58.5632),
+    (49, 'Alimentos Nuestra Tierra', -34.59260495, -58.63345846),
+    (50, 'Comercial del Camino', -34.638865, -58.408204),
+    (51, 'Comedor Comunitario Puentes de Barracas', -34.64966, -58.38341),
+    (52, 'Centro Vecinal La Esperanza de La Boca', -34.634, -58.363),
+    (53, 'Merendero Ronda de Flores', -34.635, -58.466),
+    (54, 'Asociación Solidaria Parque Patricios', -34.638865, -58.408204),
+    (55, 'Centro Comunitario Los Aromos de Mataderos', -34.657071, -58.506961)
+) AS seed(id, name, latitude, longitude)
+WHERE institution.id = seed.id
+  AND institution.name = seed.name;
+
 SELECT setval('public."Actions_id_seq"', (SELECT MAX(id) FROM public."Actions"), true);
 SELECT setval('public."Articles_id_seq"', (SELECT MAX(id) FROM public."Articles"), true);
 SELECT setval('public."DonationItems_id_seq"', (SELECT MAX(id) FROM public."DonationItems"), true);
