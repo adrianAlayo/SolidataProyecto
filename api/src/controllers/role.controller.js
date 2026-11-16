@@ -22,7 +22,10 @@ const getMyPermissions = async (req, res) => {
              ORDER BY entity.name, action.name`,
             { replacements: { roleId }, type: QueryTypes.SELECT }
         );
-        return res.status(200).json({ data });
+        return res.status(200).json({
+            data,
+            institutionType: req.user_find?.institutionType || null
+        });
     } catch (error) {
         console.error('Error al consultar permisos del usuario:', error.message);
         return res.status(500).json({ message: 'No se pudieron cargar tus permisos.' });
