@@ -14,6 +14,13 @@ const {
 const verifyToken = require('../middlewares/VerifyToken.middleware');
 const authorize = require('../middlewares/AuthorizationRole.middleware');
 
+const denyInstitutionArticleAdmin = (req, res, next) => {
+    if (Number(req.user_find?.rol) === 4) {
+        return res.status(403).json({ message: "Las instituciones no pueden administrar el catálogo general de artículos." });
+    }
+    return next();
+};
+
 
 
 // Obtener todos los artículos (READ)
@@ -36,6 +43,7 @@ router.get(
 router.post(
     '/',
     verifyToken,
+    denyInstitutionArticleAdmin,
     authorize("ARTICLES", "CREATE"),
     createArticle
 ); // Testeado
@@ -44,6 +52,7 @@ router.post(
 router.put(
     '/:id',
     verifyToken,
+    denyInstitutionArticleAdmin,
     authorize("ARTICLES", "UPDATE"),
     putArticle
 ); // Testeado
@@ -52,6 +61,7 @@ router.put(
 router.delete(
     '/:id',
     verifyToken,
+    denyInstitutionArticleAdmin,
     authorize("ARTICLES", "DELETE"),
     deleteArticle
 ); // Testeado
