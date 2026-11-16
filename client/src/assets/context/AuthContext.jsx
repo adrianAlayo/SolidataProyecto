@@ -22,6 +22,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const result = await getMyPermissions();
       setPermissions(Array.isArray(result.data) ? result.data : []);
+      if (result.institutionType) {
+        setUser((current) => current ? { ...current, institutionType: result.institutionType } : current);
+      }
     } catch (_error) {
       setPermissions([]);
       setPermissionsError(true);
