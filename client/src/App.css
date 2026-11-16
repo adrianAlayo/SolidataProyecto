@@ -40,6 +40,11 @@ body {
   margin: 0px;
 }
 
+.NavContainer { position: sticky; top: 0; z-index: 1250; }
+.operatorHome { min-height: calc(100vh - 72px); padding-left: calc(58px + clamp(16px, 4vw, 60px)); box-sizing: border-box; }
+.operatorHomeContent { width: 100%; max-width: 1480px; margin: 0 auto; padding: 20px clamp(14px, 3vw, 38px); box-sizing: border-box; }
+@media (max-width: 760px) { .operatorHome { min-height: calc(100vh - 64px); padding-left: 48px; } .operatorHomeContent { padding: 14px 10px; } }
+
 
 /* SOLIDATA uses one consistent interface font. */
 #root, #root *:not(svg):not(path):not(.material-icons):not(.material-symbols-outlined):not(.material-symbols-rounded) {

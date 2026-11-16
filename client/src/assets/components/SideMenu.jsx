@@ -53,19 +53,26 @@ export default function SideMenu() {
   const { user, permissions = [], permissionsLoaded = true, permissionsError } = useAuth();
   const mobile = useMediaQuery("(max-width:760px)");
   const roleId = Number(user?.rol);
+  const isDonorInstitution = roleId === 4 && String(user?.institutionType || "").toLowerCase() === "donor";
   const homePath = homeForRole(roleId);
 
   const visibleMenu = useMemo(() => {
     if (roleId !== 1 && !permissionsLoaded) return [];
     const allowed = roleId === 1 ? menuData : filterMenuByPermissions(menuData, permissions, roleId);
-    return replaceHomePath(allowed, homePath);
-  }, [homePath, permissions, permissionsLoaded, roleId]);
+    const donorVisible = isDonorInstitution
+      ? allowed.filter((item) => !["Instituciones", "Inventario"].includes(item.label))
+      : allowed;
+    return replaceHomePath(donorVisible, homePath);
+  }, [homePath, isDonorInstitution, permissions, permissionsLoaded, roleId]);
 
   const quickLinks = useMemo(() => {
     if (roleId !== 1 && !permissionsLoaded) return [];
-    return sidebarQuickLinks.filter((item) => item.always || roleId === 1 || canAccessPath(permissions, item.path))
+    return sidebarQuickLinks.filter((item) =>
+      !(roleId === 4 && item.label === "Artículos")
+      && !(isDonorInstitution && ["Necesidades", "Inventario", "Instituciones"].includes(item.label))
+      && (item.always || roleId === 1 || canAccessPath(permissions, item.path)))
       .map((item) => item.always ? { ...item, path: homePath } : item);
-  }, [homePath, permissions, permissionsLoaded, roleId]);
+  }, [homePath, isDonorInstitution, permissions, permissionsLoaded, roleId]);
 
   useEffect(() => {
     document.body.style.setProperty("--solidata-sidebar-offset", `${open && !mobile ? 276 : 58}px`);

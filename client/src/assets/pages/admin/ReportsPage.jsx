@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AssessmentRounded, DownloadRounded, Inventory2Rounded, LocalShippingRounded, RefreshRounded, SearchRounded } from "@mui/icons-material";
 import SideMenu from "../../components/SideMenu.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 import TablePager from "../../components/TablePager.jsx";
 import { getDonations } from "../../services/donation.service.js";
 import { getInventories } from "../../services/inventory.service.js";
 import { getNeeds } from "../../services/institutionNeed.service.js";
+import { getInstitutionInventoryReport } from "../../services/reports.service.js";
 import "./ReportsPage.css";
 
 const tabs = ["Donaciones", "Inventario", "Necesidades"];
@@ -13,6 +15,8 @@ const stateLabel = (value) => ({ Scheduled: "Programada", Delivered: "Entregada"
 const csvValue = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
 
 export default function ReportsPage() {
+  const { user } = useAuth();
+  const isInstitution = Number(user?.rol) === 4;
   const [data, setData] = useState({ donations: [], inventory: [], needs: [] });
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +29,7 @@ export default function ReportsPage() {
 
   const loadReports = useCallback(async () => {
     setLoading(true);
-    const results = await Promise.allSettled([getDonations(), getInventories(), getNeeds()]);
+    const results = await Promise.allSettled([getDonations(), isInstitution ? getInstitutionInventoryReport() : getInventories(), getNeeds()]);
     setData({
       donations: results[0].status === "fulfilled" ? results[0].value.data || [] : [],
       inventory: results[1].status === "fulfilled" ? results[1].value.data || [] : [],
@@ -33,7 +37,7 @@ export default function ReportsPage() {
     });
     setErrors(results.flatMap((result, index) => result.status === "rejected" ? [tabs[index] === "Donaciones" ? "donaciones" : tabs[index].toLowerCase()] : []));
     setLoading(false);
-  }, []);
+  }, [isInstitution]);
 
   useEffect(() => { loadReports(); }, [loadReports]);
 

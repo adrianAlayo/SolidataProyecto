@@ -9,9 +9,14 @@ const isString = require('../utils/isString.util');
 const IsDate = require('../utils/isDate.util');
 
 const isInstitutionAccount = (req) => Number(req.user_find?.rol) === 4;
-const institutionDonationScope = (req) => isInstitutionAccount(req)
-    ? { receiver_institution_id: Number(req.user_find.institution_id ?? req.user_find.id) }
-    : {};
+const institutionDonationScope = (req) => {
+    if (!isInstitutionAccount(req)) return {};
+    const institutionId = Number(req.user_find.institution_id ?? req.user_find.id);
+    const userId = Number(req.user_find.userRelation);
+    const ownDonations = [{ receiver_institution_id: institutionId }];
+    if (Number.isInteger(userId) && userId > 0) ownDonations.push({ donor_id: userId });
+    return { [Op.or]: ownDonations };
+};
 const denyInstitutionWrite = (req, res) => isInstitutionAccount(req)
     ? (res.status(403).json({ message: "La cuenta de institución solo puede consultar sus datos." }), true)
     : false;

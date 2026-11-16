@@ -57,57 +57,59 @@ INSERT INTO public."Types" VALUES (7, 'Comedor') ON CONFLICT DO NOTHING;
 INSERT INTO public."Types" VALUES (8, 'Merendero') ON CONFLICT DO NOTHING;
 INSERT INTO public."Types" VALUES (9, 'Hogar de Ancianos') ON CONFLICT DO NOTHING;
 INSERT INTO public."Types" VALUES (10, 'Hogar de Niños') ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (1, 'Comedor Comunitario Los Aromos', 'Barracas, Ciudad Autónoma de Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (2, 'Merendero Rayito de Sol', 'Avellaneda, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (3, 'Centro Comunitario La Esperanza', 'Lanús, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (4, 'Comedor Puertas Abiertas', 'Quilmes, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (5, 'Merendero Pequeños Pasos', 'Berazategui, Buenos Aires', 'Recipient', 'Active', 10) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (6, 'Asociación Civil Manos del Sur', 'Florencio Varela, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (7, 'Comedor Nuestra Señora del Camino', 'Lomas de Zamora, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (8, 'Centro Barrial El Encuentro', 'Almirante Brown, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (9, 'Comedor San Cayetano', 'La Plata, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (10, 'Merendero Estrellita', 'Berisso, Buenos Aires', 'Recipient', 'Pending', 10) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (11, 'Fundación Puente Verde', 'Ensenada, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (12, 'Comedor La Nueva Familia', 'San Justo, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (13, 'Centro Comunitario 9 de Julio', 'Ramos Mejía, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (14, 'Merendero Rincón Feliz', 'Morón, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (15, 'Comedor Unidos por el Barrio', 'Merlo, Buenos Aires', 'Recipient', 'Active', 10) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (16, 'Asociación Vecinal El Ombú', 'Moreno, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (17, 'Comedor María Auxiliadora', 'San Miguel, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (18, 'Centro de Día Horizonte', 'José C. Paz, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (19, 'Merendero Semillitas', 'Tigre, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (20, 'Comedor Las Tunas', 'San Fernando, Buenos Aires', 'Recipient', 'Pending', 10) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (21, 'Fundación Un Plato Más', 'Escobar, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (22, 'Comedor Comunitario El Progreso', 'San Martín, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (23, 'Centro Solidario Barracas', 'Tres de Febrero, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (24, 'Merendero Abrigo y Pan', 'Hurlingham, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (25, 'Asociación Comunitaria La Ribera', 'CABA - Parque Patricios', 'Recipient', 'Active', 10) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (26, 'Distribuidora del Plata', 'Barracas, Ciudad Autónoma de Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (27, 'Alimentos del Parque', 'Avellaneda, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (28, 'Cooperativa La Unión', 'Lanús, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (29, 'Mercado Central del Sur', 'Quilmes, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (30, 'Panificadora San Martín', 'Berazategui, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (31, 'Lácteos La Estancia', 'Florencio Varela, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (32, 'Molino La Pampa', 'Lomas de Zamora, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (33, 'Supermercado Punto Norte', 'Almirante Brown, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (34, 'Comercial Buenos Aires', 'La Plata, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (35, 'Distribuidora Rivadavia', 'Berisso, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (36, 'Frigorífico Los Álamos', 'Ensenada, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (37, 'Almacenes del Oeste', 'San Justo, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (38, 'Cooperativa Horizonte', 'Ramos Mejía, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (39, 'Productores de la Ribera', 'Morón, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (40, 'Mayorista San Jorge', 'Merlo, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (41, 'Supermercado El Puente', 'Moreno, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (42, 'Alimentos El Trigal', 'San Miguel, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (43, 'Panificados del Sur', 'José C. Paz, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (44, 'Lácteos Don Ernesto', 'Tigre, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (45, 'Distribuidora La Plata', 'San Fernando, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (46, 'Cooperativa 25 de Mayo', 'Escobar, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (47, 'Mercado San Justo', 'San Martín, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (48, 'Mayorista La Estrella', 'Tres de Febrero, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (49, 'Alimentos Nuestra Tierra', 'Hurlingham, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
-INSERT INTO public."Institutions" VALUES (50, 'Comercial del Camino', 'CABA - Parque Patricios', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (1, 'Comedor Comunitario Los Aromos', 'Barracas, Ciudad Autónoma de Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (2, 'Merendero Rayito de Sol', 'Avellaneda, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (3, 'Centro Comunitario La Esperanza', 'Lanús, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (4, 'Comedor Puertas Abiertas', 'Quilmes, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (5, 'Merendero Pequeños Pasos', 'Berazategui, Buenos Aires', 'Recipient', 'Active', 10) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (6, 'Asociación Civil Manos del Sur', 'Florencio Varela, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (7, 'Comedor Nuestra Señora del Camino', 'Lomas de Zamora, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (8, 'Centro Barrial El Encuentro', 'Almirante Brown, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (9, 'Comedor San Cayetano', 'La Plata, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (10, 'Merendero Estrellita', 'Berisso, Buenos Aires', 'Recipient', 'Pending', 10) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (11, 'Fundación Puente Verde', 'Ensenada, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (12, 'Comedor La Nueva Familia', 'San Justo, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (13, 'Centro Comunitario 9 de Julio', 'Ramos Mejía, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (14, 'Merendero Rincón Feliz', 'Morón, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (15, 'Comedor Unidos por el Barrio', 'Merlo, Buenos Aires', 'Recipient', 'Active', 10) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (16, 'Asociación Vecinal El Ombú', 'Moreno, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (17, 'Comedor María Auxiliadora', 'San Miguel, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (18, 'Centro de Día Horizonte', 'José C. Paz, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (19, 'Merendero Semillitas', 'Tigre, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (20, 'Comedor Las Tunas', 'San Fernando, Buenos Aires', 'Recipient', 'Pending', 10) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (21, 'Fundación Un Plato Más', 'Escobar, Buenos Aires', 'Recipient', 'Active', 7) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (22, 'Comedor Comunitario El Progreso', 'San Martín, Buenos Aires', 'Recipient', 'Active', 8) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (23, 'Centro Solidario Barracas', 'Tres de Febrero, Buenos Aires', 'Recipient', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (24, 'Merendero Abrigo y Pan', 'Hurlingham, Buenos Aires', 'Recipient', 'Active', 9) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (25, 'Asociación Comunitaria La Ribera', 'CABA - Parque Patricios', 'Recipient', 'Active', 10) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (26, 'Distribuidora del Plata', 'Barracas, Ciudad Autónoma de Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (27, 'Alimentos del Parque', 'Avellaneda, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (28, 'Cooperativa La Unión', 'Lanús, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (29, 'Mercado Central del Sur', 'Quilmes, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (30, 'Panificadora San Martín', 'Berazategui, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (31, 'Lácteos La Estancia', 'Florencio Varela, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (32, 'Molino La Pampa', 'Lomas de Zamora, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (33, 'Supermercado Punto Norte', 'Almirante Brown, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (34, 'Comercial Buenos Aires', 'La Plata, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (35, 'Distribuidora Rivadavia', 'Berisso, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (36, 'Frigorífico Los Álamos', 'Ensenada, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (37, 'Almacenes del Oeste', 'San Justo, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (38, 'Cooperativa Horizonte', 'Ramos Mejía, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (39, 'Productores de la Ribera', 'Morón, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (40, 'Mayorista San Jorge', 'Merlo, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (41, 'Supermercado El Puente', 'Moreno, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (42, 'Alimentos El Trigal', 'San Miguel, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (43, 'Panificados del Sur', 'José C. Paz, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (44, 'Lácteos Don Ernesto', 'Tigre, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (45, 'Distribuidora La Plata', 'San Fernando, Buenos Aires', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (46, 'Cooperativa 25 de Mayo', 'Escobar, Buenos Aires', 'Donor', 'Active', 6) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (47, 'Mercado San Justo', 'San Martín, Buenos Aires', 'Donor', 'Active', 2) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (48, 'Mayorista La Estrella', 'Tres de Febrero, Buenos Aires', 'Donor', 'Active', 3) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (49, 'Alimentos Nuestra Tierra', 'Hurlingham, Buenos Aires', 'Donor', 'Active', 4) ON CONFLICT DO NOTHING;
+INSERT INTO public."Institutions" (id, name, location, "institutionType", status, type_id) VALUES (50, 'Comercial del Camino', 'CABA - Parque Patricios', 'Donor', 'Active', 5) ON CONFLICT DO NOTHING;
 INSERT INTO public."Users" VALUES (1, 'Admin', 'SOLIDATA', 'admin@example.invalid', '$2b$10$tSDD5Xjy5k9rNLw9Bl85OuHX2O8v2eUgeJR/mEgpwteNZ2xzl1K1C', '0000000000', true, false, false, '2026-10-30 18:58:31.576684-03', '2026-10-30 18:58:31.576684-03', 1, NULL) ON CONFLICT DO NOTHING;
+-- Cuenta de prueba Coordinador: coordinador@example.invalid / 123
+INSERT INTO public."Users" VALUES (77, 'Coordinador', 'SOLIDATA', 'coordinador@example.invalid', '$2b$10$tSDD5Xjy5k9rNLw9Bl85OuHX2O8v2eUgeJR/mEgpwteNZ2xzl1K1C', '0000000001', true, false, false, '2026-11-16 00:00:00-03', '2026-11-16 00:00:00-03', 3, NULL) ON CONFLICT DO NOTHING;
 INSERT INTO public."Users" VALUES (2, 'Lucía', 'Gómez', 'contacto.receptor01@comedores.invalid', '$2b$10$tSDD5Xjy5k9rNLw9Bl85OuHX2O8v2eUgeJR/mEgpwteNZ2xzl1K1C', '+54 11 4100-0001', true, false, false, '2026-10-30 18:58:32.092418-03', '2026-10-30 18:58:32.092418-03', 4, 1) ON CONFLICT DO NOTHING;
 INSERT INTO public."Users" VALUES (3, 'Mateo', 'Fernández', 'contacto.receptor02@comedores.invalid', '$2b$10$tSDD5Xjy5k9rNLw9Bl85OuHX2O8v2eUgeJR/mEgpwteNZ2xzl1K1C', '+54 11 4100-0002', true, false, false, '2026-10-30 18:58:32.092418-03', '2026-10-30 18:58:32.092418-03', 4, 2) ON CONFLICT DO NOTHING;
 INSERT INTO public."Users" VALUES (4, 'Valentina', 'Rodríguez', 'contacto.receptor03@comedores.invalid', '$2b$10$tSDD5Xjy5k9rNLw9Bl85OuHX2O8v2eUgeJR/mEgpwteNZ2xzl1K1C', '+54 11 4100-0003', true, false, false, '2026-10-30 18:58:32.092418-03', '2026-10-30 18:58:32.092418-03', 4, 3) ON CONFLICT DO NOTHING;
@@ -832,10 +834,8 @@ INSERT INTO public."RolePermissions" VALUES (3, 33) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 18) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 19) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 20) ON CONFLICT DO NOTHING;
-INSERT INTO public."RolePermissions" VALUES (3, 23) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 24) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 25) ON CONFLICT DO NOTHING;
-INSERT INTO public."RolePermissions" VALUES (3, 27) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 28) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 29) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 37) ON CONFLICT DO NOTHING;
@@ -848,7 +848,6 @@ INSERT INTO public."RolePermissions" VALUES (2, 33) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (2, 19) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (2, 23) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (2, 24) ON CONFLICT DO NOTHING;
-INSERT INTO public."RolePermissions" VALUES (2, 25) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (2, 27) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (2, 28) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (2, 37) ON CONFLICT DO NOTHING;
@@ -857,11 +856,12 @@ INSERT INTO public."RolePermissions" VALUES (4, 32) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (4, 33) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (4, 34) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (4, 35) ON CONFLICT DO NOTHING;
+INSERT INTO public."RolePermissions" VALUES (4, 19) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (4, 24) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (4, 26) ON CONFLICT DO NOTHING;
+INSERT INTO public."RolePermissions" VALUES (4, 28) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 26) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 40) ON CONFLICT DO NOTHING;
-INSERT INTO public."RolePermissions" VALUES (2, 40) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 41) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (1, 41) ON CONFLICT DO NOTHING;
 INSERT INTO public."RolePermissions" VALUES (3, 42) ON CONFLICT DO NOTHING;
@@ -882,6 +882,73 @@ VALUES
   (54, 'Asociación Solidaria Parque Patricios', 'Parque Patricios, Ciudad Autónoma de Buenos Aires', 'Recipient', 'Active'),
   (55, 'Centro Comunitario Los Aromos de Mataderos', 'Mataderos, Ciudad Autónoma de Buenos Aires', 'Recipient', 'Active')
 ON CONFLICT DO NOTHING;
+-- Coordenadas iniciales aproximadas por localidad para los registros de prueba.
+-- No son domicilios exactos; se marca la precisión como localidad para no presentar una ubicación inventada.
+UPDATE public."Institutions" AS institution
+SET latitude = seed.latitude,
+    longitude = seed.longitude,
+    location_checked_at = NOW(),
+    location_accuracy = 'locality'
+FROM (VALUES
+    (1, 'Comedor Comunitario Los Aromos', -34.64966, -58.38341),
+    (2, 'Merendero Rayito de Sol', -34.6625, -58.36777778),
+    (3, 'Centro Comunitario La Esperanza', -34.7, -58.4),
+    (4, 'Comedor Puertas Abiertas', -34.71666667, -58.26666667),
+    (5, 'Merendero Pequeños Pasos', -34.76334394, -58.20780839),
+    (6, 'Asociación Civil Manos del Sur', -34.817, -58.283),
+    (7, 'Comedor Nuestra Señora del Camino', -34.7574, -58.40279),
+    (8, 'Centro Barrial El Encuentro', -34.7974, -58.3885),
+    (9, 'Comedor San Cayetano', -34.92145, -57.95444),
+    (10, 'Merendero Estrellita', -34.8715, -57.88328),
+    (11, 'Fundación Puente Verde', -34.86444, -57.91028),
+    (12, 'Comedor La Nueva Familia', -34.6774, -58.5608),
+    (13, 'Centro Comunitario 9 de Julio', -34.65, -58.56666667),
+    (14, 'Merendero Rincón Feliz', -34.65118, -58.62205),
+    (15, 'Comedor Unidos por el Barrio', -34.6654, -58.7274),
+    (16, 'Asociación Vecinal El Ombú', -34.63662, -58.79397),
+    (17, 'Comedor María Auxiliadora', -34.54335, -58.71229),
+    (18, 'Centro de Día Horizonte', -34.51541, -58.76813),
+    (19, 'Merendero Semillitas', -34.42569107, -58.58104727),
+    (20, 'Comedor Las Tunas', -34.44028, -58.55778),
+    (21, 'Fundación Un Plato Más', -34.34602, -58.79442),
+    (22, 'Comedor Comunitario El Progreso', -34.57717508, -58.53764178),
+    (23, 'Centro Solidario Barracas', -34.6035, -58.5632),
+    (24, 'Merendero Abrigo y Pan', -34.59260495, -58.63345846),
+    (25, 'Asociación Comunitaria La Ribera', -34.638865, -58.408204),
+    (26, 'Distribuidora del Plata', -34.64966, -58.38341),
+    (27, 'Alimentos del Parque', -34.6625, -58.36777778),
+    (28, 'Cooperativa La Unión', -34.7, -58.4),
+    (29, 'Mercado Central del Sur', -34.71666667, -58.26666667),
+    (30, 'Panificadora San Martín', -34.76334394, -58.20780839),
+    (31, 'Lácteos La Estancia', -34.817, -58.283),
+    (32, 'Molino La Pampa', -34.7574, -58.40279),
+    (33, 'Supermercado Punto Norte', -34.7974, -58.3885),
+    (34, 'Comercial Buenos Aires', -34.92145, -57.95444),
+    (35, 'Distribuidora Rivadavia', -34.8715, -57.88328),
+    (36, 'Frigorífico Los Álamos', -34.86444, -57.91028),
+    (37, 'Almacenes del Oeste', -34.6774, -58.5608),
+    (38, 'Cooperativa Horizonte', -34.65, -58.56666667),
+    (39, 'Productores de la Ribera', -34.65118, -58.62205),
+    (40, 'Mayorista San Jorge', -34.6654, -58.7274),
+    (41, 'Supermercado El Puente', -34.63662, -58.79397),
+    (42, 'Alimentos El Trigal', -34.54335, -58.71229),
+    (43, 'Panificados del Sur', -34.51541, -58.76813),
+    (44, 'Lácteos Don Ernesto', -34.42569107, -58.58104727),
+    (45, 'Distribuidora La Plata', -34.44028, -58.55778),
+    (46, 'Cooperativa 25 de Mayo', -34.34602, -58.79442),
+    (47, 'Mercado San Justo', -34.57717508, -58.53764178),
+    (48, 'Mayorista La Estrella', -34.6035, -58.5632),
+    (49, 'Alimentos Nuestra Tierra', -34.59260495, -58.63345846),
+    (50, 'Comercial del Camino', -34.638865, -58.408204),
+    (51, 'Comedor Comunitario Puentes de Barracas', -34.64966, -58.38341),
+    (52, 'Centro Vecinal La Esperanza de La Boca', -34.634, -58.363),
+    (53, 'Merendero Ronda de Flores', -34.635, -58.466),
+    (54, 'Asociación Solidaria Parque Patricios', -34.638865, -58.408204),
+    (55, 'Centro Comunitario Los Aromos de Mataderos', -34.657071, -58.506961)
+) AS seed(id, name, latitude, longitude)
+WHERE institution.id = seed.id
+  AND institution.name = seed.name;
+
 SELECT setval('public."Actions_id_seq"', (SELECT MAX(id) FROM public."Actions"), true);
 SELECT setval('public."Articles_id_seq"', (SELECT MAX(id) FROM public."Articles"), true);
 SELECT setval('public."DonationItems_id_seq"', (SELECT MAX(id) FROM public."DonationItems"), true);
@@ -894,4 +961,95 @@ SELECT setval('public."Permissions_id_seq"', (SELECT MAX(id) FROM public."Permis
 SELECT setval('public."Roles_id_seq"', (SELECT MAX(id) FROM public."Roles"), true);
 SELECT setval('public."Types_id_seq"', (SELECT MAX(id) FROM public."Types"), true);
 SELECT setval('public."Users_id_seq"', (SELECT MAX(id) FROM public."Users"), true);
+
+-- Reconciliar el mapa de permisos por nombre, sin depender de IDs fijos.
+WITH required_permissions(entity_name, action_name) AS (
+    VALUES
+      ('USERS', 'READ'),
+      ('INSTITUTIONS', 'READ'),
+      ('ARTICLES', 'READ'),
+      ('DONATIONS', 'READ'),
+      ('DONATIONS', 'CREATE'),
+      ('DONATIONITEMS', 'READ'),
+      ('DONATIONITEMS', 'CREATE'),
+      ('INSTITUTIONNEEDS', 'CREATE'),
+      ('INSTITUTIONNEEDS', 'READ'),
+      ('INSTITUTIONNEEDS', 'UPDATE'),
+      ('INSTITUTIONNEEDS', 'DELETE'),
+      ('INSTITUTIONNEEDS', 'LIST'),
+      ('DONATIONS', 'LIST'),
+      ('INVENTORIES', 'READ'),
+      ('INVENTORIES', 'CREATE'),
+      ('INVENTORIES', 'UPDATE'),
+      ('INVENTORIES', 'DELETE')
+)
+INSERT INTO public."Permissions" (name, entity_id, action_id)
+SELECT entity.name || '_' || action.name, entity.id, action.id
+FROM required_permissions required
+JOIN public."Entities" entity ON entity.name = required.entity_name
+JOIN public."Actions" action ON action.name = required.action_name
+WHERE NOT EXISTS (
+    SELECT 1 FROM public."Permissions" permission
+    WHERE permission.entity_id = entity.id AND permission.action_id = action.id
+)
+ON CONFLICT DO NOTHING;
+
+-- Restablecer solo los dos mapas afectados y recrearlos por nombres.
+DELETE FROM public."RolePermissions" rp
+USING public."Roles" role_row
+WHERE rp.role_id = role_row.id
+  AND role_row.name IN ('Operador', 'Institución');
+
+WITH role_permissions(role_name, entity_name, action_name) AS (
+    VALUES
+      ('Operador', 'USERS', 'READ'),
+      ('Operador', 'INSTITUTIONS', 'READ'),
+      ('Operador', 'ARTICLES', 'READ'),
+      ('Operador', 'DONATIONS', 'READ'),
+      ('Operador', 'DONATIONS', 'CREATE'),
+      ('Operador', 'DONATIONITEMS', 'READ'),
+      ('Operador', 'DONATIONITEMS', 'CREATE'),
+      ('Operador', 'INSTITUTIONNEEDS', 'CREATE'),
+      ('Operador', 'INSTITUTIONNEEDS', 'READ'),
+      ('Operador', 'INSTITUTIONNEEDS', 'UPDATE'),
+      ('Operador', 'INVENTORIES', 'READ'),
+      ('Institución', 'ARTICLES', 'READ'),
+      ('Institución', 'DONATIONS', 'READ'),
+      ('Institución', 'DONATIONS', 'LIST'),
+      ('Institución', 'DONATIONITEMS', 'READ'),
+      ('Institución', 'INSTITUTIONNEEDS', 'CREATE'),
+      ('Institución', 'INSTITUTIONNEEDS', 'READ'),
+      ('Institución', 'INSTITUTIONNEEDS', 'UPDATE'),
+      ('Institución', 'INSTITUTIONNEEDS', 'DELETE'),
+      ('Institución', 'INSTITUTIONNEEDS', 'LIST'),
+      ('Institución', 'INVENTORIES', 'READ'),
+      ('Institución', 'INVENTORIES', 'CREATE'),
+      ('Institución', 'INVENTORIES', 'UPDATE'),
+      ('Institución', 'INVENTORIES', 'DELETE')
+)
+INSERT INTO public."RolePermissions" (role_id, permission_id)
+SELECT role_row.id, permission_row.id
+FROM role_permissions required
+JOIN public."Roles" role_row ON role_row.name = required.role_name
+JOIN public."Entities" entity_row ON entity_row.name = required.entity_name
+JOIN public."Actions" action_row ON action_row.name = required.action_name
+JOIN public."Permissions" permission_row
+  ON permission_row.entity_id = entity_row.id
+ AND permission_row.action_id = action_row.id
+ON CONFLICT DO NOTHING;
+
+-- El Coordinador mantiene supervisión y aprobación, no registra donaciones/ítems.
+DELETE FROM public."RolePermissions" rp
+USING public."Roles" role_row, public."Permissions" permission_row,
+      public."Entities" entity_row, public."Actions" action_row
+WHERE rp.role_id = role_row.id
+  AND rp.permission_id = permission_row.id
+  AND permission_row.entity_id = entity_row.id
+  AND permission_row.action_id = action_row.id
+  AND role_row.name = 'Coordinador'
+  AND (
+    (entity_row.name = 'DONATIONS' AND action_row.name = 'CREATE')
+    OR (entity_row.name = 'DONATIONITEMS' AND action_row.name = 'CREATE')
+  );
+
 COMMIT;

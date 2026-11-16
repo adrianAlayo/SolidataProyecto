@@ -18,7 +18,7 @@ const verifyToken = async (req, res, next) => {
 
         const account = await USER.findByPk(accountId, {
             attributes: ['id', 'is_active', 'institution_id'],
-            include: [{ model: INSTITUTION, attributes: ['id', 'status'] }]
+            include: [{ model: INSTITUTION, attributes: ['id', 'status', 'institutionType'] }]
         });
         if (!account || account.is_active !== true) {
             return res.status(403).json({ message: 'La cuenta está inactiva. Contactá al administrador para habilitarla.' });
@@ -27,7 +27,10 @@ const verifyToken = async (req, res, next) => {
             return res.status(403).json({ message: 'La institución está pendiente de aprobación o inactiva.' });
         }
 
-        req.user_find = payload;
+        req.user_find = {
+            ...payload,
+            institutionType: account.Institution?.institutionType ?? payload.institutionType
+        };
         return next();
     } catch (error) {
         if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {

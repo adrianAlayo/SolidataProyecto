@@ -9,14 +9,13 @@ import '../../components/SideMenu.css'
 export function HomeEmployeeOp () {
 
     return (
-        <>
+        <main className="operatorHome">
             <SideMenu mode="Employee"/>
-            <div>
+            <div className="operatorHomeContent">
                 <MapView showInstitutionLayer={false} showDistanceStats={false} />
                 <OptionsEmployeeOp />
             </div>
-            
-        </>
+        </main>
     )
 }
 

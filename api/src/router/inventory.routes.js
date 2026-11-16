@@ -19,10 +19,18 @@ const {
 const verifyToken = require('../middlewares/VerifyToken.middleware');
 const authorize = require('../middlewares/AuthorizationRole.middleware');
 
+const denyDonorInstitutionInventory = (req, res, next) => {
+    if (Number(req.user_find?.rol) === 4 && String(req.user_find?.institutionType || '').toLowerCase() === 'donor') {
+        return res.status(403).json({ message: "El inventario no está habilitado para instituciones donantes." });
+    }
+    return next();
+};
+
 // Crear un inventoario (CREATE)
 router.post(
     '/',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "CREATE"),
     createInventory
 ); // Testeado
@@ -31,6 +39,7 @@ router.post(
 router.get(
     '/',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventories
 ); // Testeado
@@ -39,6 +48,7 @@ router.get(
 router.get(
     '/:id',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventory
 ); // Testeado
@@ -47,6 +57,7 @@ router.get(
 router.get(
     '/ByDonationItem/:id',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventoryByDonationItem
 ); // Testeado
@@ -55,6 +66,7 @@ router.get(
 router.get(
     '/OnlyArticle/:id',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventoryOnlyArticle
 ); // Testeado
@@ -63,6 +75,7 @@ router.get(
 router.get(
     '/OnlyArticles',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventoriesOnlyArticles
 ); // Testeado
@@ -71,6 +84,7 @@ router.get(
 router.get(
     '/OnlyArticlesArea',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventoriesOnlyArticlesArea
 ); // Testeado
@@ -79,6 +93,7 @@ router.get(
 router.get(
     '/OnlyArticleArea',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "READ"),
     getInventoryOnlyArticleArea
 ); // Testeado
@@ -87,6 +102,7 @@ router.get(
 router.put(
     '/:id',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "UPDATE"),
     updateInventory
 ); // Testeado
@@ -95,6 +111,7 @@ router.put(
 router.delete(
     '/:id',
     verifyToken,
+    denyDonorInstitutionInventory,
     authorize("INVENTORIES", "DELETE"),
     deleteInventory
 ); // Testeado

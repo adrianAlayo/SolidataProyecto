@@ -56,7 +56,7 @@ export default function NeedsList() {
   }, [loadData, isInstitution, canCreateNeed, canUpdateNeed]);
 
   const filtered = useMemo(() => needs.filter((need) => {
-    const text = `${need.Institution?.name || ""} ${need.Article?.name || ""} ${need.Article?.category || ""} ${need.Article?.variant || ""}`.toLowerCase();
+    const text = `${isInstitution ? "" : need.Institution?.name || ""} ${need.Article?.name || ""} ${need.Article?.category || ""} ${need.Article?.variant || ""}`.toLowerCase();
     return text.includes(query.toLowerCase()) && (status === "all" || need.status === status);
   }).sort((a, b) => {
     const timeA = new Date(a.createdAt || 0).getTime();
@@ -131,7 +131,7 @@ export default function NeedsList() {
         {editingId && <button className="needsCancelAction" type="button" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Cancelar</button>}
       </form>}
       {canReadNeed && <div className="needsFilters">
-        <input aria-label="Buscar necesidad" placeholder="Buscar por institución o artículo" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <input aria-label="Buscar necesidad" placeholder={isInstitution ? "Buscar por artículo" : "Buscar por institución o artículo"} value={query} onChange={(e) => setQuery(e.target.value)} />
         <select aria-label="Filtrar por estado" value={status} onChange={(e) => setStatus(e.target.value)}><option value="all">Todos los estados</option><option value="Pending">Pendientes</option><option value="Resolved">Resueltas</option></select>
         <select aria-label="Ordenar por fecha" value={sort} onChange={(e) => setSort(e.target.value)}><option value="newest">Más recientes</option><option value="oldest">Más antiguas</option></select>
       </div>}

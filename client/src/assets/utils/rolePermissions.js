@@ -52,6 +52,7 @@ export const canAccessPath = (permissions, path) =>
 
 export const filterMenuByPermissions = (items, permissions, roleId) =>
   items.flatMap((item) => {
+    if (Number(roleId) === 4 && item.label === "Artículos") return [];
     if (item.adminOnly && Number(roleId) !== 1) return [];
     if (item.always) return [item];
     if (Array.isArray(item.children)) {

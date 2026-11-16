@@ -2,6 +2,11 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3000/report";
 
+export async function getInstitutionInventoryReport() {
+    const res = await axios.get(`${API_URL}/InstitutionInventory`, getAuthHeaders());
+    return res.data;
+}
+
 // Token para rutas protegidas
 function getAuthHeaders() {
     return {

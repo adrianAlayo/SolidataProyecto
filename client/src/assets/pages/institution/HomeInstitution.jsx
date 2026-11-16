@@ -13,7 +13,8 @@ const needsPermissions = [
 
 export default function HomeInstitution() {
   const { user, permissions = [] } = useAuth();
-  const canManageNeeds = hasAnyPermission(permissions, needsPermissions);
+  const isDonorInstitution = String(user?.institutionType || "").toLowerCase() === "donor";
+  const canManageNeeds = !isDonorInstitution && hasAnyPermission(permissions, needsPermissions);
   const displayName = user?.name || user?.first_name || "Institución";
 
   return <main className="institutionPortal">
@@ -22,9 +23,11 @@ export default function HomeInstitution() {
       <span className="institutionPortalEyebrow">PORTAL DE INSTITUCIÓN</span>
       <h1>Hola, {displayName}</h1>
       <p>Desde este espacio podés acceder a las operaciones habilitadas para tu cuenta.</p>
-      {canManageNeeds
-        ? <Link className="institutionPortalAction" to="/admin/needs">Gestionar mis necesidades</Link>
-        : <p className="institutionPortalEmpty">Todavía no tenés operaciones habilitadas. Consultá con el Banco de Alimentos.</p>}
+      {isDonorInstitution
+        ? <p className="institutionPortalEmpty">Este portal está configurado para la gestión de donaciones.</p>
+        : canManageNeeds
+          ? <Link className="institutionPortalAction" to="/admin/needs">Gestionar mis necesidades</Link>
+          : <p className="institutionPortalEmpty">Todavía no tenés operaciones habilitadas. Consultá con el Banco de Alimentos.</p>}
     </section>
   </main>;
 }

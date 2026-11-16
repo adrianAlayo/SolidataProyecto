@@ -8,6 +8,24 @@ const ARTICLE = require('../models/article');
 
 const isString = require('../utils/isString.util');
 
+const isInstitutionAccount = (req) => Number(req.user_find?.rol) === 4;
+const institutionIdFromRequest = (req) => Number(req.user_find?.institution_id ?? req.user_find?.id);
+const ownDonationInclude = (req) => ({
+  model: DONATION, required: true,
+  where: { receiver_institution_id: institutionIdFromRequest(req) }, attributes: []
+});
+const inventoryItemInclude = (req) => ({
+  model: DONATIONITEM,
+  include: [
+    { model: ARTICLE, attributes: ['id', 'name', 'variant', 'category', 'unit'] },
+    ...(isInstitutionAccount(req) ? [ownDonationInclude(req)] : [])
+  ],
+  required: isInstitutionAccount(req)
+});
+const getInstitutionInventoryRows = (req) => INVENTORY.findAll({
+  include: [inventoryItemInclude(req)], order: [['createdAt', 'DESC']]
+});
+
 /*
   Endpoints implementados:
   - createInventory
@@ -39,7 +57,9 @@ const createInventory = async (req, res) => {
 
     
     // validar que exista el DonationItem
-    const existDonationItem = await DONATIONITEM.findByPk(donation_item_id);
+    const existDonationItem = await DONATIONITEM.findByPk(donation_item_id, isInstitutionAccount(req)
+      ? { include: [ownDonationInclude(req)] }
+      : undefined);
     if (!existDonationItem) {
       return res.status(404).json({ message: 'DonationItem no encontrado' });
     }
@@ -85,14 +105,9 @@ const getInventory = async (req, res) => {
 
         id = Number(id);
 
-        const inventory = await INVENTORY.findByPk(Number(id), {
-            include: [
-                {
-                model: DONATIONITEM,
-                include: [{ model: ARTICLE, attributes: ['id', 'name', 'variant', 'category', 'unit'] }]
-                }
-            ]
-        });
+        const inventory = isInstitutionAccount(req)
+          ? await INVENTORY.findOne({ where: { id }, include: [inventoryItemInclude(req)] })
+          : await INVENTORY.findByPk(id, { include: [inventoryItemInclude(req)] });
 
         if (!inventory) return res.status(404).send({ message: 'Inventory no encontrado' });
 
@@ -102,15 +117,10 @@ const getInventory = async (req, res) => {
         return res.status(500).json({ message: 'Error interno al obtener inventory', error: err.message });
     }
 };
-const getInventories = async (_req, res) => {
+const getInventories = async (req, res) => {
   try {
     const inventories = await INVENTORY.findAll({
-      include: [
-        {
-          model: DONATIONITEM,
-          include: [{ model: ARTICLE, attributes: ['id', 'name', 'variant'] }]
-        }
-      ],
+      include: [inventoryItemInclude(req)], order: [['createdAt', 'DESC']]
     });
 
     return res.status(200).json({ count: inventories.length, data: inventories });
@@ -136,8 +146,14 @@ const getInventoryByDonationItem = async (req, res) => {
             return res.status(404).json({ message: "DonationItem no encontrado." });
         }
 
-        // 2. Obtener la donación a la que pertenece
+        // Institución solo consulta stock de donaciones que recibió.
         const donationId = donationItem.donation_id;
+        if (isInstitutionAccount(req)) {
+          const ownDonation = await DONATION.findOne({
+            where: { id: donationId, receiver_institution_id: institutionIdFromRequest(req) }
+          });
+          if (!ownDonation) return res.status(404).json({ message: "El ítem no pertenece al inventario de esta institución." });
+        }
 
         // 3. Obtener TODOS los DonationItems de esa misma donación
         const allItems = await DONATIONITEM.findAll({
@@ -150,12 +166,7 @@ const getInventoryByDonationItem = async (req, res) => {
         // 4. Obtener todos los inventories relacionados a esos DonationItems
         const inventories = await INVENTORY.findAll({
             where: { donation_item_id: donationItemIds },
-            include: [
-                {
-                    model: DONATIONITEM,
-                    include: [{ model: ARTICLE, attributes: ['id', 'name'] }]
-                }
-            ]
+            include: [inventoryItemInclude(req)]
         });
 
         return res.status(200).json({
@@ -180,6 +191,16 @@ const getInventoryOnlyArticle = async (req, res) => {
         }
 
         id = Number(id);
+
+    if (isInstitutionAccount(req)) {
+      const rows = await getInstitutionInventoryRows(req);
+      const matching = rows.filter((row) => Number(row.DonationItem?.article_id) === id);
+      const article = matching[0]?.DonationItem?.Article || await ARTICLE.findByPk(id, { attributes: ['id', 'name', 'variant', 'category'] });
+      return res.status(200).json({
+        article: article || { id },
+        total_stock: matching.reduce((total, row) => total + Number(row.available || 0), 0)
+      });
+    }
 
     // buscamos donationItems que correspondan al article
     const donationItems = await DONATIONITEM.findAll({
@@ -209,8 +230,24 @@ const getInventoryOnlyArticle = async (req, res) => {
     return res.status(500).json({ message: 'Error interno al calcular stock por artículo', error: err.message });
   }
 };
-const getInventoriesOnlyArticles = async (_req, res) => {
+const getInventoriesOnlyArticles = async (req, res) => {
   try {
+    if (isInstitutionAccount(req)) {
+      const rows = await getInstitutionInventoryRows(req);
+      const grouped = new Map();
+      rows.forEach((inventory) => {
+        const item = inventory.DonationItem, article = item?.Article;
+        if (!article) return;
+        const current = grouped.get(article.id) || {
+          article_id: article.id, name: article.name, variant: article.variant,
+          category: article.category, total_stock: 0
+        };
+        current.total_stock += Number(inventory.available || 0);
+        grouped.set(article.id, current);
+      });
+      const data = [...grouped.values()];
+      return res.status(200).json({ count: data.length, data });
+    }
     // hacemos join DonationItem -> Inventory -> Article y agrupamos por article_id
     // Usamos sequelize para hacerlo con agregaciones
     const rows = await DONATIONITEM.findAll({
@@ -252,6 +289,23 @@ const getInventoriesOnlyArticles = async (_req, res) => {
 };
 const getInventoriesOnlyArticlesArea = async (req, res) => {
   try {
+    if (isInstitutionAccount(req)) {
+      const rows = await getInstitutionInventoryRows(req);
+      const grouped = new Map();
+      rows.forEach((inventory) => {
+        const item = inventory.DonationItem, article = item?.Article;
+        if (!article) return;
+        const key = `${article.id}|${inventory.area}`;
+        const current = grouped.get(key) || {
+          article_id: article.id, area: inventory.area, total_stock: 0,
+          name: article.name, variant: article.variant, category: article.category
+        };
+        current.total_stock += Number(inventory.available || 0);
+        grouped.set(key, current);
+      });
+      const data = [...grouped.values()];
+      return res.status(200).json({ count: data.length, data });
+    }
     const rows = await INVENTORY.findAll({
       attributes: [
         [col('DonationItem.article_id'), 'article_id'],
@@ -304,6 +358,14 @@ const getInventoryOnlyArticleArea = async (req, res) => {
       return res.status(400).json({ message: 'area inválida' });
     }
 
+    if (isInstitutionAccount(req)) {
+      const rows = await getInstitutionInventoryRows(req);
+      const total = rows
+        .filter((row) => Number(row.DonationItem?.article_id) === Number(article_id) && row.area === area.trim())
+        .reduce((sum, row) => sum + Number(row.available || 0), 0);
+      return res.status(200).json({ article_id: Number(article_id), area: area.trim(), total_stock: total });
+    }
+
     // obtener donationItems del article
     const donationItems = await DONATIONITEM.findAll({
       where: { article_id: Number(article_id) },
@@ -347,7 +409,9 @@ const updateInventory = async (req, res) => {
       return res.status(400).json({ message: 'Debe enviar available y/o area para actualizar' });
     }
 
-    const inventory = await INVENTORY.findByPk(Number(id));
+    const inventory = isInstitutionAccount(req)
+      ? await INVENTORY.findOne({ where: { id }, include: [inventoryItemInclude(req)] })
+      : await INVENTORY.findByPk(id);
     if (!inventory) {
         return res.status(404).json({ message: 'Inventory no encontrado' });
     }
@@ -388,9 +452,13 @@ const deleteInventory = async (req, res) => {
 
         id = Number(id);
 
-        const deleted = await INVENTORY.destroy({ where: { id: id } });
-        if (!deleted) {
-            return res.status(404).json({ message: 'Inventory no existe o ya fue eliminado' });
+        if (isInstitutionAccount(req)) {
+            const inventory = await INVENTORY.findOne({ where: { id }, include: [inventoryItemInclude(req)] });
+            if (!inventory) return res.status(404).json({ message: 'El registro no pertenece al inventario de esta institución.' });
+            await inventory.destroy();
+        } else {
+            const deleted = await INVENTORY.destroy({ where: { id } });
+            if (!deleted) return res.status(404).json({ message: 'Inventory no existe o ya fue eliminado' });
         }
 
         return res.status(200).json({ message: 'Inventory eliminado correctamente' });

@@ -4,6 +4,7 @@ const router = express.Router();
 // Controladores
 const {
     Donations,
+    InstitutionInventory,
     BAAReceived,
     BAADonated,
     Stock,
@@ -14,6 +15,8 @@ const {
 // Middlewares
 const verifyToken = require('../middlewares/VerifyToken.middleware');
 const authorize = require('../middlewares/AuthorizationRole.middleware');
+
+router.get("/InstitutionInventory", verifyToken, InstitutionInventory);
 
 // Muestra la informacion completa de una donacion (READ)
 router.get(
