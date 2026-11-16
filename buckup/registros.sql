@@ -894,4 +894,73 @@ SELECT setval('public."Permissions_id_seq"', (SELECT MAX(id) FROM public."Permis
 SELECT setval('public."Roles_id_seq"', (SELECT MAX(id) FROM public."Roles"), true);
 SELECT setval('public."Types_id_seq"', (SELECT MAX(id) FROM public."Types"), true);
 SELECT setval('public."Users_id_seq"', (SELECT MAX(id) FROM public."Users"), true);
+
+-- Reconciliar permisos por nombre para evitar errores cuando los IDs existentes difieren.
+-- El Operador necesita consultar opciones y registrar donaciones e ítems.
+-- Las instituciones pueden administrar solo el inventario asociado a donaciones recibidas.
+WITH required_permissions(entity_name, action_name) AS (
+    VALUES
+      ('USERS', 'READ'),
+      ('INSTITUTIONS', 'READ'),
+      ('ARTICLES', 'READ'),
+      ('DONATIONS', 'READ'),
+      ('DONATIONS', 'CREATE'),
+      ('DONATIONITEMS', 'READ'),
+      ('DONATIONITEMS', 'CREATE'),
+      ('INVENTORIES', 'READ'),
+      ('INVENTORIES', 'CREATE'),
+      ('INVENTORIES', 'UPDATE'),
+      ('INVENTORIES', 'DELETE')
+)
+INSERT INTO public."Permissions" (name, entity_id, action_id)
+SELECT entity.name || '_' || action.name, entity.id, action.id
+FROM required_permissions required
+JOIN public."Entities" entity ON entity.name = required.entity_name
+JOIN public."Actions" action ON action.name = required.action_name
+WHERE NOT EXISTS (
+    SELECT 1 FROM public."Permissions" permission
+    WHERE permission.entity_id = entity.id AND permission.action_id = action.id
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO public."RolePermissions" (role_id, permission_id)
+SELECT role_row.id, permission_row.id
+FROM public."Roles" role_row
+JOIN public."Permissions" permission_row ON TRUE
+JOIN public."Entities" entity_row ON entity_row.id = permission_row.entity_id
+JOIN public."Actions" action_row ON action_row.id = permission_row.action_id
+WHERE role_row.name = 'Operador'
+  AND (
+    (entity_row.name = 'USERS' AND action_row.name = 'READ')
+    OR (entity_row.name = 'INSTITUTIONS' AND action_row.name = 'READ')
+    OR (entity_row.name = 'ARTICLES' AND action_row.name = 'READ')
+    OR (entity_row.name = 'DONATIONS' AND action_row.name IN ('READ', 'CREATE'))
+    OR (entity_row.name = 'DONATIONITEMS' AND action_row.name IN ('READ', 'CREATE'))
+  )
+ON CONFLICT DO NOTHING;
+
+INSERT INTO public."RolePermissions" (role_id, permission_id)
+SELECT role_row.id, permission_row.id
+FROM public."Roles" role_row
+JOIN public."Permissions" permission_row ON TRUE
+JOIN public."Entities" entity_row ON entity_row.id = permission_row.entity_id
+JOIN public."Actions" action_row ON action_row.id = permission_row.action_id
+WHERE role_row.name = 'Institución'
+  AND entity_row.name = 'INVENTORIES'
+  AND action_row.name IN ('READ', 'CREATE', 'UPDATE', 'DELETE')
+ON CONFLICT DO NOTHING;
+
+-- Mantener la lectura del catálogo para formularios de necesidades/entregas,
+-- pero quitar permisos de administración de artículos a las instituciones.
+DELETE FROM public."RolePermissions" role_permission
+USING public."Roles" role_row, public."Permissions" permission_row,
+      public."Entities" entity_row, public."Actions" action_row
+WHERE role_permission.role_id = role_row.id
+  AND role_permission.permission_id = permission_row.id
+  AND permission_row.entity_id = entity_row.id
+  AND permission_row.action_id = action_row.id
+  AND role_row.name = 'Institución'
+  AND entity_row.name = 'ARTICLES'
+  AND action_row.name IN ('CREATE', 'UPDATE', 'DELETE');
+
 COMMIT;
