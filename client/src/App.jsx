@@ -43,6 +43,12 @@ function InstitutionArticleAdminGuard({ children }) {
     return Number(user?.rol) === 4 ? <Navigate to="/institution/home" replace /> : children;
 }
 
+function DonorInstitutionSectionsGuard({ children }) {
+    const { user } = useAuth();
+    const isDonor = Number(user?.rol) === 4 && String(user?.institutionType || "").toLowerCase() === "donor";
+    return isDonor ? <Navigate to="/institution/home" replace /> : children;
+}
+
 function App() {
     const { pathname } = useLocation();
     const hideNavbar = pathname === "/login" || pathname === "/recoverpass";
@@ -87,9 +93,9 @@ function App() {
                 <Route path="/admin/articles/update" element={<InstitutionArticleAdminGuard><ArticlesList /></InstitutionArticleAdminGuard>} />
                 <Route path="/admin/articles/delete" element={<InstitutionArticleAdminGuard><ArticlesList /></InstitutionArticleAdminGuard>} />
 
-                <Route path="/admin/inventories/create" element={<div className="#"> <CreateInventories/> </div>} /> {/* GET*/}
-                <Route path="/admin/inventories/update" element={<div className="#"> <UpdateInventories/> </div>} /> {/* GET*/}
-                <Route path="/admin/inventories/delete" element={<div className="#"> <DeleteInventories/> </div>} /> {/* GET*/}
+                <Route path="/admin/inventories/create" element={<DonorInstitutionSectionsGuard><div className="#"> <CreateInventories/> </div></DonorInstitutionSectionsGuard>} /> {/* GET*/}
+                <Route path="/admin/inventories/update" element={<DonorInstitutionSectionsGuard><div className="#"> <UpdateInventories/> </div></DonorInstitutionSectionsGuard>} /> {/* GET*/}
+                <Route path="/admin/inventories/delete" element={<DonorInstitutionSectionsGuard><div className="#"> <DeleteInventories/> </div></DonorInstitutionSectionsGuard>} /> {/* GET*/}
 
                 <Route path="/admin/roles/create" element={<div className="#"> <CreateRoles/> </div>} /> {/* GET*/}
                 <Route path="/admin/roles/update" element={<div className="#"> <UpdateRoles/> </div>} /> {/* GET*/}
@@ -103,8 +109,8 @@ function App() {
                 <Route path="/admin/items/:id" element={<PendingPage title="Detalle del artículo de donación" />} />
 
                 <Route path="/admin/HighLow" element={<div className="#"> <High_Low/> </div>} />  {/* PATCH */}
-                <Route path="/admin/needs" element={<NeedsList />} />
-                <Route path="/admin/inventory" element={<InventoryList />} />
+                <Route path="/admin/needs" element={<DonorInstitutionSectionsGuard><NeedsList /></DonorInstitutionSectionsGuard>} />
+                <Route path="/admin/inventory" element={<DonorInstitutionSectionsGuard><InventoryList /></DonorInstitutionSectionsGuard>} />
                 <Route path="/admin/institutions" element={<InstitutionsList />} />
                 <Route path="/admin/institutions/types/create" element={<TypeManagement mode="create" />} />
                 <Route path="/admin/institutions/types/update" element={<TypeManagement mode="update" />} />
