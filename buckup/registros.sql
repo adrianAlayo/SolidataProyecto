@@ -895,4 +895,3 @@ SELECT setval('public."Roles_id_seq"', (SELECT MAX(id) FROM public."Roles"), tru
 SELECT setval('public."Types_id_seq"', (SELECT MAX(id) FROM public."Types"), true);
 SELECT setval('public."Users_id_seq"', (SELECT MAX(id) FROM public."Users"), true);
 COMMIT;
-
