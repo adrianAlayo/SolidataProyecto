@@ -1,4 +1,4 @@
-.solidataNavbar { z-index: 1250 !important; background: #123c29 !important; color: #fff; }
+.solidataNavbar { position: relative !important; z-index: 1250 !important; background: #123c29 !important; color: #fff; }
 .solidataNavbarToolbar { min-height: 72px; max-width: 1480px; width: 100%; margin: 0 auto; padding: 0 clamp(14px, 3vw, 38px) !important; display: flex; justify-content: space-between; gap: 22px; }
 .solidataBrand { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
 .solidataBrandMark { display: grid; place-items: center; width: 42px; height: 42px; overflow: hidden; border-radius: 13px; background: #fff; }.solidataBrandMark img { display: block; width: 100%; height: 100%; object-fit: contain; }

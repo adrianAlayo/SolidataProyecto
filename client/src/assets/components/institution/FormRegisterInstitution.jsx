@@ -70,6 +70,8 @@ export default function RegisterInstitutionF({ adminMode = false }) {
   return (
 
     <>
+      {adminMode && <SideMenu />}
+      <main className={adminMode ? "registerInstitutionPage" : undefined}>
       <section className="registerInstitutionCard animationFadeIn">
         <form className="registerInstitutionForm" onSubmit={handleRegister}>
           <h1 className="registerInstitutionTitle">Sumá tu institución</h1>
@@ -134,6 +136,7 @@ export default function RegisterInstitutionF({ adminMode = false }) {
           </div>
         </form>
       </section>
+      </main>
 
       <Notification
         open={notifOpen}

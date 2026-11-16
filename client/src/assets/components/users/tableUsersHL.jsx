@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import TablePager from "../TablePager.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 import { getUsers, activeUser, disableUser } from "../../services/user.service.js";
 import "./tableUsersHL.css";
 
 export default function UsersTable() {
+    const { user: currentUser } = useAuth();
+    const isCoordinator = Number(currentUser?.rol) === 3;
     const [users, setUsers] = useState([]);
     const [query, setQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
@@ -99,9 +102,9 @@ export default function UsersTable() {
                                             <button
                                                 className={user.is_active ? "userStateAction deactivate" : "userStateAction"}
                                                 onClick={() => toggleStatus(user)}
-                                                disabled={workingId === user.id}
+                                                disabled={workingId === user.id || (isCoordinator && Number(user.role_id) === 1)}
                                             >
-                                                {workingId === user.id ? "Guardando…" : user.is_active ? "Desactivar" : "Activar"}
+                                                {workingId === user.id ? "Guardando…" : isCoordinator && Number(user.role_id) === 1 ? "Protegido" : user.is_active ? "Desactivar" : "Activar"}
                                             </button>
                                         </td>
                                     </tr>

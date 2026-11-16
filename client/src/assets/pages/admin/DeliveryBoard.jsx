@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CheckCircleRounded, LocalShippingRounded, RefreshRounded, SearchRounded, ScheduleRounded } from "@mui/icons-material";
 import SideMenu from "../../components/SideMenu.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { hasPermission } from "../../utils/rolePermissions.js";
 import Notification from "../../components/Notification.jsx";
 import TablePager from "../../components/TablePager.jsx";
 import { getDonations, updateDonationStatus } from "../../services/donation.service.js";
@@ -11,6 +13,8 @@ const labels = { Scheduled: "Pendiente", Delivered: "Entregada", "Not Delivered"
 const dateLabel = (value) => value && !Number.isNaN(new Date(value).getTime()) ? new Date(value).toLocaleDateString("es-AR") : "—";
 
 export default function DeliveryBoard() {
+  const { user, permissions = [] } = useAuth();
+  const canManageDeliveries = Number(user?.rol) === 1 || hasPermission(permissions, "DONATIONS", "CHANGE_STATUS");
   const [donations, setDonations] = useState([]);
   const [items, setItems] = useState([]);
   const [query, setQuery] = useState("");
@@ -71,11 +75,11 @@ export default function DeliveryBoard() {
     <section className="deliveryPanel"><div className="deliveryPanelHeading"><h2>Seguimiento de donaciones</h2><p>El cambio de estado queda guardado en el sistema.</p></div>
       <div className="deliveryFilters"><label><SearchRounded /><input aria-label="Buscar entrega" placeholder="Buscar institución, artículo o nota" value={query} onChange={(event) => setQuery(event.target.value)} /></label><select aria-label="Filtrar entregas por estado" value={status} onChange={(event) => setStatus(event.target.value)}><option value="Scheduled">Pendientes</option><option value="Delivered">Entregadas</option><option value="Not Delivered">No entregadas</option><option value="all">Todos los estados</option></select></div>
       <div className="deliveryCount">{loading ? "Cargando entregas…" : `${filtered.length} de ${donations.length} donaciones`}</div>
-      {loading ? <p className="deliveryEmpty">Cargando información…</p> : !filtered.length ? <p className="deliveryEmpty">No hay donaciones para mostrar con este filtro.</p> : <><div className="deliveryTableWrap"><table className="deliveryTable"><thead><tr><th>Institución</th><th>Productos</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+      {loading ? <p className="deliveryEmpty">Cargando información…</p> : !filtered.length ? <p className="deliveryEmpty">No hay donaciones para mostrar con este filtro.</p> : <><div className="deliveryTableWrap"><table className="deliveryTable"><thead><tr><th>Institución</th><th>Productos</th><th>Fecha</th><th>Estado</th>{canManageDeliveries && <th>Acción</th>}</tr></thead><tbody>
         {pageRows.map((donation) => {
           const products = itemsByDonation[donation.id] || [];
           const stateClass = donation.status === "Delivered" ? "done" : donation.status === "Not Delivered" ? "failed" : "waiting";
-          return <tr key={donation.id}><td><strong>{donation.receiver_institution?.name || "Institución sin asignar"}</strong><small>Donación #{donation.id}</small></td><td>{products.length ? products.map((item) => <span className="deliveryProduct" key={item.id}>{item.Article?.name || "Artículo"} · {item.quantity} {item.Article?.unit || "unid."}</span>) : <span className="deliveryNoItems">Sin artículos cargados</span>}</td><td>{dateLabel(donation.donation_date)}</td><td><span className={`deliveryStatus ${stateClass}`}>{labels[donation.status] || donation.status}</span></td><td className="deliveryActions">{donation.status === "Delivered" ? <span className="deliveryConfirmed"><CheckCircleRounded /> Registrada</span> : donation.status === "Not Delivered" ? <button disabled={savingId === donation.id} onClick={() => changeStatus(donation, "Scheduled")}>Reprogramar</button> : <><button disabled={savingId === donation.id} onClick={() => changeStatus(donation, "Delivered")}>{savingId === donation.id ? "Guardando…" : "Registrar entrega"}</button><button className="deliveryFailAction" disabled={savingId === donation.id} onClick={() => changeStatus(donation, "Not Delivered")}>No entregada</button></>}</td></tr>;
+          return <tr key={donation.id}><td><strong>{donation.receiver_institution?.name || "Institución sin asignar"}</strong><small>Donación #{donation.id}</small></td><td>{products.length ? products.map((item) => <span className="deliveryProduct" key={item.id}>{item.Article?.name || "Artículo"} · {item.quantity} {item.Article?.unit || "unid."}</span>) : <span className="deliveryNoItems">Sin artículos cargados</span>}</td><td>{dateLabel(donation.donation_date)}</td><td><span className={`deliveryStatus ${stateClass}`}>{labels[donation.status] || donation.status}</span></td>{canManageDeliveries && <td className="deliveryActions">{donation.status === "Delivered" ? <span className="deliveryConfirmed"><CheckCircleRounded /> Registrada</span> : donation.status === "Not Delivered" ? <button disabled={savingId === donation.id} onClick={() => changeStatus(donation, "Scheduled")}>Reprogramar</button> : <><button disabled={savingId === donation.id} onClick={() => changeStatus(donation, "Delivered")}>{savingId === donation.id ? "Guardando…" : "Registrar entrega"}</button><button className="deliveryFailAction" disabled={savingId === donation.id} onClick={() => changeStatus(donation, "Not Delivered")}>No entregada</button></>}</td>}</tr>;
         })}
       </tbody></table></div><TablePager count={filtered.length} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(size) => { setPageSize(size); setPage(0); }} /></>}
       <p className="deliveryFootnote">Esta vista registra el estado de entrega. La asignación de cantidades desde necesidades y la reserva automática de stock todavía no están conectadas.</p>

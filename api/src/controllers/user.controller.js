@@ -173,6 +173,9 @@ const disableUser = async (req,res) =>{
         if(!existUser){
             return res.status(404).send({message: "El ID del usuario que introdujo no existe"})
         }
+        if (Number(req.user_find?.rol) === 3 && Number(existUser.role_id) === 1) {
+            return res.status(403).json({ message: "El Coordinador no puede modificar cuentas de Administrador." });
+        }
 
         await existUser.update({is_active: false});
         
@@ -328,6 +331,9 @@ const AcceptUser = async (req, res) => {
         })
         if(!existUser){
             return res.status(404).send({message: "El ID del usuario que introdujo no existe"})
+        }
+        if (Number(req.user_find?.rol) === 3 && Number(existUser.role_id) === 1) {
+            return res.status(403).json({ message: "El Coordinador no puede modificar cuentas de Administrador." });
         }
 
         await existUser.update({is_active: true});

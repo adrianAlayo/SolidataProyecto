@@ -9,6 +9,24 @@ const ARTICLE = require('../models/article');
 const INVENTORY = require('../models/inventory');
 
 
+const InstitutionInventory = async (req, res) => {
+    if (Number(req.user_find?.rol) !== 4) return res.status(403).json({ message: "Solo una institución puede consultar este reporte." });
+    try {
+        const institutionId = Number(req.user_find.institution_id ?? req.user_find.id);
+        const rows = await INVENTORY.findAll({
+            include: [{ model: DONATION_ITEMS, required: true, include: [
+                { model: DONATION, required: true, where: { receiver_institution_id: institutionId }, attributes: [] },
+                { model: ARTICLE, attributes: ["id", "name", "variant", "unit"] }
+            ] }],
+            order: [["createdAt", "DESC"]]
+        });
+        return res.status(200).json({ data: rows });
+    } catch (err) {
+        console.error("Error en reporte de inventario institucional:", err.message);
+        return res.status(500).json({ message: "No se pudo cargar el inventario de la institución." });
+    }
+};
+
 const Donations = async (_req,res) =>{
     try {
         const donations_found = await DONATION.findAll({
@@ -260,6 +278,7 @@ const UserActivity = async (_req, res) => {
 };
 
 module.exports = {
+    InstitutionInventory,
     Donations, // GET
     BAAReceived, // GET
     BAADonated, // GET
